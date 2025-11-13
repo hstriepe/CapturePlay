@@ -27,11 +27,13 @@
 	<key>LSMinimumSystemVersion</key>
 	<string>${MACOSX_DEPLOYMENT_TARGET}</string>
 	<key>NSCameraUsageDescription</key>
-	<string>Quick Camera requires access to connected USB cameras in order to display the output on your screen.</string>
+	<string>CapturePlay requires access to connected USB cameras in order to display the output on your screen.</string>
 	<key>NSHumanReadableCopyright</key>
-	<string>Copyright © 2025 Simon Guest. All rights reserved.</string>
+	<string>Copyright © 2025 Harald Striepe bsed on code by Simon Guest under Apache License V2.0</string>
 	<key>NSMainNibFile</key>
 	<string>MainMenu</string>
+	<key>NSMicrophoneUsageDescription</key>
+	<string>CapturePlay routes audio from connected devices; microphone access is required to capture audio.</string>
 	<key>NSPrincipalClass</key>
 	<string>NSApplication</string>
 </dict>

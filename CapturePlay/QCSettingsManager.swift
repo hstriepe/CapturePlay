@@ -10,6 +10,14 @@ class QCSettingsManager {
     private(set) var position: Int = 0
     private(set) var deviceName: String = "-"
     private(set) var savedDeviceName: String = "-"
+    private(set) var preventDisplaySleep: Bool = false
+    private(set) var audioInputUID: String = ""
+    private(set) var audioOutputUID: String = ""
+    private(set) var isAudioMuted: Bool = false
+    private(set) var audioVolume: Float = 1.0
+    private(set) var autoDisplaySleepInFullScreen: Bool = true
+    private(set) var captureImageDirectory: String = ""
+    private(set) var captureImageDirectoryBookmark: Data?
 
     // MARK: - Frame Properties
     private(set) var frameX: Float = 100
@@ -49,6 +57,38 @@ class QCSettingsManager {
         deviceName = value
     }
 
+    func setPreventDisplaySleep(_ value: Bool) {
+        preventDisplaySleep = value
+    }
+
+    func setAudioInputUID(_ value: String) {
+        audioInputUID = value
+    }
+
+    func setAudioOutputUID(_ value: String) {
+        audioOutputUID = value
+    }
+
+    func setAudioMuted(_ value: Bool) {
+        isAudioMuted = value
+    }
+
+    func setAudioVolume(_ value: Float) {
+        audioVolume = max(0.0, min(1.0, value))
+    }
+
+    func setAutoDisplaySleepInFullScreen(_ value: Bool) {
+        autoDisplaySleepInFullScreen = value
+    }
+
+    func setCaptureImageDirectory(_ value: String) {
+        captureImageDirectory = value
+    }
+
+    func setCaptureImageDirectoryBookmark(_ value: Data?) {
+        captureImageDirectoryBookmark = value
+    }
+
     func setFrameProperties(x: Float, y: Float, width: Float, height: Float) {
         frameX = x
         frameY = y
@@ -67,6 +107,20 @@ class QCSettingsManager {
         isAspectRatioFixed =
             UserDefaults.standard.object(forKey: "aspectRatioFixed") as? Bool ?? false
         position = UserDefaults.standard.object(forKey: "position") as? Int ?? 0
+        preventDisplaySleep =
+            UserDefaults.standard.object(forKey: "preventDisplaySleep") as? Bool ?? false
+        audioInputUID =
+            UserDefaults.standard.object(forKey: "audioInputUID") as? String ?? ""
+        audioOutputUID =
+            UserDefaults.standard.object(forKey: "audioOutputUID") as? String ?? ""
+        isAudioMuted = false
+        audioVolume = UserDefaults.standard.object(forKey: "audioVolume") as? Float ?? 1.0
+        autoDisplaySleepInFullScreen =
+            UserDefaults.standard.object(forKey: "autoDisplaySleepInFullScreen") as? Bool ?? true
+        captureImageDirectory =
+            UserDefaults.standard.object(forKey: "captureImageDirectory") as? String ?? ""
+        captureImageDirectoryBookmark =
+            UserDefaults.standard.object(forKey: "captureImageDirectoryBookmark") as? Data
 
         frameWidth = UserDefaults.standard.object(forKey: "frameW") as? Float ?? 0
         frameHeight = UserDefaults.standard.object(forKey: "frameH") as? Float ?? 0
@@ -87,6 +141,17 @@ class QCSettingsManager {
         UserDefaults.standard.set(isUpsideDown, forKey: "upsideDown")
         UserDefaults.standard.set(isAspectRatioFixed, forKey: "aspectRatioFixed")
         UserDefaults.standard.set(position, forKey: "position")
+        UserDefaults.standard.set(preventDisplaySleep, forKey: "preventDisplaySleep")
+        UserDefaults.standard.set(audioInputUID, forKey: "audioInputUID")
+        UserDefaults.standard.set(audioOutputUID, forKey: "audioOutputUID")
+        UserDefaults.standard.set(audioVolume, forKey: "audioVolume")
+        UserDefaults.standard.set(autoDisplaySleepInFullScreen, forKey: "autoDisplaySleepInFullScreen")
+        UserDefaults.standard.set(captureImageDirectory, forKey: "captureImageDirectory")
+        if let bookmark = captureImageDirectoryBookmark {
+            UserDefaults.standard.set(bookmark, forKey: "captureImageDirectoryBookmark")
+        } else {
+            UserDefaults.standard.removeObject(forKey: "captureImageDirectoryBookmark")
+        }
         UserDefaults.standard.set(frameX, forKey: "frameX")
         UserDefaults.standard.set(frameY, forKey: "frameY")
         UserDefaults.standard.set(frameWidth, forKey: "frameW")
@@ -102,12 +167,17 @@ class QCSettingsManager {
 
     func logSettings(label: String) {
         NSLog(
-            "%@ : %@,%@,%@borderless,%@mirrored,%@upsideDown,%@aspectRetioFixed,position:%d",
+            "%@ : %@,%@,%@borderless,%@mirrored,%@upsideDown,%@aspectRetioFixed,position:%d,%@preventDisplaySleep,audioIn:%@,audioOut:%@,%@audioMuted,volume:%.2f",
             label, deviceName, savedDeviceName,
             isBorderless ? "+" : "-",
             isMirrored ? "+" : "-",
             isUpsideDown ? "+" : "-",
             isAspectRatioFixed ? "+" : "-",
-            position)
+            position,
+            preventDisplaySleep ? "+" : "-",
+            audioInputUID,
+            audioOutputUID,
+            isAudioMuted ? "+" : "-",
+            audioVolume)
     }
 }

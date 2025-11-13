@@ -21,12 +21,12 @@
 		87673A621E35C97A002ECF15 /* AVFoundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = AVFoundation.framework; path = System/Library/Frameworks/AVFoundation.framework; sourceTree = SDKROOT; };
 		87FF95011E355CDB0017DADB /* AVKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = AVKit.framework; path = System/Library/Frameworks/AVKit.framework; sourceTree = SDKROOT; };
 		87FF951F1E35B7CE0017DADB /* QCAppDelegate.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = QCAppDelegate.swift; sourceTree = "<group>"; };
-		87FF95211E35BA3B0017DADB /* Quick Camera-Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = "Quick Camera-Info.plist"; sourceTree = "<group>"; };
+		87FF95211E35BA3B0017DADB /* CapturePlay-Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = "CapturePlay-Info.plist"; sourceTree = "<group>"; };
 		F40A9A182AB7BC630082BBC6 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.xib; name = Base; path = Base.lproj/MainMenu.xib; sourceTree = "<group>"; };
 		F43539692D1B1B85002188A0 /* QCSettingsManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = QCSettingsManager.swift; sourceTree = "<group>"; };
 		F43D252A16BB508900CBC272 /* icon.icns */ = {isa = PBXFileReference; lastKnownFileType = image.icns; path = icon.icns; sourceTree = "<group>"; };
-		F43D252C16BB703100CBC272 /* Quick Camera.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = "Quick Camera.entitlements"; sourceTree = "<group>"; };
-		F4CBD39316B8CE5F003A4794 /* Quick Camera.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = "Quick Camera.app"; sourceTree = BUILT_PRODUCTS_DIR; };
+		F43D252C16BB703100CBC272 /* CapturePlay.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = CapturePlay.entitlements; sourceTree = "<group>"; };
+		F4CBD39316B8CE5F003A4794 /* CapturePlay.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = CapturePlay.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		F4CBD39616B8CE5F003A4794 /* Cocoa.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Cocoa.framework; path = System/Library/Frameworks/Cocoa.framework; sourceTree = SDKROOT; };
 		F4CBD39916B8CE5F003A4794 /* AppKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = AppKit.framework; path = System/Library/Frameworks/AppKit.framework; sourceTree = SDKROOT; };
 		F4CBD39A16B8CE5F003A4794 /* CoreData.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreData.framework; path = System/Library/Frameworks/CoreData.framework; sourceTree = SDKROOT; };
@@ -52,7 +52,7 @@
 			isa = PBXGroup;
 			children = (
 				F43D252A16BB508900CBC272 /* icon.icns */,
-				F4CBD39C16B8CE5F003A4794 /* Quick Camera */,
+				F4CBD39C16B8CE5F003A4794 /* CapturePlay */,
 				F4CBD39516B8CE5F003A4794 /* Frameworks */,
 				F4CBD39416B8CE5F003A4794 /* Products */,
 			);
@@ -61,7 +61,7 @@
 		F4CBD39416B8CE5F003A4794 /* Products */ = {
 			isa = PBXGroup;
 			children = (
-				F4CBD39316B8CE5F003A4794 /* Quick Camera.app */,
+				F4CBD39316B8CE5F003A4794 /* CapturePlay.app */,
 			);
 			name = Products;
 			sourceTree = "<group>";
@@ -87,25 +87,25 @@
 			name = "Other Frameworks";
 			sourceTree = "<group>";
 		};
-		F4CBD39C16B8CE5F003A4794 /* Quick Camera */ = {
+		F4CBD39C16B8CE5F003A4794 /* CapturePlay */ = {
 			isa = PBXGroup;
 			children = (
 				F43539692D1B1B85002188A0 /* QCSettingsManager.swift */,
-				87FF95211E35BA3B0017DADB /* Quick Camera-Info.plist */,
+				87FF95211E35BA3B0017DADB /* CapturePlay-Info.plist */,
 				87FF951F1E35B7CE0017DADB /* QCAppDelegate.swift */,
-				F43D252C16BB703100CBC272 /* Quick Camera.entitlements */,
+				F43D252C16BB703100CBC272 /* CapturePlay.entitlements */,
 				F4CBD3AB16B8CE5F003A4794 /* MainMenu.xib */,
 				F952D6E224E15A6200EA786D /* QCUsbWatcher.swift */,
 			);
-			path = "Quick Camera";
+			path = CapturePlay;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
 
 /* Begin PBXNativeTarget section */
-		F4CBD39216B8CE5F003A4794 /* Quick Camera */ = {
+		F4CBD39216B8CE5F003A4794 /* CapturePlay */ = {
 			isa = PBXNativeTarget;
-			buildConfigurationList = F4CBD3B016B8CE5F003A4794 /* Build configuration list for PBXNativeTarget "Quick Camera" */;
+			buildConfigurationList = F4CBD3B016B8CE5F003A4794 /* Build configuration list for PBXNativeTarget "CapturePlay" */;
 			buildPhases = (
 				F4CBD38F16B8CE5F003A4794 /* Sources */,
 				F4CBD39016B8CE5F003A4794 /* Frameworks */,
@@ -115,9 +115,9 @@
 			);
 			dependencies = (
 			);
-			name = "Quick Camera";
-			productName = QCamera;
-			productReference = F4CBD39316B8CE5F003A4794 /* Quick Camera.app */;
+			name = CapturePlay;
+			productName = CapturePlay;
+			productReference = F4CBD39316B8CE5F003A4794 /* CapturePlay.app */;
 			productType = "com.apple.product-type.application";
 		};
 /* End PBXNativeTarget section */
@@ -132,12 +132,11 @@
 				ORGANIZATIONNAME = "Simon Guest";
 				TargetAttributes = {
 					F4CBD39216B8CE5F003A4794 = {
-						DevelopmentTeam = KRZC59WTY9;
 						LastSwiftMigration = "";
 					};
 				};
 			};
-			buildConfigurationList = F4CBD38E16B8CE5F003A4794 /* Build configuration list for PBXProject "Quick Camera" */;
+			buildConfigurationList = F4CBD38E16B8CE5F003A4794 /* Build configuration list for PBXProject "CapturePlay" */;
 			compatibilityVersion = "Xcode 3.2";
 			developmentRegion = en;
 			hasScannedForEncodings = 0;
@@ -150,7 +149,7 @@
 			projectDirPath = "";
 			projectRoot = "";
 			targets = (
-				F4CBD39216B8CE5F003A4794 /* Quick Camera */,
+				F4CBD39216B8CE5F003A4794 /* CapturePlay */,
 			);
 		};
 /* End PBXProject section */
@@ -297,24 +296,40 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				CLANG_ENABLE_MODULES = YES;
-				CODE_SIGN_ENTITLEMENTS = "Quick Camera/Quick Camera.entitlements";
+				CODE_SIGN_ENTITLEMENTS = CapturePlay/CapturePlay.entitlements;
 				CODE_SIGN_IDENTITY = "Mac Developer";
 				"CODE_SIGN_IDENTITY[sdk=macosx*]" = "Apple Development";
 				COMBINE_HIDPI_IMAGES = YES;
-				CURRENT_PROJECT_VERSION = 1.5;
+				CURRENT_PROJECT_VERSION = 2.2;
 				DEAD_CODE_STRIPPING = YES;
-				DEVELOPMENT_TEAM = KRZC59WTY9;
+				DEVELOPMENT_TEAM = D6WY385Q4D;
+				ENABLE_APP_SANDBOX = YES;
+				ENABLE_FILE_ACCESS_DOWNLOADS_FOLDER = readwrite;
+				ENABLE_FILE_ACCESS_MOVIES_FOLDER = readwrite;
+				ENABLE_FILE_ACCESS_MUSIC_FOLDER = readwrite;
+				ENABLE_FILE_ACCESS_PICTURE_FOLDER = readwrite;
 				ENABLE_HARDENED_RUNTIME = YES;
+				ENABLE_INCOMING_NETWORK_CONNECTIONS = NO;
+				ENABLE_OUTGOING_NETWORK_CONNECTIONS = NO;
+				ENABLE_RESOURCE_ACCESS_AUDIO_INPUT = YES;
+				ENABLE_RESOURCE_ACCESS_BLUETOOTH = NO;
+				ENABLE_RESOURCE_ACCESS_CALENDARS = NO;
+				ENABLE_RESOURCE_ACCESS_CAMERA = NO;
+				ENABLE_RESOURCE_ACCESS_CONTACTS = NO;
+				ENABLE_RESOURCE_ACCESS_LOCATION = NO;
+				ENABLE_RESOURCE_ACCESS_PRINTING = NO;
+				ENABLE_RESOURCE_ACCESS_USB = YES;
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
 				GCC_PREFIX_HEADER = "QCamera/QCamera-Prefix.pch";
-				INFOPLIST_FILE = "Quick Camera/Quick Camera-Info.plist";
+				INFOPLIST_FILE = "CapturePlay/CapturePlay-Info.plist";
+				INFOPLIST_KEY_LSApplicationCategoryType = "public.app-category.games";
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/../Frameworks",
 				);
 				MACOSX_DEPLOYMENT_TARGET = 12.4;
-				MARKETING_VERSION = 1.5;
-				PRODUCT_BUNDLE_IDENTIFIER = com.simonguest.QCamera;
+				MARKETING_VERSION = 2.2;
+				PRODUCT_BUNDLE_IDENTIFIER = org.windholm.captureplay;
 				PRODUCT_NAME = "${TARGET_NAME}";
 				PROVISIONING_PROFILE = "";
 				SWIFT_INSTALL_OBJC_HEADER = NO;
@@ -331,24 +346,40 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				CLANG_ENABLE_MODULES = YES;
-				CODE_SIGN_ENTITLEMENTS = "Quick Camera/Quick Camera.entitlements";
+				CODE_SIGN_ENTITLEMENTS = CapturePlay/CapturePlay.entitlements;
 				CODE_SIGN_IDENTITY = "Mac Developer";
 				"CODE_SIGN_IDENTITY[sdk=macosx*]" = "Apple Development";
 				COMBINE_HIDPI_IMAGES = YES;
-				CURRENT_PROJECT_VERSION = 1.5;
+				CURRENT_PROJECT_VERSION = 2.2;
 				DEAD_CODE_STRIPPING = YES;
-				DEVELOPMENT_TEAM = KRZC59WTY9;
+				DEVELOPMENT_TEAM = D6WY385Q4D;
+				ENABLE_APP_SANDBOX = YES;
+				ENABLE_FILE_ACCESS_DOWNLOADS_FOLDER = readwrite;
+				ENABLE_FILE_ACCESS_MOVIES_FOLDER = readwrite;
+				ENABLE_FILE_ACCESS_MUSIC_FOLDER = readwrite;
+				ENABLE_FILE_ACCESS_PICTURE_FOLDER = readwrite;
 				ENABLE_HARDENED_RUNTIME = YES;
+				ENABLE_INCOMING_NETWORK_CONNECTIONS = NO;
+				ENABLE_OUTGOING_NETWORK_CONNECTIONS = NO;
+				ENABLE_RESOURCE_ACCESS_AUDIO_INPUT = YES;
+				ENABLE_RESOURCE_ACCESS_BLUETOOTH = NO;
+				ENABLE_RESOURCE_ACCESS_CALENDARS = NO;
+				ENABLE_RESOURCE_ACCESS_CAMERA = NO;
+				ENABLE_RESOURCE_ACCESS_CONTACTS = NO;
+				ENABLE_RESOURCE_ACCESS_LOCATION = NO;
+				ENABLE_RESOURCE_ACCESS_PRINTING = NO;
+				ENABLE_RESOURCE_ACCESS_USB = YES;
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
 				GCC_PREFIX_HEADER = "QCamera/QCamera-Prefix.pch";
-				INFOPLIST_FILE = "Quick Camera/Quick Camera-Info.plist";
+				INFOPLIST_FILE = "CapturePlay/CapturePlay-Info.plist";
+				INFOPLIST_KEY_LSApplicationCategoryType = "public.app-category.games";
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/../Frameworks",
 				);
 				MACOSX_DEPLOYMENT_TARGET = 12.4;
-				MARKETING_VERSION = 1.5;
-				PRODUCT_BUNDLE_IDENTIFIER = com.simonguest.QCamera;
+				MARKETING_VERSION = 2.2;
+				PRODUCT_BUNDLE_IDENTIFIER = org.windholm.captureplay;
 				PRODUCT_NAME = "${TARGET_NAME}";
 				PROVISIONING_PROFILE = "";
 				SWIFT_INSTALL_OBJC_HEADER = NO;
@@ -363,7 +394,7 @@
 /* End XCBuildConfiguration section */
 
 /* Begin XCConfigurationList section */
-		F4CBD38E16B8CE5F003A4794 /* Build configuration list for PBXProject "Quick Camera" */ = {
+		F4CBD38E16B8CE5F003A4794 /* Build configuration list for PBXProject "CapturePlay" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
 				F4CBD3AE16B8CE5F003A4794 /* Debug */,
@@ -372,7 +403,7 @@
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;
 		};
-		F4CBD3B016B8CE5F003A4794 /* Build configuration list for PBXNativeTarget "Quick Camera" */ = {
+		F4CBD3B016B8CE5F003A4794 /* Build configuration list for PBXNativeTarget "CapturePlay" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
 				F4CBD3B116B8CE5F003A4794 /* Debug */,

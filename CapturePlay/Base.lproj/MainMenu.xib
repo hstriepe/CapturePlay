@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<document type="com.apple.InterfaceBuilder3.Cocoa.XIB" version="3.0" toolsVersion="23094" targetRuntime="MacOSX.Cocoa" propertyAccessControl="none" useAutolayout="YES">
+<document type="com.apple.InterfaceBuilder3.Cocoa.XIB" version="3.0" toolsVersion="24412" targetRuntime="MacOSX.Cocoa" propertyAccessControl="none" useAutolayout="YES">
     <dependencies>
         <deployment identifier="macosx"/>
-        <plugIn identifier="com.apple.InterfaceBuilder.CocoaPlugin" version="23094"/>
+        <plugIn identifier="com.apple.InterfaceBuilder.CocoaPlugin" version="24412"/>
         <capability name="documents saved in the Xcode 8 format" minToolsVersion="8.0"/>
     </dependencies>
     <objects>
@@ -15,10 +15,10 @@
         <customObject id="-3" userLabel="Application" customClass="NSObject"/>
         <menu title="AMainMenu" systemMenu="main" id="29">
             <items>
-                <menuItem title="Quick Camera" id="56">
-                    <menu key="submenu" title="Quick Camera" systemMenu="apple" id="57">
+                <menuItem title="CapturePlay" id="56">
+                    <menu key="submenu" title="CapturePlay" systemMenu="apple" id="57">
                         <items>
-                            <menuItem title="About Quick Camera" id="58">
+                            <menuItem title="About CapturePlay" id="58">
                                 <modifierMask key="keyEquivalentModifierMask"/>
                                 <connections>
                                     <action selector="orderFrontStandardAboutPanel:" target="-2" id="142"/>
@@ -27,7 +27,11 @@
                             <menuItem isSeparatorItem="YES" id="236">
                                 <modifierMask key="keyEquivalentModifierMask" command="YES"/>
                             </menuItem>
-                            <menuItem title="Preferences…" keyEquivalent="," id="129"/>
+                            <menuItem title="Preferences…" keyEquivalent="," id="129">
+                                <connections>
+                                    <action selector="showPreferences:" target="494" id="Pref-Action-1"/>
+                                </connections>
+                            </menuItem>
                             <menuItem isSeparatorItem="YES" id="143">
                                 <modifierMask key="keyEquivalentModifierMask" command="YES"/>
                             </menuItem>
@@ -37,7 +41,7 @@
                             <menuItem isSeparatorItem="YES" id="144">
                                 <modifierMask key="keyEquivalentModifierMask" command="YES"/>
                             </menuItem>
-                            <menuItem title="Hide Quick Camera" keyEquivalent="h" id="134">
+                            <menuItem title="Hide CapturePlay" keyEquivalent="h" id="134">
                                 <connections>
                                     <action selector="hide:" target="-1" id="367"/>
                                 </connections>
@@ -56,7 +60,7 @@
                             <menuItem isSeparatorItem="YES" id="149">
                                 <modifierMask key="keyEquivalentModifierMask" command="YES"/>
                             </menuItem>
-                            <menuItem title="Quit Quick Camera" keyEquivalent="q" id="136">
+                            <menuItem title="Quit CapturePlay" keyEquivalent="q" id="136">
                                 <connections>
                                     <action selector="terminate:" target="-3" id="449"/>
                                 </connections>
@@ -64,74 +68,28 @@
                         </items>
                     </menu>
                 </menuItem>
-                <menuItem title="Camera" id="83">
-                    <menu key="submenu" title="Camera" id="81">
+                <menuItem title="File" id="ihe-1Y-0yJ">
+                    <modifierMask key="keyEquivalentModifierMask"/>
+                    <menu key="submenu" title="File" id="MHl-Ix-QKL">
                         <items>
-                            <menuItem title="Select Source" id="124">
-                                <menu key="submenu" title="Select Source" systemMenu="recentDocuments" id="125"/>
-                            </menuItem>
-                            <menuItem title="Mirror Image" id="gpD-u2-VxM">
-                                <modifierMask key="keyEquivalentModifierMask"/>
-                                <menu key="submenu" title="Mirror Image" id="Xok-N7-YG0">
-                                    <items>
-                                        <menuItem title="Mirror Horizontally" keyEquivalent="m" id="78">
-                                            <connections>
-                                                <action selector="mirrorHorizontally:" target="494" id="U1E-Z0-0IF"/>
-                                            </connections>
-                                        </menuItem>
-                                        <menuItem title="Mirror Vertically" keyEquivalent="M" id="658" userLabel="Mirror Image Vertically">
-                                            <connections>
-                                                <action selector="mirrorVertically:" target="494" id="rj1-a8-kfG"/>
-                                            </connections>
-                                        </menuItem>
-                                    </items>
-                                </menu>
-                            </menuItem>
-                            <menuItem title="Rotate Image" id="5lc-mO-wOR">
-                                <modifierMask key="keyEquivalentModifierMask"/>
-                                <menu key="submenu" title="Rotate Image" id="u5u-xX-dxx">
-                                    <items>
-                                        <menuItem title="Rotate Left" keyEquivalent="l" id="W0l-0M-Fz8">
-                                            <connections>
-                                                <action selector="rotateLeft:" target="494" id="1Xt-5a-Nal"/>
-                                            </connections>
-                                        </menuItem>
-                                        <menuItem title="Rotate Right" keyEquivalent="r" id="Cow-qK-cCO">
-                                            <connections>
-                                                <action selector="rotateRight:" target="494" id="8Ic-vE-geE"/>
-                                            </connections>
-                                        </menuItem>
-                                    </items>
-                                </menu>
-                            </menuItem>
-                            <menuItem title="Save Image" keyEquivalent="s" id="iBa-Au-CgF">
+                            <menuItem title="Save Image…" keyEquivalent="s" id="iBa-Au-CgF">
+                                <modifierMask key="keyEquivalentModifierMask" option="YES" command="YES"/>
                                 <connections>
                                     <action selector="saveImage:" target="494" id="2e0-wH-zXa"/>
                                 </connections>
                             </menuItem>
-                            <menuItem title="Borderless Mode" keyEquivalent="b" id="651">
+                            <menuItem title="Capture Image" keyEquivalent="s" id="Yrb-NN-Qa2">
                                 <connections>
-                                    <action selector="borderless:" target="494" id="XSj-SB-hEo"/>
+                                    <action selector="captureImage:" target="494" id="FDk-M8-uOw"/>
                                 </connections>
                             </menuItem>
-                            <menuItem title="Fix Aspect Ratio" keyEquivalent="a" id="eHX-9R-cym">
+                            <menuItem title="Capture Video" keyEquivalent="v" id="JdV-Te-Y2n">
+                                <modifierMask key="keyEquivalentModifierMask" option="YES" command="YES"/>
                                 <connections>
-                                    <action selector="toggleFixAspectRatio:" target="-1" id="5T3-Dw-OxE"/>
+                                    <action selector="captureVideo:" target="494" id="Oxe-om-cz6"/>
                                 </connections>
                             </menuItem>
-                            <menuItem title="Fit to Actual Size" keyEquivalent="a" id="1RS-At-He8">
-                                <modifierMask key="keyEquivalentModifierMask" control="YES" command="YES"/>
-                                <connections>
-                                    <action selector="fitToActualSize:" target="-1" id="2M8-ao-DJT"/>
-                                </connections>
-                            </menuItem>
-                            <menuItem title="Enter Full Screen" keyEquivalent="f" id="9v9-Bd-YIE">
-                                <modifierMask key="keyEquivalentModifierMask" control="YES" command="YES"/>
-                                <connections>
-                                    <action selector="enterFullScreen:" target="494" id="SVF-ca-TFE"/>
-                                </connections>
-                            </menuItem>
-                            <menuItem isSeparatorItem="YES" id="YuD-fh-x4O"/>
+                            <menuItem isSeparatorItem="YES" id="x5B-sv-Ozo"/>
                             <menuItem title="Save Settings" id="fSo-F6-aJo">
                                 <modifierMask key="keyEquivalentModifierMask"/>
                                 <connections>
@@ -144,12 +102,10 @@
                                     <action selector="clearSettings:" target="-1" id="BAn-fb-0kQ"/>
                                 </connections>
                             </menuItem>
-                            <menuItem isSeparatorItem="YES" id="79">
-                                <modifierMask key="keyEquivalentModifierMask" command="YES"/>
-                            </menuItem>
-                            <menuItem title="Close" keyEquivalent="w" id="73">
+                            <menuItem isSeparatorItem="YES" id="rS8-fe-a2p"/>
+                            <menuItem title="Close" keyEquivalent="w" id="14R-5A-xjG">
                                 <connections>
-                                    <action selector="performClose:" target="-1" id="193"/>
+                                    <action selector="performClose:" target="-1" id="wJX-ys-J6g"/>
                                 </connections>
                             </menuItem>
                         </items>
@@ -362,6 +318,100 @@
                         </items>
                     </menu>
                 </menuItem>
+                <menuItem title="Video" id="83">
+                    <menu key="submenu" title="Video" id="81">
+                        <items>
+                            <menuItem title="Select Source" id="124">
+                                <menu key="submenu" title="Select Source" systemMenu="recentDocuments" id="125"/>
+                            </menuItem>
+                            <menuItem isSeparatorItem="YES" id="ZiF-rO-6ij"/>
+                            <menuItem title="Mirror Image" id="gpD-u2-VxM">
+                                <modifierMask key="keyEquivalentModifierMask"/>
+                                <menu key="submenu" title="Mirror Image" id="Xok-N7-YG0">
+                                    <items>
+                                        <menuItem title="Mirror Horizontally" keyEquivalent="m" id="78">
+                                            <connections>
+                                                <action selector="mirrorHorizontally:" target="494" id="U1E-Z0-0IF"/>
+                                            </connections>
+                                        </menuItem>
+                                        <menuItem title="Mirror Vertically" keyEquivalent="M" id="658" userLabel="Mirror Image Vertically">
+                                            <connections>
+                                                <action selector="mirrorVertically:" target="494" id="rj1-a8-kfG"/>
+                                            </connections>
+                                        </menuItem>
+                                    </items>
+                                </menu>
+                            </menuItem>
+                            <menuItem title="Rotate Image" id="5lc-mO-wOR">
+                                <modifierMask key="keyEquivalentModifierMask"/>
+                                <menu key="submenu" title="Rotate Image" id="u5u-xX-dxx">
+                                    <items>
+                                        <menuItem title="Rotate Left" keyEquivalent="l" id="W0l-0M-Fz8">
+                                            <connections>
+                                                <action selector="rotateLeft:" target="494" id="1Xt-5a-Nal"/>
+                                            </connections>
+                                        </menuItem>
+                                        <menuItem title="Rotate Right" keyEquivalent="r" id="Cow-qK-cCO">
+                                            <connections>
+                                                <action selector="rotateRight:" target="494" id="8Ic-vE-geE"/>
+                                            </connections>
+                                        </menuItem>
+                                    </items>
+                                </menu>
+                            </menuItem>
+                            <menuItem title="Borderless Mode" keyEquivalent="b" id="651">
+                                <connections>
+                                    <action selector="borderless:" target="494" id="XSj-SB-hEo"/>
+                                </connections>
+                            </menuItem>
+                            <menuItem title="Fix Aspect Ratio" keyEquivalent="a" id="eHX-9R-cym">
+                                <connections>
+                                    <action selector="toggleFixAspectRatio:" target="-1" id="5T3-Dw-OxE"/>
+                                </connections>
+                            </menuItem>
+                            <menuItem title="Fit to Actual Size" keyEquivalent="a" id="1RS-At-He8">
+                                <modifierMask key="keyEquivalentModifierMask" control="YES" command="YES"/>
+                                <connections>
+                                    <action selector="fitToActualSize:" target="-1" id="2M8-ao-DJT"/>
+                                </connections>
+                            </menuItem>
+                            <menuItem title="Enter Full Screen" keyEquivalent="f" id="9v9-Bd-YIE">
+                                <modifierMask key="keyEquivalentModifierMask" control="YES" command="YES"/>
+                                <connections>
+                                    <action selector="enterFullScreen:" target="494" id="SVF-ca-TFE"/>
+                                </connections>
+                            </menuItem>
+                            <menuItem isSeparatorItem="YES" id="Ide-4W-m6Q"/>
+                            <menuItem title="Display Sleep" keyEquivalent="d" id="otW-iO-Yct">
+                                <connections>
+                                    <action selector="toggleDisplaySleep:" target="494" id="M1s-ZN-Jnr"/>
+                                </connections>
+                            </menuItem>
+                        </items>
+                    </menu>
+                </menuItem>
+                <menuItem title="Audio" id="raj-oi-eik">
+                    <modifierMask key="keyEquivalentModifierMask"/>
+                    <menu key="submenu" title="Audio" id="Egh-Fh-WU8">
+                        <items>
+                            <menuItem title="Select Source" id="NZU-Ek-eZc">
+                                <modifierMask key="keyEquivalentModifierMask"/>
+                            </menuItem>
+                            <menuItem title="Select Output" id="7EA-36-x9y">
+                                <modifierMask key="keyEquivalentModifierMask"/>
+                            </menuItem>
+                            <menuItem isSeparatorItem="YES" id="mxC-XG-NtQ"/>
+                            <menuItem title="Mute" keyEquivalent="m" id="Lr8-f3-rsG">
+                                <connections>
+                                    <action selector="toggleAudioMute:" target="494" id="4wZ-CY-2io"/>
+                                </connections>
+                            </menuItem>
+                            <menuItem title="Volume" id="4TW-yz-wdV">
+                                <modifierMask key="keyEquivalentModifierMask" option="YES" command="YES"/>
+                            </menuItem>
+                        </items>
+                    </menu>
+                </menuItem>
                 <menuItem title="Window" id="19">
                     <menu key="submenu" title="Window" systemMenu="window" id="24">
                         <items>
@@ -390,7 +440,7 @@
                     <modifierMask key="keyEquivalentModifierMask"/>
                     <menu key="submenu" title="Help" systemMenu="help" id="491">
                         <items>
-                            <menuItem title="Quick Camera Help" keyEquivalent="?" id="492">
+                            <menuItem title="CapturePlay Help" keyEquivalent="?" id="492">
                                 <connections>
                                     <action selector="showHelp:" target="-1" id="493"/>
                                 </connections>
@@ -399,26 +449,32 @@
                     </menu>
                 </menuItem>
             </items>
-            <point key="canvasLocation" x="103" y="183"/>
+            <point key="canvasLocation" x="-48" y="165"/>
         </menu>
-        <window title="Quick Camera" allowsToolTipsWhenApplicationIsInactive="NO" autorecalculatesKeyViewLoop="NO" releasedWhenClosed="NO" animationBehavior="default" id="371">
+        <window title="CapturePlay" allowsToolTipsWhenApplicationIsInactive="NO" autorecalculatesKeyViewLoop="NO" releasedWhenClosed="NO" animationBehavior="default" id="371">
             <windowStyleMask key="styleMask" titled="YES" closable="YES" miniaturizable="YES" resizable="YES"/>
             <rect key="contentRect" x="335" y="390" width="509" height="360"/>
-            <rect key="screenRect" x="0.0" y="0.0" width="1920" height="1055"/>
+            <rect key="screenRect" x="0.0" y="0.0" width="2560" height="1409"/>
             <view key="contentView" wantsLayer="YES" id="372">
                 <rect key="frame" x="0.0" y="0.0" width="509" height="360"/>
                 <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
             </view>
             <point key="canvasLocation" x="140.5" y="-105"/>
         </window>
-        <customObject id="494" customClass="QCAppDelegate" customModule="Quick_Camera">
+        <customObject id="494" customClass="QCAppDelegate" customModule="CapturePlay">
             <connections>
                 <outlet property="aspectRatioFixedMenu" destination="eHX-9R-cym" id="GfZ-zt-Ngf"/>
                 <outlet property="borderlessMenu" destination="651" id="4dH-7A-gNz"/>
+                <outlet property="captureVideoMenuItem" destination="JdV-Te-Y2n" id="Cap-Vid-1"/>
+                <outlet property="displaySleepMenuItem" destination="otW-iO-Yct" id="OiP-wH-oDl"/>
                 <outlet property="mirroredMenu" destination="78" id="tGe-Jf-YeE"/>
+                <outlet property="muteAudioMenuItem" destination="Lr8-f3-rsG" id="R1u-UC-3RF"/>
                 <outlet property="playerView" destination="372" id="tVX-fO-IZ2"/>
+                <outlet property="selectAudioOutputMenu" destination="7EA-36-x9y" id="ff7-aR-hqv"/>
+                <outlet property="selectAudioSourceMenu" destination="NZU-Ek-eZc" id="zlb-Re-QJ3"/>
                 <outlet property="selectSourceMenu" destination="124" id="h5v-Cn-4oU"/>
                 <outlet property="upsideDownMenu" destination="658" id="Vs1-9X-1BU"/>
+                <outlet property="volumeMenu" destination="4TW-yz-wdV" id="Vol-Out-1"/>
                 <outlet property="window" destination="371" id="fTI-Cc-re1"/>
             </connections>
         </customObject>

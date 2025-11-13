@@ -1,4 +1,17 @@
-# Quick Camera
+# CapturePlay
+
+CapturePlay is an extension of the original Quick Camera optimized for displaying captures from consoles.
+
+Key new features:
+
+- Audio from any input to any output.
+  - Mute and volume controls.
+- Disable Display Sleep.
+- Full screen disables display sleep and hides the cursor.
+
+## Originally Quick Camera by Simon Guest
+
+[Github quick-camera](https://github.com/simonguest/quick-camera)
 
 Quick Camera is a macOS utility to display the output from any USB-based camera on your desktop. Quick Camera is often used for presentations where you need to show the output from an external device to your audience. 
 
@@ -6,7 +19,7 @@ Quick Camera supports mirroring (normal and reversed, both vertical and horizont
 
 You can find the app on the Mac App Store: https://itunes.apple.com/us/app/qcamera/id598853070?mt=12
 
-## Building Quick Camera
+### Building Quick Camera
 
 Quick Camera can be built using XCode. Download XCode from https://developer.apple.com/xcode/ and open the Quick Camera.xcodeproj file.
 
