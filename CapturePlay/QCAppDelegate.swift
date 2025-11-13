@@ -3,10 +3,11 @@ import AVKit
 import Cocoa
 import CoreAudio
 import IOKit.pwr_mgt
+import UserNotifications
 
 // MARK: - QCAppDelegate Class
 @NSApplicationMain
-class QCAppDelegate: NSObject, NSApplicationDelegate, QCUsbWatcherDelegate, AVCaptureFileOutputRecordingDelegate {
+class QCAppDelegate: NSObject, NSApplicationDelegate, QCUsbWatcherDelegate, AVCaptureFileOutputRecordingDelegate, UNUserNotificationCenterDelegate {
 
     // MARK: - USB Watcher
     let usb: QCUsbWatcher = QCUsbWatcher()
@@ -161,12 +162,6 @@ class QCAppDelegate: NSObject, NSApplicationDelegate, QCUsbWatcherDelegate, AVCa
                 (self.captureSession.inputs[0] as! AVCaptureDeviceInput).device
             guard currentDevice != device else { return }
 
-            // Stop recording if active
-            if isRecording, let movieOutput = movieFileOutput {
-                movieOutput.stopRecording()
-                isRecording = false
-            }
-            
             captureSession.stopRunning()
         }
         captureSession = AVCaptureSession()
@@ -186,20 +181,6 @@ class QCAppDelegate: NSObject, NSApplicationDelegate, QCUsbWatcherDelegate, AVCa
             if self.captureSession.canAddOutput(movieOutput) {
                 self.captureSession.addOutput(movieOutput)
                 self.movieFileOutput = movieOutput
-                
-                // Configure video codec settings
-                if let videoConnection = movieOutput.connection(with: .video) {
-                    if let videoDevice = self.input.device {
-                        if let format = videoDevice.activeFormat.videoSupportedFrameRateRanges.first {
-                            videoConnection.videoMinFrameDuration = CMTime(value: 1, timescale: Int32(format.maxFrameRate))
-                        }
-                    }
-                }
-                
-                // Configure audio codec settings (256Kbps AAC)
-                if let audioConnection = movieOutput.connection(with: .audio) {
-                    // Audio settings will be applied when starting recording
-                }
             }
             
             self.captureSession.commitConfiguration()
@@ -720,6 +701,7 @@ class QCAppDelegate: NSObject, NSApplicationDelegate, QCUsbWatcherDelegate, AVCa
                         CGImageDestinationAddImage(destination!, cgImage!, nil)
                         CGImageDestinationFinalize(destination!)
                         NSLog("Image saved to: %@", fileURL.path)
+                        self.sendNotification(title: "Image Captured", body: "Saved: \(filename)", sound: true)
                     }
                 }
             } else {
@@ -740,61 +722,161 @@ class QCAppDelegate: NSObject, NSApplicationDelegate, QCUsbWatcherDelegate, AVCa
         if isRecording {
             // Stop recording
             movieOutput.stopRecording()
-            isRecording = false
-            NSLog("Stopped video recording")
+            NSLog("Stopping video recording...")
         } else {
             // Start recording
             guard let captureDir = getCaptureDirectory() else {
-                let settings = QCSettingsManager.shared
-                let dirPath = settings.captureImageDirectory.isEmpty ? "~/Pictures/CapturePlay" : settings.captureImageDirectory
-                errorMessage(message: "Unable to access the capture directory: \(dirPath)\n\nPlease check your settings.")
+                errorMessage(message: "Unable to access the capture directory.\n\nPlease check your settings.")
                 return
             }
             
-            // Generate unique filename
-            let now = Date()
-            let dateFormatter = DateFormatter()
-            dateFormatter.dateFormat = "yyyy-MM-dd"
-            let date = dateFormatter.string(from: now)
-            dateFormatter.dateFormat = "HH.mm.ss"
-            let time = dateFormatter.string(from: now)
-            
-            let filename = String(format: "CapturePlay Video %@ at %@.mp4", date, time)
-            let fileURL = captureDir.appendingPathComponent(filename)
-            
-            // Configure audio settings for 256Kbps AAC
-            if let audioConnection = movieOutput.connection(with: .audio) {
-                let audioSettings: [String: Any] = [
-                    AVFormatIDKey: kAudioFormatMPEG4AAC,
-                    AVSampleRateKey: 44100.0,
-                    AVNumberOfChannelsKey: 2,
-                    AVEncoderBitRateKey: 256000
-                ]
-                movieOutput.setOutputSettings(audioSettings, for: audioConnection)
+            // Ensure capture session is running
+            guard let session = captureSession else {
+                errorMessage(message: "Capture session is not available.")
+                return
             }
             
-            // Configure video settings to use capture resolution
-            if let videoConnection = movieOutput.connection(with: .video) {
-                if let videoDevice = input.device {
-                    let dimensions = videoDevice.activeFormat.formatDescription.dimensions
-                    let videoSettings: [String: Any] = [
-                        AVVideoCodecKey: AVVideoCodecType.h264,
-                        AVVideoWidthKey: dimensions.width,
-                        AVVideoHeightKey: dimensions.height
-                    ]
-                    movieOutput.setOutputSettings(videoSettings, for: videoConnection)
+            if !session.isRunning {
+                session.startRunning()
+                // Give it a moment to establish connections
+                DispatchQueue.main.asyncAfter(deadline: .now() + 0.2) { [weak self] in
+                    self?.startVideoRecording(to: captureDir)
+                }
+            } else {
+                startVideoRecording(to: captureDir)
+            }
+        }
+    }
+    
+    private func startVideoRecording(to captureDir: URL) {
+        guard let movieOutput = movieFileOutput else { return }
+        
+        // Generate unique filename
+        let now = Date()
+        let dateFormatter = DateFormatter()
+        dateFormatter.dateFormat = "yyyy-MM-dd"
+        let date = dateFormatter.string(from: now)
+        dateFormatter.dateFormat = "HH.mm.ss"
+        let time = dateFormatter.string(from: now)
+        
+        let filename = String(format: "CapturePlay Video %@ at %@.mov", date, time)
+        let fileURL = captureDir.appendingPathComponent(filename)
+        
+        // Configure recording settings for QuickTime compatibility
+        configureRecordingSettings(movieOutput: movieOutput)
+        
+        // Check if file already exists and remove it
+        let fileManager = FileManager.default
+        if fileManager.fileExists(atPath: fileURL.path) {
+            do {
+                try fileManager.removeItem(at: fileURL)
+                NSLog("Removed existing file at: %@", fileURL.path)
+            } catch {
+                NSLog("ERROR: Could not remove existing file: %@", error.localizedDescription)
+                errorMessage(message: "Cannot overwrite existing file: \(fileURL.lastPathComponent)")
+                return
+            }
+        }
+        
+        // Check if directory is writable
+        let directoryPath = fileURL.deletingLastPathComponent().path
+        if !fileManager.isWritableFile(atPath: directoryPath) {
+            NSLog("ERROR: Directory is not writable: %@", directoryPath)
+            errorMessage(message: "Directory is not writable: \(directoryPath)")
+            return
+        }
+        
+        // Start recording
+        movieOutput.startRecording(to: fileURL, recordingDelegate: self)
+        isRecording = true
+        NSLog("Started video recording to: %@", fileURL.path)
+        sendNotification(title: "Video Recording", body: "Recording started: \(filename)", sound: true)
+    }
+    
+    private func configureRecordingSettings(movieOutput: AVCaptureMovieFileOutput) {
+        // Configure audio settings for QuickTime compatibility (AAC, 256Kbps)
+        if let audioConnection = movieOutput.connection(with: .audio) {
+            // Get audio format from input if available
+            var sampleRate: Double = 44100.0
+            var channels: Int = 2
+            
+            if let audioInput = audioCaptureInput {
+                let formatDesc = audioInput.device.activeFormat.formatDescription
+                let asbd = CMAudioFormatDescriptionGetStreamBasicDescription(formatDesc)
+                if let asbd = asbd?.pointee {
+                    sampleRate = Double(asbd.mSampleRate)
+                    channels = Int(asbd.mChannelsPerFrame)
                 }
             }
             
-            // Ensure audio input is configured
-            if audioCaptureInput == nil {
-                applyAudioConfiguration()
-            }
+            // Set AAC audio settings for QuickTime compatibility
+            let audioSettings: [String: Any] = [
+                AVFormatIDKey: kAudioFormatMPEG4AAC,
+                AVSampleRateKey: sampleRate,
+                AVNumberOfChannelsKey: channels,
+                AVEncoderBitRateKey: 256000
+            ]
             
-            // Start recording
-            movieOutput.startRecording(to: fileURL, recordingDelegate: self)
-            isRecording = true
-            NSLog("Started video recording to: %@", fileURL.path)
+            movieOutput.setOutputSettings(audioSettings, for: audioConnection)
+            NSLog("Configured AAC audio: %.0f Hz, %d channels, 256Kbps", sampleRate, channels)
+        } else {
+            NSLog("Note: No audio connection available - video will be recorded without audio")
+        }
+        
+        // Video will use source resolution automatically
+        // No need to set custom video settings - system will use appropriate defaults
+        if movieOutput.connection(with: .video) != nil {
+            let videoDevice = input.device
+            let dimensions = videoDevice.activeFormat.formatDescription.dimensions
+            NSLog("Video recording at source resolution: %dx%d", dimensions.width, dimensions.height)
+        } else {
+            NSLog("ERROR: No video connection available")
+        }
+    }
+    
+    // MARK: - AVCaptureFileOutputRecordingDelegate
+    func fileOutput(_ output: AVCaptureFileOutput, didStartRecordingTo fileURL: URL, from connections: [AVCaptureConnection]) {
+        NSLog("Video recording started to: %@", fileURL.path)
+    }
+    
+    func fileOutput(_ output: AVCaptureFileOutput, didFinishRecordingTo outputFileURL: URL, from connections: [AVCaptureConnection], error: Error?) {
+        DispatchQueue.main.async {
+            self.isRecording = false
+            
+            if let error = error {
+                let nsError = error as NSError
+                NSLog("Video recording finished with error: %@", error.localizedDescription)
+                NSLog("Error domain: %@, code: %ld", nsError.domain, nsError.code)
+                
+                // Check if file was created despite error
+                let fileManager = FileManager.default
+                if fileManager.fileExists(atPath: outputFileURL.path) {
+                    let fileSize = (try? fileManager.attributesOfItem(atPath: outputFileURL.path)[.size] as? NSNumber)?.intValue ?? 0
+                    NSLog("File exists at error location, size: %d bytes", fileSize)
+                    if fileSize > 0 {
+                        NSLog("File may be partially recorded, keeping it")
+                        return
+                    } else {
+                        // Remove empty file
+                        try? fileManager.removeItem(at: outputFileURL)
+                        NSLog("Removed empty file")
+                    }
+                }
+                
+                self.errorMessage(message: "Video recording failed: \(error.localizedDescription)\n\nError code: \(nsError.code)")
+            } else {
+                // Verify file was created
+                let fileManager = FileManager.default
+                if fileManager.fileExists(atPath: outputFileURL.path) {
+                    let fileSize = (try? fileManager.attributesOfItem(atPath: outputFileURL.path)[.size] as? NSNumber)?.intValue ?? 0
+                    NSLog("Video recording finished successfully: %@ (size: %d bytes)", outputFileURL.path, fileSize)
+                    let filename = outputFileURL.lastPathComponent
+                    self.sendNotification(title: "Video Recording", body: "Recording saved: \(filename)", sound: true)
+                } else {
+                    NSLog("ERROR: Recording reported success but file does not exist: %@", outputFileURL.path)
+                    self.errorMessage(message: "Recording completed but file was not created.")
+                }
+            }
         }
     }
 
@@ -827,6 +909,69 @@ class QCAppDelegate: NSObject, NSApplicationDelegate, QCUsbWatcherDelegate, AVCa
         updateMuteMenuState()
         setupVolumeSlider()
         updateCaptureVideoMenuItemState()
+        requestNotificationPermissions()
+    }
+    
+    // MARK: - Notifications
+    private func requestNotificationPermissions() {
+        let center = UNUserNotificationCenter.current()
+        center.delegate = self
+        center.requestAuthorization(options: [.alert, .sound, .badge]) { granted, error in
+            DispatchQueue.main.async {
+                if let error = error {
+                    NSLog("Failed to request notification permissions: %@", error.localizedDescription)
+                } else if granted {
+                    NSLog("Notification permissions granted")
+                } else {
+                    NSLog("Notification permissions denied")
+                }
+            }
+        }
+    }
+    
+    private func sendNotification(title: String, body: String, sound: Bool = true) {
+        let center = UNUserNotificationCenter.current()
+        
+        // Check authorization status first
+        center.getNotificationSettings { settings in
+            guard settings.authorizationStatus == .authorized else {
+                NSLog("Notification authorization status: %d (not authorized)", settings.authorizationStatus.rawValue)
+                return
+            }
+            
+            DispatchQueue.main.async {
+                let content = UNMutableNotificationContent()
+                content.title = title
+                content.body = body
+                if sound {
+                    content.sound = .default
+                }
+                
+                let request = UNNotificationRequest(
+                    identifier: UUID().uuidString,
+                    content: content,
+                    trigger: nil // Deliver immediately
+                )
+                
+                center.add(request) { error in
+                    if let error = error {
+                        NSLog("Failed to send notification: %@", error.localizedDescription)
+                    } else {
+                        NSLog("Notification sent successfully: %@ - %@", title, body)
+                    }
+                }
+            }
+        }
+    }
+    
+    // MARK: - UNUserNotificationCenterDelegate
+    func userNotificationCenter(_ center: UNUserNotificationCenter, willPresent notification: UNNotification, withCompletionHandler completionHandler: @escaping (UNNotificationPresentationOptions) -> Void) {
+        // Show notification even when app is in foreground
+        if #available(macOS 11.0, *) {
+            completionHandler([.banner, .sound, .badge])
+        } else {
+            completionHandler([.alert, .sound, .badge])
+        }
     }
 
     // MARK: - Menu Setup
@@ -1447,6 +1592,7 @@ class QCAppDelegate: NSObject, NSApplicationDelegate, QCUsbWatcherDelegate, AVCa
                 if persist {
                     QCSettingsManager.shared.setPreventDisplaySleep(true)
                 }
+                sendNotification(title: "Display Sleep", body: "Display sleep prevention enabled", sound: false)
                 return
             }
 
@@ -1467,6 +1613,9 @@ class QCAppDelegate: NSObject, NSApplicationDelegate, QCUsbWatcherDelegate, AVCa
         isPreventingDisplaySleep = false
         if persist {
             QCSettingsManager.shared.setPreventDisplaySleep(false)
+        }
+        if wasPreventing {
+            sendNotification(title: "Display Sleep", body: "Display sleep prevention disabled", sound: false)
         }
         if wasPreventing && notifyOnFailure {
             NSLog("Display sleep prevention disabled")
@@ -1662,30 +1811,7 @@ class QCAppDelegate: NSObject, NSApplicationDelegate, QCUsbWatcherDelegate, AVCa
         }
     }
 
-    // MARK: - AVCaptureFileOutputRecordingDelegate
-    func fileOutput(_ output: AVCaptureFileOutput, didStartRecordingTo fileURL: URL, from connections: [AVCaptureConnection]) {
-        NSLog("Video recording started to: %@", fileURL.path)
-    }
-    
-    func fileOutput(_ output: AVCaptureFileOutput, didFinishRecordingTo outputFileURL: URL, from connections: [AVCaptureConnection], error: Error?) {
-        DispatchQueue.main.async {
-            self.isRecording = false
-            if let error = error {
-                NSLog("Video recording finished with error: %@", error.localizedDescription)
-                self.errorMessage(message: "Video recording failed: \(error.localizedDescription)")
-            } else {
-                NSLog("Video recording finished successfully: %@", outputFileURL.path)
-            }
-        }
-    }
-
     func applicationWillTerminate(_ notification: Notification) {
-        // Stop recording if active
-        if isRecording, let movieOutput = movieFileOutput {
-            movieOutput.stopRecording()
-            isRecording = false
-        }
-        
         if displaySleepAssertionID != 0 {
             IOPMAssertionRelease(displaySleepAssertionID)
             displaySleepAssertionID = 0

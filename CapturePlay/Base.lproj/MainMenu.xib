@@ -83,10 +83,10 @@
                                     <action selector="captureImage:" target="494" id="FDk-M8-uOw"/>
                                 </connections>
                             </menuItem>
-                            <menuItem title="Capture Video" keyEquivalent="v" id="JdV-Te-Y2n">
+                            <menuItem title="Capture Video" keyEquivalent="v" id="4sf-q7-ahZ">
                                 <modifierMask key="keyEquivalentModifierMask" option="YES" command="YES"/>
                                 <connections>
-                                    <action selector="captureVideo:" target="494" id="Oxe-om-cz6"/>
+                                    <action selector="captureVideo:" target="494" id="I5A-pO-05x"/>
                                 </connections>
                             </menuItem>
                             <menuItem isSeparatorItem="YES" id="x5B-sv-Ozo"/>
@@ -465,7 +465,7 @@
             <connections>
                 <outlet property="aspectRatioFixedMenu" destination="eHX-9R-cym" id="GfZ-zt-Ngf"/>
                 <outlet property="borderlessMenu" destination="651" id="4dH-7A-gNz"/>
-                <outlet property="captureVideoMenuItem" destination="JdV-Te-Y2n" id="Cap-Vid-1"/>
+                <outlet property="captureVideoMenuItem" destination="4sf-q7-ahZ" id="Cap-Vid-1"/>
                 <outlet property="displaySleepMenuItem" destination="otW-iO-Yct" id="OiP-wH-oDl"/>
                 <outlet property="mirroredMenu" destination="78" id="tGe-Jf-YeE"/>
                 <outlet property="muteAudioMenuItem" destination="Lr8-f3-rsG" id="R1u-UC-3RF"/>

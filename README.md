@@ -1,15 +1,36 @@
 # CapturePlay
 
-CapturePlay is an extension of the original Quick Camera optimized for displaying captures from consoles.
+CapturePlay an app geared for using a capture device like the USB Camlink 4K to display video from Consoles like a PS5, or Switch in a dock. It will desplay video and audio and is able to capture images during play. It also can capture video and audio in MOV file format.
 
-Key new features:
+It includes code from the [Quick Camera app on Github](https://github.com/simonguest/quick-camera) created by Simon Guest
 
-- Audio from any input to any output.
+Key eatures:
+
+- Audio routing from any input to any output.
   - Mute and volume controls.
-- Disable Display Sleep.
-- Full screen disables display sleep and hides the cursor.
+- Image and video capture through shortcut keys.
+  - Directory can be changed in Settings.
 
-## Originally Quick Camera by Simon Guest
+- Notifications for key events.
+- Ability to disable Display Sleep.
+- Full screen disables Display Sleep and hides the cursor.
+- User choices are retained.
+
+Capture Play can be built using XCode. Download XCode from https://developer.apple.com/xcode/ and open the Quick Camera.xcodeproj file.
+
+In addition, with XCode or the XCode Command Line Tools installed, Quick Camera can also be built using the command line:
+
+```bash
+xcodebuild -scheme CapturePlay -configuration Release clean build
+```
+
+Upon successful build, Quick Camera can be launched with:
+
+```bash
+open build/release/CapturePlay.app
+```
+
+### Original Quick Camera by Simon Guest
 
 [Github quick-camera](https://github.com/simonguest/quick-camera)
 
@@ -19,20 +40,5 @@ Quick Camera supports mirroring (normal and reversed, both vertical and horizont
 
 You can find the app on the Mac App Store: https://itunes.apple.com/us/app/qcamera/id598853070?mt=12
 
-### Building Quick Camera
+License: Appache V2.0
 
-Quick Camera can be built using XCode. Download XCode from https://developer.apple.com/xcode/ and open the Quick Camera.xcodeproj file.
-
-In addition, with XCode or the XCode Command Line Tools installed, Quick Camera can also be built using the command line:
-
-```bash
-xcodebuild -scheme Quick\ Camera -configuration Release clean build
-```
-
-Upon successful build, Quick Camera can be launched with:
-
-```bash
-open build/release/Quick\ Camera.app
-```
-
-Finally, a Package.swift file is included for building Quick Camera using Swift Package Manager. This, however, is designed only to support editing Quick Camera in VS Code (via the Swift Language Support extension and LSP).
