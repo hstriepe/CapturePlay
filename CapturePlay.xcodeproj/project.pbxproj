@@ -31,6 +31,7 @@
 		F4CBD39916B8CE5F003A4794 /* AppKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = AppKit.framework; path = System/Library/Frameworks/AppKit.framework; sourceTree = SDKROOT; };
 		F4CBD39A16B8CE5F003A4794 /* CoreData.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreData.framework; path = System/Library/Frameworks/CoreData.framework; sourceTree = SDKROOT; };
 		F4CBD39B16B8CE5F003A4794 /* Foundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Foundation.framework; path = System/Library/Frameworks/Foundation.framework; sourceTree = SDKROOT; };
+		F508C9F62EC67FD300B65399 /* README.md */ = {isa = PBXFileReference; lastKnownFileType = net.daringfireball.markdown; path = README.md; sourceTree = "<group>"; };
 		F952D6E224E15A6200EA786D /* QCUsbWatcher.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = QCUsbWatcher.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
@@ -54,6 +55,7 @@
 				F43D252A16BB508900CBC272 /* icon.icns */,
 				F4CBD39C16B8CE5F003A4794 /* CapturePlay */,
 				F4CBD39516B8CE5F003A4794 /* Frameworks */,
+				F508C9F62EC67FD300B65399 /* README.md */,
 				F4CBD39416B8CE5F003A4794 /* Products */,
 			);
 			sourceTree = "<group>";

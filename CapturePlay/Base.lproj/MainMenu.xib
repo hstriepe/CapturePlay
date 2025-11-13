@@ -72,13 +72,18 @@
                     <modifierMask key="keyEquivalentModifierMask"/>
                     <menu key="submenu" title="File" id="MHl-Ix-QKL">
                         <items>
+                            <menuItem title="Open Capture Folder" keyEquivalent="o" id="OGq-Cg-gVw">
+                                <connections>
+                                    <action selector="openCaptureFolder:" target="494" id="1pR-bV-dn8"/>
+                                </connections>
+                            </menuItem>
                             <menuItem title="Save Image…" keyEquivalent="s" id="iBa-Au-CgF">
-                                <modifierMask key="keyEquivalentModifierMask" option="YES" command="YES"/>
                                 <connections>
                                     <action selector="saveImage:" target="494" id="2e0-wH-zXa"/>
                                 </connections>
                             </menuItem>
                             <menuItem title="Capture Image" keyEquivalent="s" id="Yrb-NN-Qa2">
+                                <modifierMask key="keyEquivalentModifierMask" option="YES" command="YES"/>
                                 <connections>
                                     <action selector="captureImage:" target="494" id="FDk-M8-uOw"/>
                                 </connections>

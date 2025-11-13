@@ -1,3 +1,5 @@
+// Copyright Simon Guest - 2025
+
 import IOKit
 import IOKit.usb
 import IOKit.usb.IOUSBLib

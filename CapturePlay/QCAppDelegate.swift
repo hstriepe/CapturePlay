@@ -1,3 +1,6 @@
+// Copyright H. Striepe - 2025
+// Portions copyright Simon Guest - 2025
+
 import AVFoundation
 import AVKit
 import Cocoa
@@ -746,6 +749,17 @@ class QCAppDelegate: NSObject, NSApplicationDelegate, QCUsbWatcherDelegate, AVCa
                 startVideoRecording(to: captureDir)
             }
         }
+    }
+    
+    @IBAction func openCaptureFolder(_ sender: NSMenuItem) {
+        guard let captureDir = getCaptureDirectory() else {
+            errorMessage(message: "Unable to access the capture directory.\n\nPlease check your settings.")
+            return
+        }
+        
+        // Open the folder in Finder
+        NSWorkspace.shared.open(captureDir)
+        NSLog("Opened capture folder in Finder: %@", captureDir.path)
     }
     
     private func startVideoRecording(to captureDir: URL) {

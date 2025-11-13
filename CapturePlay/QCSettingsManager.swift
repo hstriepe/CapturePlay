@@ -1,3 +1,5 @@
+// Copyright H. Striepe - 2025
+
 import AVFoundation
 import Cocoa
 

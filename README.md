@@ -1,6 +1,6 @@
 # CapturePlay
 
-CapturePlay an app geared for using a capture device like the USB Camlink 4K to display video from Consoles like a PS5, or Switch in a dock. It will desplay video and audio and is able to capture images during play. It also can capture video and audio in MOV file format.
+CapturePlay an app geared for using a capture device like the USB Camlink 4K to display video from consoles like a PS5, or Switch in a dock. It will desplay video and audio and is able to capture images during play. It can also capture video and audio in MOV file format.
 
 It includes code from the [Quick Camera app on Github](https://github.com/simonguest/quick-camera) created by Simon Guest
 
