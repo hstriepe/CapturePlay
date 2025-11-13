@@ -1,6 +1,6 @@
 # CapturePlay
 
-CapturePlay an app geared for using a capture device like the USB Camlink 4K to display video from consoles like a PS5, or Switch in a dock. It will desplay video and audio and is able to capture images during play. It can also capture video and audio in MOV file format.
+CapturePlay an app geared for using a capture device like the USB Camlink 4K to display video from consoles like a PS5, or Switch in a dock. It will display video and play audio, and is able to capture images during play. It can also capture video and audio in MOV file format.
 
 It includes code from the [Quick Camera app on Github](https://github.com/simonguest/quick-camera) created by Simon Guest
 
@@ -14,7 +14,7 @@ Key eatures:
 - Notifications for key events.
 - Ability to disable Display Sleep.
 - Full screen disables Display Sleep and hides the cursor.
-- User choices are retained.
+- User Settings are retained.
 
 Capture Play can be built using XCode. Download XCode from https://developer.apple.com/xcode/ and open the Quick Camera.xcodeproj file.
 
@@ -24,11 +24,7 @@ In addition, with XCode or the XCode Command Line Tools installed, Quick Camera 
 xcodebuild -scheme CapturePlay -configuration Release clean build
 ```
 
-Upon successful build, Quick Camera can be launched with:
-
-```bash
-open build/release/CapturePlay.app
-```
+Your project build settings will determine the app location. I use Archive and the organizer for distribution and notarization.
 
 ### Original Quick Camera by Simon Guest
 
