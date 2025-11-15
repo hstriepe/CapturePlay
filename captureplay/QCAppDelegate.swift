@@ -8,7 +8,7 @@ import CoreAudio
 
 // MARK: - QCAppDelegate Class
 @NSApplicationMain
-class QCAppDelegate: NSObject, NSApplicationDelegate, QCUsbWatcherDelegate, QCCaptureManagerDelegate, QCAudioManagerDelegate, QCWindowManagerDelegate, QCCaptureFileManagerDelegate, QCNotificationManagerDelegate, QCDisplaySleepManagerDelegate, QCPreferencesControllerDelegate {
+class QCAppDelegate: NSObject, NSApplicationDelegate, NSMenuDelegate, QCUsbWatcherDelegate, QCCaptureManagerDelegate, QCAudioManagerDelegate, QCWindowManagerDelegate, QCCaptureFileManagerDelegate, QCNotificationManagerDelegate, QCDisplaySleepManagerDelegate, QCPreferencesControllerDelegate {
 
     // MARK: - Managers
     private var captureManager: QCCaptureManager!
@@ -41,6 +41,7 @@ class QCAppDelegate: NSObject, NSApplicationDelegate, QCUsbWatcherDelegate, QCCa
     @IBOutlet weak var playerView: NSView!
     @IBOutlet weak var displaySleepMenuItem: NSMenuItem!
     @IBOutlet weak var captureVideoMenuItem: NSMenuItem!
+    @IBOutlet weak var imageMenu: NSMenuItem!
 
     // MARK: - Settings Properties (delegated to window manager)
     var isMirrored: Bool {
@@ -173,23 +174,6 @@ class QCAppDelegate: NSObject, NSApplicationDelegate, QCUsbWatcherDelegate, QCCa
         self.aspectRatioFixedMenu.state = convertToNSControlStateValue(
             (windowManager.isAspectRatioFixed
                 ? NSControl.StateValue.on.rawValue : NSControl.StateValue.off.rawValue))
-    }
-
-    // MARK: - Settings Actions
-    @IBAction func saveSettings(_ sender: NSMenuItem) {
-        QCSettingsManager.shared.setFrameProperties(
-            x: Float(self.window.frame.minX),
-            y: Float(self.window.frame.minY),
-            width: Float(self.window.frame.width),
-            height: Float(self.window.frame.height)
-        )
-        QCSettingsManager.shared.saveSettings()
-    }
-
-    @IBAction func clearSettings(_ sender: NSMenuItem) {
-        QCSettingsManager.shared.clearSettings()
-        displaySleepManager.applyDisplaySleepPreferenceFromSettings(force: true)
-        audioManager.detectAudioDevices()
     }
 
     // MARK: - Display Actions
@@ -327,6 +311,7 @@ class QCAppDelegate: NSObject, NSApplicationDelegate, QCUsbWatcherDelegate, QCCa
         captureManager.startCaptureWithVideoDevice(deviceIndex: defaultDeviceIndex)
         usb.delegate = self
         setupFileMenu()
+        setupVideoMenu()
         displaySleepManager.applyDisplaySleepPreferenceFromSettings(force: true)
         windowManager.observeWindowNotifications()
         requestAudioAccessIfNeeded()
@@ -400,55 +385,48 @@ class QCAppDelegate: NSObject, NSApplicationDelegate, QCUsbWatcherDelegate, QCCa
     private func setupFileMenu() {
         guard let fileMenu = ensureFileMenu() else { return }
 
-        var addedAny = false
-
-        // Move Save Settings
-        if moveFirstMenuItem(withAction: #selector(saveSettings(_:)), to: fileMenu) {
-            addedAny = true
-        }
-
-        // Move Clear Settings
-        if moveFirstMenuItem(withAction: #selector(clearSettings(_:)), to: fileMenu) {
-            addedAny = true
-        }
-
         // Move any items with titles containing "ruler"
         if let mainMenu = NSApp.mainMenu {
             var rulerItems: [(NSMenuItem, NSMenu)] = []
             collectMenuItems(in: mainMenu, where: { $0.title.localizedCaseInsensitiveContains("ruler") }, into: &rulerItems)
             if !rulerItems.isEmpty {
-                if addedAny {
-                    fileMenu.addItem(NSMenuItem.separator())
-                }
                 for (item, parent) in rulerItems {
                     parent.removeItem(item)
                     fileMenu.addItem(item)
                 }
-                addedAny = true
-            }
-        }
-
-        // Move Close (performClose:)
-        if let mainMenu = NSApp.mainMenu {
-            if let (closeItem, parent) = findMenuItem(in: mainMenu, where: { $0.action == #selector(NSWindow.performClose(_:)) || $0.title == "Close" }) {
-                parent.removeItem(closeItem)
-                if addedAny {
-                    fileMenu.addItem(NSMenuItem.separator())
-                }
-                fileMenu.addItem(closeItem)
-            } else {
-                // If no existing Close item was found, create one
-                if addedAny {
-                    fileMenu.addItem(NSMenuItem.separator())
-                }
-                let closeItem = NSMenuItem(title: "Close", action: #selector(NSWindow.performClose(_:)), keyEquivalent: "w")
-                closeItem.keyEquivalentModifierMask = [.command]
-                closeItem.target = nil // use responder chain
-                fileMenu.addItem(closeItem)
             }
         }
 
         removeCloseAllMenuItem(from: fileMenu)
+    }
+
+    private func setupVideoMenu() {
+        // Find the Video menu and set its delegate
+        guard let mainMenu = NSApp.mainMenu,
+              let videoMenuItem = mainMenu.item(withTitle: "Video"),
+              let videoMenu = videoMenuItem.submenu else { return }
+        
+        videoMenu.delegate = self
+        
+        // Hide Image menu item by default
+        imageMenu?.isHidden = true
+    }
+
+    // MARK: - NSMenuDelegate
+    func menuWillOpen(_ menu: NSMenu) {
+        // Check if this is the Video menu
+        if menu.title == "Video" {
+            // Show Image menu item if Option key is pressed
+            // Check modifier flags from the current event
+            if let currentEvent = NSApp.currentEvent {
+                let optionKeyPressed = currentEvent.modifierFlags.contains(.option)
+                imageMenu?.isHidden = !optionKeyPressed
+            } else {
+                // Fallback: check current modifier flags
+                let optionKeyPressed = NSEvent.modifierFlags.contains(.option)
+                imageMenu?.isHidden = !optionKeyPressed
+            }
+        }
     }
 
     // MARK: - Audio Management

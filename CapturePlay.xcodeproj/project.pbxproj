@@ -50,10 +50,8 @@
 		F4CBD39A16B8CE5F003A4794 /* CoreData.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreData.framework; path = System/Library/Frameworks/CoreData.framework; sourceTree = SDKROOT; };
 		F4CBD39B16B8CE5F003A4794 /* Foundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Foundation.framework; path = System/Library/Frameworks/Foundation.framework; sourceTree = SDKROOT; };
 		F508C9F62EC67FD300B65399 /* README.md */ = {isa = PBXFileReference; lastKnownFileType = net.daringfireball.markdown; path = README.md; sourceTree = "<group>"; };
-		F564684B2EC6989D00BA0549 /* Help */ = {isa = PBXFileReference; lastKnownFileType = folder; path = Help; sourceTree = "<group>"; };
 		F56A622E2EC84E5F00387772 /* MANUAL.html */ = {isa = PBXFileReference; lastKnownFileType = text.html; path = MANUAL.html; sourceTree = "<group>"; };
 		F56A622F2EC84E5F00387772 /* MANUAL.pdf */ = {isa = PBXFileReference; lastKnownFileType = image.pdf; path = MANUAL.pdf; sourceTree = "<group>"; };
-		F56A62332EC84E7900387772 /* MANUAL.md */ = {isa = PBXFileReference; lastKnownFileType = net.daringfireball.markdown; path = MANUAL.md; sourceTree = "<group>"; };
 		F952D6E224E15A6200EA786D /* QCUsbWatcher.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = QCUsbWatcher.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
@@ -72,10 +70,10 @@
 		F4CBD38A16B8CE5F003A4794 = {
 			isa = PBXGroup;
 			children = (
-				F43D252A16BB508900CBC272 /* icon.icns */,
 				F4CBD39C16B8CE5F003A4794 /* captureplay */,
 				F4CBD39516B8CE5F003A4794 /* Frameworks */,
 				F508C9F62EC67FD300B65399 /* README.md */,
+				F43D252A16BB508900CBC272 /* icon.icns */,
 				F56A62302EC84E5F00387772 /* Resources */,
 				F4CBD39416B8CE5F003A4794 /* Products */,
 			);
@@ -127,7 +125,6 @@
 				F43539782D1B1B85002188A7 /* QCPreferencesController.swift */,
 				F435397A2D1B1B8B002188A8 /* QCHelpViewerController.swift */,
 				F952D6E224E15A6200EA786D /* QCUsbWatcher.swift */,
-				F564684B2EC6989D00BA0549 /* Help */,
 			);
 			path = captureplay;
 			sourceTree = "<group>";
@@ -135,7 +132,6 @@
 		F56A62302EC84E5F00387772 /* Resources */ = {
 			isa = PBXGroup;
 			children = (
-				F56A62332EC84E7900387772 /* MANUAL.md */,
 				F56A622E2EC84E5F00387772 /* MANUAL.html */,
 				F56A622F2EC84E5F00387772 /* MANUAL.pdf */,
 			);
@@ -240,6 +236,7 @@
 				"",
 				"",
 				"",
+				"",
 			);
 		};
 		F56468462EC6989900BA0547 /* ShellScript */ = {
@@ -328,6 +325,7 @@
 				"149",
 				"%%%%EOF' > \"${MANUAL_PDF}\"",
 				"fi",
+				"",
 				"",
 				"",
 				"",
@@ -537,10 +535,11 @@
 				CODE_SIGN_ENTITLEMENTS = captureplay/CapturePlay.entitlements;
 				CODE_SIGN_IDENTITY = "Mac Developer";
 				"CODE_SIGN_IDENTITY[sdk=macosx*]" = "Apple Development";
+				CODE_SIGN_STYLE = Manual;
 				COMBINE_HIDPI_IMAGES = YES;
 				CURRENT_PROJECT_VERSION = 88;
 				DEAD_CODE_STRIPPING = YES;
-				DEVELOPMENT_TEAM = D6WY385Q4D;
+				DEVELOPMENT_TEAM = "";
 				ENABLE_APP_SANDBOX = YES;
 				ENABLE_FILE_ACCESS_DOWNLOADS_FOLDER = readwrite;
 				ENABLE_FILE_ACCESS_MOVIES_FOLDER = readwrite;
@@ -571,6 +570,7 @@
 				PRODUCT_BUNDLE_IDENTIFIER = org.windholm.captureplay;
 				PRODUCT_NAME = "${TARGET_NAME}";
 				PROVISIONING_PROFILE = "";
+				PROVISIONING_PROFILE_SPECIFIER = "";
 				RUNTIME_EXCEPTION_ALLOW_DYLD_ENVIRONMENT_VARIABLES = NO;
 				RUNTIME_EXCEPTION_ALLOW_JIT = NO;
 				RUNTIME_EXCEPTION_ALLOW_UNSIGNED_EXECUTABLE_MEMORY = NO;

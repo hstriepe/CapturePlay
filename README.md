@@ -4,7 +4,7 @@ CapturePlay an app geared for using a capture device like the USB Camlink 4K to 
 
 It includes code from the [Quick Camera app on Github](https://github.com/simonguest/quick-camera) created by Simon Guest
 
-Key features:
+Key eatures:
 
 - Audio routing from any input to any output.
   - Mute and volume controls.
@@ -15,7 +15,6 @@ Key features:
 - Ability to disable Display Sleep.
 - Full screen disables Display Sleep and hides the cursor.
 - User Settings are retained.
-- Help system.
 
 Capture Play can be built using XCode. Download XCode from https://developer.apple.com/xcode/ and open the Quick Camera.xcodeproj file.
 
@@ -37,5 +36,5 @@ Quick Camera supports mirroring (normal and reversed, both vertical and horizont
 
 You can find the app on the Mac App Store: https://itunes.apple.com/us/app/qcamera/id598853070?mt=12
 
-License: Apache V2.0
+License: Appache V2.0
 

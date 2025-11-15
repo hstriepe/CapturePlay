@@ -94,25 +94,6 @@
                                     <action selector="captureVideo:" target="494" id="I5A-pO-05x"/>
                                 </connections>
                             </menuItem>
-                            <menuItem isSeparatorItem="YES" id="x5B-sv-Ozo"/>
-                            <menuItem title="Save Settings" id="fSo-F6-aJo">
-                                <modifierMask key="keyEquivalentModifierMask"/>
-                                <connections>
-                                    <action selector="saveSettings:" target="-1" id="5XG-Ua-ecs"/>
-                                </connections>
-                            </menuItem>
-                            <menuItem title="Clear Settings" id="zGQ-Bh-Ak3">
-                                <modifierMask key="keyEquivalentModifierMask"/>
-                                <connections>
-                                    <action selector="clearSettings:" target="-1" id="BAn-fb-0kQ"/>
-                                </connections>
-                            </menuItem>
-                            <menuItem isSeparatorItem="YES" id="rS8-fe-a2p"/>
-                            <menuItem title="Close" keyEquivalent="w" id="14R-5A-xjG">
-                                <connections>
-                                    <action selector="performClose:" target="-1" id="wJX-ys-J6g"/>
-                                </connections>
-                            </menuItem>
                         </items>
                     </menu>
                 </menuItem>
@@ -330,27 +311,20 @@
                                 <menu key="submenu" title="Select Source" systemMenu="recentDocuments" id="125"/>
                             </menuItem>
                             <menuItem isSeparatorItem="YES" id="ZiF-rO-6ij"/>
-                            <menuItem title="Mirror Image" id="gpD-u2-VxM">
+                            <menuItem title="Image" id="gpD-u2-VxM">
                                 <modifierMask key="keyEquivalentModifierMask"/>
-                                <menu key="submenu" title="Mirror Image" id="Xok-N7-YG0">
+                                <menu key="submenu" title="Image" id="Xok-N7-YG0">
                                     <items>
-                                        <menuItem title="Mirror Horizontally" keyEquivalent="m" id="78">
+                                        <menuItem title="Mirror Horizontally" keyEquivalent="M" id="78">
                                             <connections>
                                                 <action selector="mirrorHorizontally:" target="494" id="U1E-Z0-0IF"/>
                                             </connections>
                                         </menuItem>
-                                        <menuItem title="Mirror Vertically" keyEquivalent="M" id="658" userLabel="Mirror Image Vertically">
+                                        <menuItem title="Mirror Vertically" keyEquivalent="H" id="658" userLabel="Mirror Image Vertically">
                                             <connections>
                                                 <action selector="mirrorVertically:" target="494" id="rj1-a8-kfG"/>
                                             </connections>
                                         </menuItem>
-                                    </items>
-                                </menu>
-                            </menuItem>
-                            <menuItem title="Rotate Image" id="5lc-mO-wOR">
-                                <modifierMask key="keyEquivalentModifierMask"/>
-                                <menu key="submenu" title="Rotate Image" id="u5u-xX-dxx">
-                                    <items>
                                         <menuItem title="Rotate Left" keyEquivalent="l" id="W0l-0M-Fz8">
                                             <connections>
                                                 <action selector="rotateLeft:" target="494" id="1Xt-5a-Nal"/>
@@ -420,7 +394,8 @@
                 <menuItem title="Window" id="19">
                     <menu key="submenu" title="Window" systemMenu="window" id="24">
                         <items>
-                            <menuItem title="Minimize" keyEquivalent="m" id="23">
+                            <menuItem title="Minimize" id="23">
+                                <modifierMask key="keyEquivalentModifierMask"/>
                                 <connections>
                                     <action selector="performMiniaturize:" target="-1" id="37"/>
                                 </connections>
@@ -478,6 +453,7 @@
                 <outlet property="borderlessMenu" destination="651" id="4dH-7A-gNz"/>
                 <outlet property="captureVideoMenuItem" destination="4sf-q7-ahZ" id="Cap-Vid-1"/>
                 <outlet property="displaySleepMenuItem" destination="otW-iO-Yct" id="OiP-wH-oDl"/>
+                <outlet property="imageMenu" destination="gpD-u2-VxM" id="Img-Menu-1"/>
                 <outlet property="mirroredMenu" destination="78" id="tGe-Jf-YeE"/>
                 <outlet property="muteAudioMenuItem" destination="Lr8-f3-rsG" id="R1u-UC-3RF"/>
                 <outlet property="playerView" destination="372" id="tVX-fO-IZ2"/>
