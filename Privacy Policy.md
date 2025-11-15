@@ -1,5 +1,5 @@
-# Privacy Policy for Quick Camera
-This privacy policy governs your use of the software application Quick Camera (“Application”) for that was created by Simon Guest. The Application is a utility to display the output of your connected USB cameras for presentations.
+# Privacy Policy for CapturePlay
+This privacy policy governs your use of the software application CapturePlay (“Application”) for that was created by Simon Guest. The Application is a utility to display the output of your connected USB cameras for presentations.
  
 ### Automatically Collected Information 
 The Application may collect certain information automatically, including, but not limited to, the type of desktop device you use, the type of cameras discovered, your operating system, and information about the way you use the Application.

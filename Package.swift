@@ -2,22 +2,22 @@
 import PackageDescription
 
 let package = Package(
-    name: "Quick Camera",
+    name: "CapturePlay",
     defaultLocalization: "en",
     platforms: [
         .macOS(.v12)
     ],
     products: [
         .executable(
-            name: "Quick Camera",
-            targets: ["Quick Camera"]
+            name: "CapturePlay",
+            targets: ["CapturePlay"]
         )
     ],
     dependencies: [],
     targets: [
         .executableTarget(
-            name: "Quick Camera",
-            path: "Quick Camera",
+            name: "CapturePlay",
+            path: "CapturePlay",
             sources: [
                 "QCAppDelegate.swift",
                 "QCSettingsManager.swift",
