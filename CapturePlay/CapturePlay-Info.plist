@@ -36,5 +36,9 @@
 	<string>CapturePlay routes audio from connected devices; microphone access is required to capture audio.</string>
 	<key>NSPrincipalClass</key>
 	<string>NSApplication</string>
+	<key>CFBundleHelpBookFolder</key>
+	<string>Help</string>
+	<key>CFBundleHelpBookName</key>
+	<string>org.windholm.captureplay.help</string>
 </dict>
 </plist>

@@ -541,6 +541,72 @@ class QCAppDelegate: NSObject, NSApplicationDelegate, QCUsbWatcherDelegate, QCCa
         preferencesController.showPreferences()
     }
 
+    // Help viewer instance
+    private var helpViewer: QCHelpViewerController?
+    
+    // Handle the standard help action - show HTML manual in WebView
+    @IBAction func showHelp(_ sender: Any?) {
+        print("QCAppDelegate: showHelp called")
+        
+        // Show HTML help in WebView
+        if let existingViewer = helpViewer, let window = existingViewer.window, window.isVisible {
+            window.makeKeyAndOrderFront(sender)
+            print("QCAppDelegate: Showing existing help window")
+        } else {
+            print("QCAppDelegate: Creating new help viewer")
+            let viewer = QCHelpViewerController()
+            viewer.delegate = self
+            helpViewer = viewer
+            viewer.showWindow(sender)
+            print("QCAppDelegate: showWindow called")
+        }
+    }
+    
+    @IBAction func showUserManual(_ sender: Any?) {
+        // Open MANUAL.pdf from Resources
+        var pdfURL: URL?
+        
+        // First try: MANUAL.pdf in bundle Resources
+        if let manualURL = Bundle.main.url(forResource: "MANUAL", withExtension: "pdf") {
+            pdfURL = manualURL
+        }
+        // Second try: Check Resources directory directly
+        else if let resourcesPath = Bundle.main.resourcePath {
+            let pdfPath = (resourcesPath as NSString).appendingPathComponent("MANUAL.pdf")
+            if FileManager.default.fileExists(atPath: pdfPath) {
+                pdfURL = URL(fileURLWithPath: pdfPath)
+            }
+        }
+        // Third try: Source directory (for development)
+        else {
+            let bundlePath = Bundle.main.bundlePath as NSString
+            var path = bundlePath.deletingLastPathComponent // Contents
+            path = (path as NSString).deletingLastPathComponent // .app
+            path = (path as NSString).deletingLastPathComponent // Source directory
+            var pdfPath = (path as NSString).appendingPathComponent("captureplay/Resources/MANUAL.pdf")
+            
+            if !FileManager.default.fileExists(atPath: pdfPath) {
+                pdfPath = (path as NSString).appendingPathComponent("captureplay/MANUAL.pdf")
+            }
+            
+            if FileManager.default.fileExists(atPath: pdfPath) {
+                pdfURL = URL(fileURLWithPath: pdfPath)
+            }
+        }
+        
+        if let url = pdfURL {
+            NSWorkspace.shared.open(url)
+        } else {
+            let alert = NSAlert()
+            alert.messageText = "Manual Not Found"
+            alert.informativeText = "The MANUAL.pdf file could not be found in the application bundle Resources folder."
+            alert.alertStyle = .warning
+            alert.addButton(withTitle: "OK")
+            alert.runModal()
+        }
+    }
+    
+
     func applicationWillTerminate(_ notification: Notification) {
         displaySleepManager?.cleanup()
         windowManager?.updateWindowFrameSettings()
@@ -817,6 +883,16 @@ extension QCAppDelegate {
     
     func displaySleepManager(_ manager: QCDisplaySleepManager, needsMenuItemEnabled enabled: Bool) {
         displaySleepMenuItem?.isEnabled = enabled
+    }
+}
+
+// MARK: - QCHelpViewerDelegate
+extension QCAppDelegate: QCHelpViewerDelegate {
+    func helpViewerDidClose(_ helpViewer: QCHelpViewerController) {
+        // Help viewer was closed, clear reference
+        if self.helpViewer === helpViewer {
+            self.helpViewer = nil
+        }
     }
 }
 

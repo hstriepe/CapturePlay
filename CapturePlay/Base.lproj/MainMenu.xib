@@ -447,7 +447,13 @@
                         <items>
                             <menuItem title="CapturePlay Help" keyEquivalent="?" id="492">
                                 <connections>
-                                    <action selector="showHelp:" target="-1" id="493"/>
+                                    <action selector="showHelp:" target="494" id="493"/>
+                                </connections>
+                            </menuItem>
+                            <menuItem isSeparatorItem="YES" id="Manual-Sep-1"/>
+                            <menuItem title="User Manual" id="Manual-Item-1">
+                                <connections>
+                                    <action selector="showUserManual:" target="494" id="Manual-Action-1"/>
                                 </connections>
                             </menuItem>
                         </items>
