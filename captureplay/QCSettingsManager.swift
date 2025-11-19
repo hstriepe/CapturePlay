@@ -20,6 +20,16 @@ class QCSettingsManager {
     private(set) var autoDisplaySleepInFullScreen: Bool = true
     private(set) var captureImageDirectory: String = ""
     private(set) var captureImageDirectoryBookmark: Data?
+    private(set) var alwaysShowImageMenu: Bool = true
+    private(set) var showVideoCaptureControls: Bool = true
+    
+    // MARK: - Color Correction Properties
+    private(set) var brightness: Float = 0.0
+    private(set) var contrast: Float = 1.0
+    private(set) var hue: Float = 0.0
+    
+    // Color correction storage per device (keyed by device name)
+    private var deviceColorCorrections: [String: (brightness: Float, contrast: Float, hue: Float)] = [:]
 
     // MARK: - Frame Properties
     private(set) var frameX: Float = 100
@@ -91,6 +101,50 @@ class QCSettingsManager {
         captureImageDirectoryBookmark = value
     }
 
+    func setAlwaysShowImageMenu(_ value: Bool) {
+        alwaysShowImageMenu = value
+    }
+    
+    func setShowVideoCaptureControls(_ value: Bool) {
+        showVideoCaptureControls = value
+    }
+    
+    func setBrightness(_ value: Float) {
+        brightness = value
+    }
+    
+    func setContrast(_ value: Float) {
+        contrast = value
+    }
+    
+    func setHue(_ value: Float) {
+        hue = value
+    }
+    
+    // MARK: - Device-Specific Color Correction
+    func getColorCorrection(forDevice deviceName: String) -> (brightness: Float, contrast: Float, hue: Float) {
+        if let correction = deviceColorCorrections[deviceName] {
+            return correction
+        }
+        // Return defaults if not found
+        return (brightness: 0.0, contrast: 1.0, hue: 0.0)
+    }
+    
+    func setColorCorrection(forDevice deviceName: String, brightness: Float, contrast: Float, hue: Float) {
+        deviceColorCorrections[deviceName] = (brightness: brightness, contrast: contrast, hue: hue)
+        // Also update current values
+        self.brightness = brightness
+        self.contrast = contrast
+        self.hue = hue
+    }
+    
+    func loadColorCorrection(forDevice deviceName: String) {
+        let correction = getColorCorrection(forDevice: deviceName)
+        brightness = correction.brightness
+        contrast = correction.contrast
+        hue = correction.hue
+    }
+
     func setFrameProperties(x: Float, y: Float, width: Float, height: Float) {
         frameX = x
         frameY = y
@@ -123,6 +177,25 @@ class QCSettingsManager {
             UserDefaults.standard.object(forKey: "captureImageDirectory") as? String ?? ""
         captureImageDirectoryBookmark =
             UserDefaults.standard.object(forKey: "captureImageDirectoryBookmark") as? Data
+        alwaysShowImageMenu =
+            UserDefaults.standard.object(forKey: "alwaysShowImageMenu") as? Bool ?? true
+        showVideoCaptureControls =
+            UserDefaults.standard.object(forKey: "showVideoCaptureControls") as? Bool ?? true
+        
+        // Load device-specific color corrections
+        if let deviceCorrectionsDict = UserDefaults.standard.dictionary(forKey: "deviceColorCorrections") as? [String: [String: Float]] {
+            for (deviceName, values) in deviceCorrectionsDict {
+                let brightness = values["brightness"] ?? 0.0
+                let contrast = values["contrast"] ?? 1.0
+                let hue = values["hue"] ?? 0.0
+                deviceColorCorrections[deviceName] = (brightness: brightness, contrast: contrast, hue: hue)
+            }
+        }
+        
+        // Load default/global color correction (for backward compatibility)
+        brightness = UserDefaults.standard.object(forKey: "brightness") as? Float ?? 0.0
+        contrast = UserDefaults.standard.object(forKey: "contrast") as? Float ?? 1.0
+        hue = UserDefaults.standard.object(forKey: "hue") as? Float ?? 0.0
 
         frameWidth = UserDefaults.standard.object(forKey: "frameW") as? Float ?? 0
         frameHeight = UserDefaults.standard.object(forKey: "frameH") as? Float ?? 0
@@ -154,6 +227,24 @@ class QCSettingsManager {
         } else {
             UserDefaults.standard.removeObject(forKey: "captureImageDirectoryBookmark")
         }
+        UserDefaults.standard.set(alwaysShowImageMenu, forKey: "alwaysShowImageMenu")
+        UserDefaults.standard.set(showVideoCaptureControls, forKey: "showVideoCaptureControls")
+        
+        // Save device-specific color corrections
+        var deviceCorrectionsDict: [String: [String: Float]] = [:]
+        for (deviceName, correction) in deviceColorCorrections {
+            deviceCorrectionsDict[deviceName] = [
+                "brightness": correction.brightness,
+                "contrast": correction.contrast,
+                "hue": correction.hue
+            ]
+        }
+        UserDefaults.standard.set(deviceCorrectionsDict, forKey: "deviceColorCorrections")
+        
+        // Save current values for backward compatibility
+        UserDefaults.standard.set(brightness, forKey: "brightness")
+        UserDefaults.standard.set(contrast, forKey: "contrast")
+        UserDefaults.standard.set(hue, forKey: "hue")
         UserDefaults.standard.set(frameX, forKey: "frameX")
         UserDefaults.standard.set(frameY, forKey: "frameY")
         UserDefaults.standard.set(frameWidth, forKey: "frameW")

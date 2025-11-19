@@ -37,6 +37,9 @@ class QCCaptureManager: NSObject {
         }
     }
     
+    // Track last stop time for cooldown
+    private var lastStopTime: Date?
+    
     // Dependencies (will be injected)
     var audioCaptureInput: AVCaptureDeviceInput? // Reference from audio manager (set by app delegate)
     var previewView: NSView? // Preview view for capture layer
@@ -51,8 +54,15 @@ class QCCaptureManager: NSObject {
     // MARK: - Device Detection
     func detectVideoDevices() {
         NSLog("Detecting video devices...")
+        var deviceTypes: [AVCaptureDevice.DeviceType] = [.builtInWideAngleCamera, .externalUnknown]
+        
+        // Include Continuity Camera support for macOS 13+
+        if #available(macOS 13.0, *) {
+            deviceTypes.append(.continuityCamera)
+        }
+        
         let discoverySession = AVCaptureDevice.DiscoverySession(
-            deviceTypes: [.builtInWideAngleCamera, .externalUnknown],
+            deviceTypes: deviceTypes,
             mediaType: .video,
             position: .unspecified)
         self.devices = discoverySession.devices
@@ -157,6 +167,19 @@ class QCCaptureManager: NSObject {
             let error = NSError(domain: "QCCaptureManager", code: -3, userInfo: [NSLocalizedDescriptionKey: "Capture session is not available."])
             delegate?.captureManager(self, didEncounterError: error, message: error.localizedDescription)
             return
+        }
+        
+        // Check for 1-second cooldown after stopping
+        if let lastStop = lastStopTime {
+            let timeSinceStop = Date().timeIntervalSince(lastStop)
+            if timeSinceStop < 1.0 {
+                let remainingTime = 1.0 - timeSinceStop
+                NSLog("Recording cooldown active. Waiting %.2f seconds...", remainingTime)
+                DispatchQueue.main.asyncAfter(deadline: .now() + remainingTime) { [weak self] in
+                    self?.startRecording(to: captureDirectory)
+                }
+                return
+            }
         }
         
         // Ensure session is running
@@ -302,6 +325,8 @@ extension QCCaptureManager: AVCaptureFileOutputRecordingDelegate {
         DispatchQueue.main.async { [weak self] in
             guard let self = self else { return }
             self.isRecording = false
+            // Record stop time for cooldown
+            self.lastStopTime = Date()
             
             if let error = error {
                 let nsError = error as NSError

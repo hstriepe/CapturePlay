@@ -233,25 +233,10 @@ class QCCaptureFileManager {
     }
     
     private func captureImageToDirectory(_ captureDir: URL) {
-        guard let window = window, let windowManager = windowManager else { return }
-        
-        // turn borderless on, capture image, return border to previous state
-        let borderlessState: Bool = windowManager.isBorderless
-        if borderlessState == false {
-            NSLog("Removing border")
-            windowManager.removeBorder()
-        }
-        
-        /* Pause the RunLoop for 0.1 sec to let the window repaint after removing the border - I'm not a fan of this approach
-           but can't find another way to listen to an event for the window being updated. PRs welcome :) */
-        RunLoop.current.run(mode: .default, before: Date(timeIntervalSinceNow: 0.1))
-        
-        let cgImage: CGImage? = CGWindowListCreateImage(
-            CGRect.null, .optionIncludingWindow, CGWindowID(window.windowNumber),
-            [.boundsIgnoreFraming, .bestResolution])
-        
-        if borderlessState == false {
-            windowManager.addBorder()
+        guard let cgImage = captureWindowImage() else {
+            let error = NSError(domain: "QCCaptureFileManager", code: -8, userInfo: [NSLocalizedDescriptionKey: "Failed to capture window image"])
+            delegate?.captureFileManager(self, didEncounterError: error, message: "Failed to capture window image")
+            return
         }
         
         DispatchQueue.main.async { [weak self] in
@@ -273,7 +258,7 @@ class QCCaptureFileManager {
                 let error = NSError(domain: "QCCaptureFileManager", code: -6, userInfo: [NSLocalizedDescriptionKey: "Unfortunately, the image could not be saved to this location."])
                 self.delegate?.captureFileManager(self, didEncounterError: error, message: error.localizedDescription)
             } else {
-                CGImageDestinationAddImage(destination!, cgImage!, nil)
+                CGImageDestinationAddImage(destination!, cgImage, nil)
                 CGImageDestinationFinalize(destination!)
                 NSLog("Image saved to: %@", fileURL.path)
                 self.delegate?.captureFileManager(self, didSaveImageTo: fileURL, filename: filename)
@@ -283,25 +268,11 @@ class QCCaptureFileManager {
     }
     
     private func saveImageWithSavePanel() {
-        guard let window = window, let windowManager = windowManager else { return }
-        
-        // turn borderless on, capture image, return border to previous state
-        let borderlessState: Bool = windowManager.isBorderless
-        if borderlessState == false {
-            NSLog("Removing border")
-            windowManager.removeBorder()
-        }
-        
-        /* Pause the RunLoop for 0.1 sec to let the window repaint after removing the border - I'm not a fan of this approach
-           but can't find another way to listen to an event for the window being updated. PRs welcome :) */
-        RunLoop.current.run(mode: .default, before: Date(timeIntervalSinceNow: 0.1))
-        
-        let cgImage: CGImage? = CGWindowListCreateImage(
-            CGRect.null, .optionIncludingWindow, CGWindowID(window.windowNumber),
-            [.boundsIgnoreFraming, .bestResolution])
-        
-        if borderlessState == false {
-            windowManager.addBorder()
+        guard let window = window else { return }
+        guard let cgImage = captureWindowImage() else {
+            let error = NSError(domain: "QCCaptureFileManager", code: -8, userInfo: [NSLocalizedDescriptionKey: "Failed to capture window image"])
+            delegate?.captureFileManager(self, didEncounterError: error, message: "Failed to capture window image")
+            return
         }
         
         DispatchQueue.main.async { [weak self] in
@@ -327,11 +298,82 @@ class QCCaptureFileManager {
                         let error = NSError(domain: "QCCaptureFileManager", code: -6, userInfo: [NSLocalizedDescriptionKey: "Unfortunately, the image could not be saved to this location."])
                         self.delegate?.captureFileManager(self, didEncounterError: error, message: error.localizedDescription)
                     } else {
-                        CGImageDestinationAddImage(destination!, cgImage!, nil)
+                        CGImageDestinationAddImage(destination!, cgImage, nil)
                         CGImageDestinationFinalize(destination!)
                     }
                 }
             }
+        }
+    }
+    
+    // MARK: - Window Image Capture
+    private func captureWindowImage() -> CGImage? {
+        guard let window = window, let windowManager = windowManager else { return nil }
+        
+        // turn borderless on, capture image, return border to previous state
+        let borderlessState: Bool = windowManager.isBorderless
+        if borderlessState == false {
+            NSLog("Removing border for capture")
+            windowManager.removeBorder()
+        }
+        
+        /* Pause the RunLoop for 0.1 sec to let the window repaint after removing the border */
+        RunLoop.current.run(mode: .default, before: Date(timeIntervalSinceNow: 0.1))
+        
+        let cgImage: CGImage? = CGWindowListCreateImage(
+            CGRect.null, .optionIncludingWindow, CGWindowID(window.windowNumber),
+            [.boundsIgnoreFraming, .bestResolution])
+        
+        if borderlessState == false {
+            windowManager.addBorder()
+        }
+        
+        return cgImage
+    }
+    
+    // MARK: - Clipboard Operations
+    func copyImageToClipboard() -> Bool {
+        guard let window = window else {
+            let error = NSError(domain: "QCCaptureFileManager", code: -1, userInfo: [NSLocalizedDescriptionKey: "Window is not available"])
+            delegate?.captureFileManager(self, didEncounterError: error, message: "Window is not available")
+            return false
+        }
+        
+        if window.styleMask.contains(.fullScreen) {
+            let error = NSError(domain: "QCCaptureFileManager", code: -2, userInfo: [NSLocalizedDescriptionKey: "Copy is not supported as window is full screen"])
+            delegate?.captureFileManager(self, didEncounterError: error, message: "Copy is not supported as window is full screen")
+            return false
+        }
+        
+        guard captureSession != nil else {
+            let error = NSError(domain: "QCCaptureFileManager", code: -4, userInfo: [NSLocalizedDescriptionKey: "Capture session is not available"])
+            delegate?.captureFileManager(self, didEncounterError: error, message: "Capture session is not available")
+            return false
+        }
+        
+        if #available(OSX 10.12, *) {
+            guard let cgImage = captureWindowImage() else {
+                let error = NSError(domain: "QCCaptureFileManager", code: -8, userInfo: [NSLocalizedDescriptionKey: "Failed to capture window image"])
+                delegate?.captureFileManager(self, didEncounterError: error, message: "Failed to capture window image")
+                return false
+            }
+            
+            // Convert CGImage to NSImage for clipboard
+            let bitmapRep = NSBitmapImageRep(cgImage: cgImage)
+            let image = NSImage(size: bitmapRep.size)
+            image.addRepresentation(bitmapRep)
+            
+            // Copy to clipboard
+            let pasteboard = NSPasteboard.general
+            pasteboard.clearContents()
+            pasteboard.writeObjects([image])
+            
+            NSLog("Image copied to clipboard")
+            return true
+        } else {
+            let error = NSError(domain: "QCCaptureFileManager", code: -5, userInfo: [NSLocalizedDescriptionKey: "Unfortunately, copying images is only supported in Mac OSX 10.12 (Sierra) and higher."])
+            delegate?.captureFileManager(self, didEncounterError: error, message: error.localizedDescription)
+            return false
         }
     }
     

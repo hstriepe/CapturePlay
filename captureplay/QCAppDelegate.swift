@@ -8,7 +8,7 @@ import CoreAudio
 
 // MARK: - QCAppDelegate Class
 @NSApplicationMain
-class QCAppDelegate: NSObject, NSApplicationDelegate, NSMenuDelegate, QCUsbWatcherDelegate, QCCaptureManagerDelegate, QCAudioManagerDelegate, QCWindowManagerDelegate, QCCaptureFileManagerDelegate, QCNotificationManagerDelegate, QCDisplaySleepManagerDelegate, QCPreferencesControllerDelegate {
+class QCAppDelegate: NSObject, NSApplicationDelegate, NSMenuDelegate, QCUsbWatcherDelegate, QCCaptureManagerDelegate, QCAudioManagerDelegate, QCWindowManagerDelegate, QCCaptureFileManagerDelegate, QCNotificationManagerDelegate, QCDisplaySleepManagerDelegate, QCPreferencesControllerDelegate, QCColorCorrectionControllerDelegate {
 
     // MARK: - Managers
     private var captureManager: QCCaptureManager!
@@ -18,6 +18,7 @@ class QCAppDelegate: NSObject, NSApplicationDelegate, NSMenuDelegate, QCUsbWatch
     private var notificationManager: QCNotificationManager!
     private var displaySleepManager: QCDisplaySleepManager!
     private var preferencesController: QCPreferencesController!
+    private var colorCorrectionController: QCColorCorrectionController?
 
     // MARK: - USB Watcher
     let usb: QCUsbWatcher = QCUsbWatcher()
@@ -164,6 +165,8 @@ class QCAppDelegate: NSObject, NSApplicationDelegate, NSMenuDelegate, QCUsbWatch
         windowManager.setRotation(windowManager.position)
         windowManager.applyMirroring()
         windowManager.fixAspectRatio()
+        let settings = QCSettingsManager.shared
+        windowManager.applyColorCorrection(brightness: settings.brightness, contrast: settings.contrast, hue: settings.hue)
 
         self.borderlessMenu.state = convertToNSControlStateValue(
             (windowManager.isBorderless ? NSControl.StateValue.on.rawValue : NSControl.StateValue.off.rawValue))
@@ -240,6 +243,12 @@ class QCAppDelegate: NSObject, NSApplicationDelegate, NSMenuDelegate, QCUsbWatch
         fileManager.openCaptureFolder()
     }
     
+    @IBAction func copy(_ sender: NSMenuItem) {
+        if fileManager.copyImageToClipboard() {
+            // Optionally show a brief notification that copy was successful
+            // The error handling is done in copyImageToClipboard via delegate
+        }
+    }
 
     // MARK: - Device Menu Actions
     @objc func deviceMenuChanged(_ sender: NSMenuItem) {
@@ -408,14 +417,22 @@ class QCAppDelegate: NSObject, NSApplicationDelegate, NSMenuDelegate, QCUsbWatch
         
         videoMenu.delegate = self
         
-        // Hide Image menu item by default
-        imageMenu?.isHidden = true
+        // Respect preference: show always or default to hidden until Option is held
+        if QCSettingsManager.shared.alwaysShowImageMenu {
+            imageMenu?.isHidden = false
+        } else {
+            imageMenu?.isHidden = true
+        }
     }
 
     // MARK: - NSMenuDelegate
     func menuWillOpen(_ menu: NSMenu) {
         // Check if this is the Video menu
         if menu.title == "Video" {
+            if QCSettingsManager.shared.alwaysShowImageMenu {
+                imageMenu?.isHidden = false
+                return
+            }
             // Show Image menu item if Option key is pressed
             // Check modifier flags from the current event
             if let currentEvent = NSApp.currentEvent {
@@ -518,6 +535,17 @@ class QCAppDelegate: NSObject, NSApplicationDelegate, NSMenuDelegate, QCUsbWatch
     @IBAction func showPreferences(_ sender: NSMenuItem) {
         preferencesController.showPreferences()
     }
+    
+    @IBAction func showColorCorrection(_ sender: NSMenuItem) {
+        if colorCorrectionController == nil {
+            colorCorrectionController = QCColorCorrectionController(deviceName: deviceName)
+            colorCorrectionController?.delegate = self
+        } else {
+            // Update device name if it changed
+            colorCorrectionController?.deviceName = deviceName
+        }
+        colorCorrectionController?.showWindow()
+    }
 
     // Help viewer instance
     private var helpViewer: QCHelpViewerController?
@@ -587,6 +615,7 @@ class QCAppDelegate: NSObject, NSApplicationDelegate, NSMenuDelegate, QCUsbWatch
 
     func applicationWillTerminate(_ notification: Notification) {
         displaySleepManager?.cleanup()
+        windowManager?.hideRecordingControl()
         windowManager?.updateWindowFrameSettings()
         QCSettingsManager.shared.saveSettings()
     }
@@ -631,10 +660,33 @@ extension QCAppDelegate {
         // Connect file manager to capture session and layer
         fileManager.captureSession = captureManager.captureSession
         fileManager.captureLayer = captureManager.getPreviewLayer()
+        
+        // Load device-specific color correction settings
+        let deviceNameToUse = device.localizedName
+        QCSettingsManager.shared.loadColorCorrection(forDevice: deviceNameToUse)
+        windowManager?.applyColorCorrection(
+            brightness: QCSettingsManager.shared.brightness,
+            contrast: QCSettingsManager.shared.contrast,
+            hue: QCSettingsManager.shared.hue
+        )
+        
+        // Update color correction controller if it exists
+        if let controller = colorCorrectionController {
+            controller.deviceName = deviceNameToUse
+        }
     }
     
     func captureManager(_ manager: QCCaptureManager, didStartRecordingTo url: URL) {
         updateCaptureVideoMenuItemState()
+        // Show recording control when recording starts (if enabled in settings)
+        if QCSettingsManager.shared.showVideoCaptureControls {
+            DispatchQueue.main.async { [weak self] in
+                guard let self = self,
+                      let windowManager = self.windowManager,
+                      windowManager.window != nil else { return }
+                windowManager.showRecordingControl()
+            }
+        }
         let filename = url.lastPathComponent
         notificationManager.sendNotification(title: "Video Recording", body: "Recording started: \(filename)", sound: true)
     }
@@ -670,10 +722,14 @@ extension QCAppDelegate {
     
     func captureManager(_ manager: QCCaptureManager, needsDeviceNameUpdate name: String) {
         deviceName = name
+        
+        // Update color correction controller device name
+        colorCorrectionController?.deviceName = name
     }
     
     func captureManager(_ manager: QCCaptureManager, didChangeRecordingState isRecording: Bool) {
         updateCaptureVideoMenuItemState()
+        windowManager?.updateRecordingControlState(isRecording: isRecording)
     }
 }
 
@@ -813,6 +869,15 @@ extension QCAppDelegate {
         aspectRatioFixedMenu.state = convertToNSControlStateValue(
             (isFixed ? NSControl.StateValue.on.rawValue : NSControl.StateValue.off.rawValue))
     }
+    
+    func windowManager(_ manager: QCWindowManager, didClickRecordingControl: Void) {
+        // Toggle recording when control is clicked
+        guard let captureDir = fileManager.getCaptureDirectory() else {
+            errorMessage(message: "Unable to access the capture directory.\n\nPlease check your settings.")
+            return
+        }
+        captureManager.toggleRecording(captureDirectory: captureDir)
+    }
 }
 
 // MARK: - QCCaptureFileManagerDelegate
@@ -864,6 +929,14 @@ extension QCAppDelegate {
     }
 }
 
+// MARK: - QCColorCorrectionControllerDelegate
+extension QCAppDelegate {
+    func colorCorrectionController(_ controller: QCColorCorrectionController, didChangeBrightness brightness: Float, contrast: Float, hue: Float) {
+        windowManager?.applyColorCorrection(brightness: brightness, contrast: contrast, hue: hue)
+        QCSettingsManager.shared.saveSettings()
+    }
+}
+
 // MARK: - QCHelpViewerDelegate
 extension QCAppDelegate: QCHelpViewerDelegate {
     func helpViewerDidClose(_ helpViewer: QCHelpViewerController) {
@@ -877,7 +950,16 @@ extension QCAppDelegate: QCHelpViewerDelegate {
 // MARK: - QCPreferencesControllerDelegate
 extension QCAppDelegate {
     func preferencesController(_ controller: QCPreferencesController, didSavePreferences: Void) {
-        // Preferences saved, can handle if needed (e.g., refresh settings)
+        // Hide control if setting was disabled
+        if !QCSettingsManager.shared.showVideoCaptureControls {
+            windowManager?.hideRecordingControl()
+        }
+        // Update Image menu visibility according to new setting
+        if QCSettingsManager.shared.alwaysShowImageMenu {
+            imageMenu?.isHidden = false
+        } else {
+            imageMenu?.isHidden = true
+        }
     }
 }
 

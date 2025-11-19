@@ -30,20 +30,43 @@ class QCPreferencesController {
         }
         
         let alert = NSAlert()
-        alert.messageText = "Preferences"
-        alert.informativeText = "Configure CapturePlay settings"
+        alert.messageText = "CapturePlay Settings"
         alert.alertStyle = .informational
         alert.addButton(withTitle: "OK")
         alert.addButton(withTitle: "Cancel")
         
         // Create a custom view for preferences
-        let view = NSView(frame: NSRect(x: 0, y: 0, width: 500, height: 120))
+        let view = NSView(frame: NSRect(x: 0, y: 0, width: 500, height: 160))
         
-        // Checkbox for auto display sleep in full screen
-        let displaySleepCheckbox = NSButton(checkboxWithTitle: "Automatically prevent display sleep during full screen", target: nil, action: nil)
-        displaySleepCheckbox.frame = NSRect(x: 20, y: 80, width: 460, height: 20)
-        displaySleepCheckbox.state = QCSettingsManager.shared.autoDisplaySleepInFullScreen ? .on : .off
-        view.addSubview(displaySleepCheckbox)
+        // Toggle: Always show Video > Image submenu
+        let imageMenuLabel = NSTextField(labelWithString: "Always show the Image submenu under Video")
+        imageMenuLabel.frame = NSRect(x: 20, y: 140, width: 400, height: 17)
+        view.addSubview(imageMenuLabel)
+        
+        let imageMenuToggle = NSSwitch(frame: NSRect(x: 429, y: 138, width: 51, height: 31))
+        imageMenuToggle.state = QCSettingsManager.shared.alwaysShowImageMenu ? .on : .off
+        imageMenuToggle.isEnabled = true
+        view.addSubview(imageMenuToggle)
+        
+        // Toggle for auto display sleep in full screen
+        let displaySleepLabel = NSTextField(labelWithString: "Automatically prevent display sleep during full screen")
+        displaySleepLabel.frame = NSRect(x: 20, y: 110, width: 400, height: 17)
+        view.addSubview(displaySleepLabel)
+        
+        let displaySleepToggle = NSSwitch(frame: NSRect(x: 429, y: 108, width: 51, height: 31))
+        displaySleepToggle.state = QCSettingsManager.shared.autoDisplaySleepInFullScreen ? .on : .off
+        displaySleepToggle.isEnabled = true
+        view.addSubview(displaySleepToggle)
+        
+        // Toggle for showing video capture controls
+        let captureControlsLabel = NSTextField(labelWithString: "Show Video Capture Controls")
+        captureControlsLabel.frame = NSRect(x: 20, y: 80, width: 400, height: 17)
+        view.addSubview(captureControlsLabel)
+        
+        let captureControlsToggle = NSSwitch(frame: NSRect(x: 429, y: 78, width: 51, height: 31))
+        captureControlsToggle.state = QCSettingsManager.shared.showVideoCaptureControls ? .on : .off
+        captureControlsToggle.isEnabled = true
+        view.addSubview(captureControlsToggle)
         
         // Label and text field for capture directory
         let directoryLabel = NSTextField(labelWithString: "Capture Image Directory:")
@@ -69,7 +92,9 @@ class QCPreferencesController {
         
         // Store references for the closure
         weak var weakTextField = directoryTextField
-        weak var weakCheckbox = displaySleepCheckbox
+        weak var weakDisplaySleepToggle = displaySleepToggle
+        weak var weakImageMenuToggle = imageMenuToggle
+        weak var weakCaptureControlsToggle = captureControlsToggle
         weak var weakSelf = self
         
         // Use beginSheetModal instead of runModal to allow nested dialogs
@@ -91,8 +116,14 @@ class QCPreferencesController {
                         NSLog("Reset capture directory to default")
                     }
                 }
-                if let checkbox = weakCheckbox {
-                    QCSettingsManager.shared.setAutoDisplaySleepInFullScreen(checkbox.state == .on)
+                if let toggle = weakDisplaySleepToggle {
+                    QCSettingsManager.shared.setAutoDisplaySleepInFullScreen(toggle.state == .on)
+                }
+                if let toggle = weakImageMenuToggle {
+                    QCSettingsManager.shared.setAlwaysShowImageMenu(toggle.state == .on)
+                }
+                if let toggle = weakCaptureControlsToggle {
+                    QCSettingsManager.shared.setShowVideoCaptureControls(toggle.state == .on)
                 }
                 QCSettingsManager.shared.saveSettings()
                 weakSelf?.delegate?.preferencesController(weakSelf!, didSavePreferences: ())

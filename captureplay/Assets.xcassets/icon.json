@@ -1,0 +1,65 @@
+{
+  "fill" : {
+    "automatic-gradient" : "extended-gray:0.50000,1.00000"
+  },
+  "groups" : [
+    {
+      "layers" : [
+        {
+          "image-name" : "mac512pt2x.png",
+          "name" : "mac512pt2x"
+        },
+        {
+          "image-name" : "mac512pt1x.png",
+          "name" : "mac512pt1x"
+        },
+        {
+          "image-name" : "mac256pt2x.png",
+          "name" : "mac256pt2x"
+        },
+        {
+          "image-name" : "mac256pt1x.png",
+          "name" : "mac256pt1x"
+        },
+        {
+          "image-name" : "mac128pt2x.png",
+          "name" : "mac128pt2x"
+        },
+        {
+          "image-name" : "mac128pt1x.png",
+          "name" : "mac128pt1x"
+        },
+        {
+          "image-name" : "mac32pt2x.png",
+          "name" : "mac32pt2x"
+        },
+        {
+          "image-name" : "mac32pt1x.png",
+          "name" : "mac32pt1x"
+        },
+        {
+          "image-name" : "mac16pt1x.png",
+          "name" : "mac16pt1x"
+        },
+        {
+          "image-name" : "mac16pt2x.png",
+          "name" : "mac16pt2x"
+        }
+      ],
+      "shadow" : {
+        "kind" : "neutral",
+        "opacity" : 0.5
+      },
+      "translucency" : {
+        "enabled" : true,
+        "value" : 0.5
+      }
+    }
+  ],
+  "supported-platforms" : {
+    "circles" : [
+      "watchOS"
+    ],
+    "squares" : "shared"
+  }
+}

@@ -2,6 +2,8 @@
 
 import AVFoundation
 import Cocoa
+import CoreImage
+import CoreGraphics
 
 // MARK: - QCWindowManagerDelegate Protocol
 protocol QCWindowManagerDelegate: AnyObject {
@@ -16,6 +18,7 @@ protocol QCWindowManagerDelegate: AnyObject {
     func windowManager(_ manager: QCWindowManager, didChangeMirroring isMirrored: Bool)
     func windowManager(_ manager: QCWindowManager, didChangeUpsideDown isUpsideDown: Bool)
     func windowManager(_ manager: QCWindowManager, didChangeAspectRatioFixed isFixed: Bool)
+    func windowManager(_ manager: QCWindowManager, didClickRecordingControl: Void)
 }
 
 // MARK: - QCWindowManager Class
@@ -33,6 +36,14 @@ class QCWindowManager: NSObject {
     private(set) var isFullScreenActive: Bool = false
     private(set) var cursorHiddenForFullScreen: Bool = false
     private var gameModeActivity: NSObjectProtocol?
+    
+    // Recording control overlay
+    private var recordingControlButton: NSButton?
+    private var recordingControlOverlay: NSWindow?
+    private var blinkingTimer: Timer?
+    private var isObservingWindowChanges = false
+    private var isBlinkingVisible = true
+    private var isShowingControl = false
     
     // Settings access (via delegate or direct)
     var isBorderless: Bool {
@@ -160,11 +171,392 @@ class QCWindowManager: NSObject {
         captureLayer.connection?.isVideoMirrored = isMirrored
     }
     
+    // MARK: - Color Correction
+    func applyColorCorrection(brightness: Float, contrast: Float, hue: Float) {
+        guard let playerView = playerView, let layer = playerView.layer else { return }
+        
+        // Enable layer-backed rendering for filters
+        playerView.wantsLayer = true
+        
+        // Create composite filter combining brightness, contrast, and hue
+        var filters: [CIFilter] = []
+        
+        // Brightness and Contrast filter
+        if brightness != 0.0 || contrast != 1.0 {
+            if let brightnessFilter = CIFilter(name: "CIColorControls") {
+                brightnessFilter.setValue(brightness, forKey: kCIInputBrightnessKey)
+                brightnessFilter.setValue(contrast, forKey: kCIInputContrastKey)
+                filters.append(brightnessFilter)
+            }
+        }
+        
+        // Hue adjustment filter
+        if hue != 0.0 {
+            if let hueFilter = CIFilter(name: "CIHueAdjust") {
+                hueFilter.setValue(hue * .pi / 180.0, forKey: kCIInputAngleKey) // Convert degrees to radians
+                filters.append(hueFilter)
+            }
+        }
+        
+        // Apply filters to the layer
+        layer.filters = filters.isEmpty ? nil : filters
+    }
+    
     func swapWH() {
         guard let window = window else { return }
         var currentSize: CGSize = window.contentLayoutRect.size
         swap(&currentSize.height, &currentSize.width)
         window.setContentSize(currentSize)
+    }
+    
+    // MARK: - Recording Control Overlay
+    func showRecordingControl() {
+        guard let window = window else { return }
+        
+        // Prevent re-entrant calls
+        guard !isShowingControl else { return }
+        
+        // If control already exists, just ensure it's visible (if appropriate)
+        if recordingControlOverlay != nil && recordingControlButton != nil {
+            updateRecordingControlVisibility()
+            return
+        }
+        
+        isShowingControl = true
+        defer { isShowingControl = false }
+        
+        // Remove existing overlay if any (shouldn't be necessary but safe)
+        hideRecordingControl()
+        
+        // Create overlay window
+        let buttonSize: CGFloat = 30
+        let margin: CGFloat = 20
+        let overlayWindow = NSWindow(
+            contentRect: NSRect(x: 0, y: 0, width: buttonSize, height: buttonSize),
+            styleMask: [.borderless],
+            backing: .buffered,
+            defer: false
+        )
+        overlayWindow.backgroundColor = .clear
+        overlayWindow.isOpaque = false
+        overlayWindow.hasShadow = false
+        overlayWindow.ignoresMouseEvents = false
+        overlayWindow.collectionBehavior = [.canJoinAllSpaces, .stationary]
+        overlayWindow.isExcludedFromWindowsMenu = true
+        // Exclude from screen recording by setting sharing type (macOS 10.15+)
+        if #available(macOS 10.15, *) {
+            overlayWindow.sharingType = .none
+        }
+        // Set window level relative to main window (floating above it when visible)
+        // This ensures it doesn't float above other apps when the window is obscured
+        overlayWindow.level = .floating
+        
+        // Create button
+        let button = NSButton()
+        button.frame = NSRect(x: 0, y: 0, width: buttonSize, height: buttonSize)
+        button.isBordered = false
+        button.title = ""
+        button.target = self
+        button.action = #selector(recordingControlClicked(_:))
+        updateRecordingControlAppearance(button: button, isRecording: false)
+        
+        let contentView = NSView(frame: NSRect(x: 0, y: 0, width: buttonSize, height: buttonSize))
+        contentView.addSubview(button)
+        overlayWindow.contentView = contentView
+        
+        // Store references before positioning
+        recordingControlOverlay = overlayWindow
+        recordingControlButton = button
+        
+        // Position at bottom right of main window (defer if window not ready)
+        if window.isVisible || window.isKeyWindow {
+            updateRecordingControlPosition()
+        } else {
+            // Delay positioning until window is ready
+            DispatchQueue.main.async { [weak self] in
+                self?.updateRecordingControlPosition()
+            }
+        }
+        
+        // Order overlay relative to main window
+        overlayWindow.order(.above, relativeTo: window.windowNumber)
+        
+        // Update visibility based on app/window state
+        updateRecordingControlVisibility()
+        
+        // Observe window frame changes and app/window state (only add once)
+        if !isObservingWindowChanges {
+            NotificationCenter.default.addObserver(
+                self,
+                selector: #selector(windowFrameChanged(_:)),
+                name: NSWindow.didMoveNotification,
+                object: window
+            )
+            NotificationCenter.default.addObserver(
+                self,
+                selector: #selector(windowFrameChanged(_:)),
+                name: NSWindow.didResizeNotification,
+                object: window
+            )
+            NotificationCenter.default.addObserver(
+                self,
+                selector: #selector(appDidBecomeActive(_:)),
+                name: NSApplication.didBecomeActiveNotification,
+                object: nil
+            )
+            NotificationCenter.default.addObserver(
+                self,
+                selector: #selector(appDidResignActive(_:)),
+                name: NSApplication.didResignActiveNotification,
+                object: nil
+            )
+            NotificationCenter.default.addObserver(
+                self,
+                selector: #selector(windowDidBecomeKey(_:)),
+                name: NSWindow.didBecomeKeyNotification,
+                object: window
+            )
+            NotificationCenter.default.addObserver(
+                self,
+                selector: #selector(windowDidResignKey(_:)),
+                name: NSWindow.didResignKeyNotification,
+                object: window
+            )
+            NotificationCenter.default.addObserver(
+                self,
+                selector: #selector(windowDidBecomeMain(_:)),
+                name: NSWindow.didBecomeMainNotification,
+                object: window
+            )
+            NotificationCenter.default.addObserver(
+                self,
+                selector: #selector(windowDidResignMain(_:)),
+                name: NSWindow.didResignMainNotification,
+                object: window
+            )
+            isObservingWindowChanges = true
+        }
+    }
+    
+    func hideRecordingControl() {
+        // Ensure we're on the main thread for UI operations
+        guard Thread.isMainThread else {
+            DispatchQueue.main.async { [weak self] in
+                self?.hideRecordingControl()
+            }
+            return
+        }
+        
+        // Prevent hide while showing
+        guard !isShowingControl else { return }
+        
+        // Stop blinking and clean up timer first (safely)
+        stopBlinking()
+        if blinkingTimer != nil {
+            blinkingTimer?.invalidate()
+            blinkingTimer = nil
+        }
+        
+        // Get references before clearing
+        let overlay = recordingControlOverlay
+        let button = recordingControlButton
+        let observing = isObservingWindowChanges
+        let mainWindow = window
+        
+        // Clear button target/action first to prevent any further callbacks
+        if let button = button {
+            button.target = nil
+            button.action = nil
+        }
+        
+        // Clear references immediately to prevent re-entrancy
+        recordingControlOverlay = nil
+        recordingControlButton = nil
+        
+        // Remove observers if we were observing (before closing window)
+        if observing {
+            if let window = mainWindow {
+                NotificationCenter.default.removeObserver(self, name: NSWindow.didMoveNotification, object: window)
+                NotificationCenter.default.removeObserver(self, name: NSWindow.didResizeNotification, object: window)
+                NotificationCenter.default.removeObserver(self, name: NSWindow.didBecomeKeyNotification, object: window)
+                NotificationCenter.default.removeObserver(self, name: NSWindow.didResignKeyNotification, object: window)
+                NotificationCenter.default.removeObserver(self, name: NSWindow.didBecomeMainNotification, object: window)
+                NotificationCenter.default.removeObserver(self, name: NSWindow.didResignMainNotification, object: window)
+            }
+            NotificationCenter.default.removeObserver(self, name: NSApplication.didBecomeActiveNotification, object: nil)
+            NotificationCenter.default.removeObserver(self, name: NSApplication.didResignActiveNotification, object: nil)
+            isObservingWindowChanges = false
+        }
+        
+        // Close overlay window last - do it safely
+        if let overlay = overlay {
+            overlay.close()
+        }
+    }
+    
+    func updateRecordingControlState(isRecording: Bool) {
+        // Ensure we're on the main thread for UI updates
+        DispatchQueue.main.async { [weak self] in
+            guard let self = self,
+                  let button = self.recordingControlButton,
+                  let overlay = self.recordingControlOverlay else { return }
+            
+            self.updateRecordingControlAppearance(button: button, isRecording: isRecording)
+            
+            if isRecording {
+                self.startBlinking()
+            } else {
+                self.stopBlinking()
+            }
+        }
+    }
+    
+    private func updateRecordingControlAppearance(button: NSButton, isRecording: Bool) {
+        let buttonSize: CGFloat = 30
+        let borderInset: CGFloat = 2
+        let borderWidth: CGFloat = 2
+        
+        button.wantsLayer = true
+        
+        // Button frame is already set, just update corner radius
+        let cornerRadius: CGFloat
+        if isRecording {
+            // Square button when recording
+            cornerRadius = 4
+        } else {
+            // Round button when not recording
+            cornerRadius = buttonSize / 2
+        }
+        button.layer?.cornerRadius = cornerRadius
+        button.layer?.backgroundColor = NSColor.red.cgColor
+        button.title = ""
+        
+        // Remove existing border layer if present
+        button.layer?.sublayers?.removeAll { $0.name == "innerBorder" }
+        
+        // Add 2-pixel border line 2 pixels inside the button edge
+        let borderLayer = CALayer()
+        borderLayer.name = "innerBorder"
+        let borderSize = buttonSize - (borderInset * 2)
+        borderLayer.frame = CGRect(x: borderInset, y: borderInset, width: borderSize, height: borderSize)
+        borderLayer.cornerRadius = isRecording ? (cornerRadius - borderInset) : (borderSize / 2)
+        borderLayer.borderWidth = borderWidth
+        borderLayer.borderColor = NSColor.white.cgColor
+        borderLayer.backgroundColor = NSColor.clear.cgColor
+        button.layer?.addSublayer(borderLayer)
+        
+        // Update tooltip
+        button.toolTip = isRecording ? "Stop Recording" : "Start Recording"
+    }
+    
+    private func updateRecordingControlPosition() {
+        guard let window = window, let overlay = recordingControlOverlay else { return }
+        guard window.isVisible || window.isKeyWindow else { return }
+        
+        let buttonSize: CGFloat = 30
+        let margin: CGFloat = 20
+        let windowFrame = window.frame
+        
+        // Safely get content layout rect, fallback to frame if not available
+        let contentRect: NSRect
+        if windowFrame.width > 0 && windowFrame.height > 0 {
+            contentRect = window.contentLayoutRect
+            // Validate content rect is reasonable
+            guard contentRect.width > 0 && contentRect.height > 0 else { return }
+        } else {
+            return
+        }
+        
+        // Calculate position at bottom right of content area
+        let overlayX = windowFrame.minX + contentRect.maxX - buttonSize - margin
+        let overlayY = windowFrame.minY + contentRect.minY + margin
+        
+        overlay.setFrameOrigin(NSPoint(x: overlayX, y: overlayY))
+    }
+    
+    @objc private func windowFrameChanged(_ notification: Notification) {
+        guard recordingControlOverlay != nil else { return }
+        updateRecordingControlPosition()
+        updateRecordingControlVisibility()
+    }
+    
+    @objc private func appDidBecomeActive(_ notification: Notification) {
+        updateRecordingControlVisibility()
+    }
+    
+    @objc private func appDidResignActive(_ notification: Notification) {
+        updateRecordingControlVisibility()
+    }
+    
+    @objc private func windowDidBecomeKey(_ notification: Notification) {
+        updateRecordingControlVisibility()
+    }
+    
+    @objc private func windowDidResignKey(_ notification: Notification) {
+        updateRecordingControlVisibility()
+    }
+    
+    @objc private func windowDidBecomeMain(_ notification: Notification) {
+        updateRecordingControlVisibility()
+    }
+    
+    @objc private func windowDidResignMain(_ notification: Notification) {
+        updateRecordingControlVisibility()
+    }
+    
+    private func updateRecordingControlVisibility() {
+        guard let overlay = recordingControlOverlay,
+              let mainWindow = window else { return }
+        
+        // Check if app is active and window is key/main
+        let appIsActive = NSApplication.shared.isActive
+        let windowIsKey = mainWindow.isKeyWindow
+        let windowIsMain = mainWindow.isMainWindow
+        let windowIsVisible = mainWindow.isVisible
+        
+        // Hide if app is in background or window is obscured
+        let shouldBeVisible = appIsActive && windowIsVisible && (windowIsKey || windowIsMain)
+        
+        if shouldBeVisible {
+            overlay.orderFront(nil)
+            // Ensure it's above the main window
+            overlay.order(.above, relativeTo: mainWindow.windowNumber)
+        } else {
+            overlay.orderOut(nil)
+        }
+    }
+    
+    @objc private func recordingControlClicked(_ sender: NSButton) {
+        // Normal click - toggle recording
+        delegate?.windowManager(self, didClickRecordingControl: ())
+    }
+    
+    private func startBlinking() {
+        stopBlinking()
+        
+        guard recordingControlOverlay != nil else { return }
+        
+        isBlinkingVisible = true
+        // Create timer on main run loop to ensure thread safety
+        blinkingTimer = Timer.scheduledTimer(withTimeInterval: 1.0, repeats: true) { [weak self] timer in
+            guard let self = self,
+                  let overlay = self.recordingControlOverlay else {
+                timer.invalidate()
+                return
+            }
+            // Toggle visibility state
+            self.isBlinkingVisible.toggle()
+            // Update UI on main thread
+            DispatchQueue.main.async {
+                overlay.alphaValue = self.isBlinkingVisible ? 1.0 : 0.3
+            }
+        }
+    }
+    
+    private func stopBlinking() {
+        blinkingTimer?.invalidate()
+        blinkingTimer = nil
+        recordingControlOverlay?.alphaValue = 1.0
     }
     
     func rotateLeft() {
