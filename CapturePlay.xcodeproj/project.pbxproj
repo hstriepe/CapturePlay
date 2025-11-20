@@ -3,7 +3,7 @@
 	archiveVersion = 1;
 	classes = {
 	};
-	objectVersion = 90;
+	objectVersion = 77;
 	objects = {
 
 /* Begin PBXBuildFile section */
@@ -19,11 +19,10 @@
 		F43539752D1B1B86002188A6 /* QCDisplaySleepManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = F43539762D1B1B85002188A6 /* QCDisplaySleepManager.swift */; };
 		F43539772D1B1B86002188A7 /* QCPreferencesController.swift in Sources */ = {isa = PBXBuildFile; fileRef = F43539782D1B1B85002188A7 /* QCPreferencesController.swift */; };
 		F43539792D1B1B8A002188A8 /* QCHelpViewerController.swift in Sources */ = {isa = PBXBuildFile; fileRef = F435397A2D1B1B8B002188A8 /* QCHelpViewerController.swift */; };
-		F43D252B16BB508900CBC272 /* icon.icns in Resources */ = {isa = PBXBuildFile; fileRef = F43D252A16BB508900CBC272 /* icon.icns */; };
+		F435397B2D1B1B8C002188A9 /* QCColorCorrectionController.swift in Sources */ = {isa = PBXBuildFile; fileRef = F435397C2D1B1B8D002188A9 /* QCColorCorrectionController.swift */; };
 		F4CBD39716B8CE5F003A4794 /* Cocoa.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = F4CBD39616B8CE5F003A4794 /* Cocoa.framework */; };
 		F4CBD3AD16B8CE5F003A4794 /* MainMenu.xib in Resources */ = {isa = PBXBuildFile; fileRef = F4CBD3AB16B8CE5F003A4794 /* MainMenu.xib */; };
-		F56A62312EC84E5F00387772 /* MANUAL.pdf in Resources */ = {isa = PBXBuildFile; fileRef = F56A622F2EC84E5F00387772 /* MANUAL.pdf */; };
-		F56A62322EC84E5F00387772 /* MANUAL.html in Resources */ = {isa = PBXBuildFile; fileRef = F56A622E2EC84E5F00387772 /* MANUAL.html */; };
+		F5F6AC9F2ECD77FF0019412B /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = F5F6AC9E2ECD77FF0019412B /* Assets.xcassets */; };
 		F952D6E324E15A6200EA786D /* QCUsbWatcher.swift in Sources */ = {isa = PBXBuildFile; fileRef = F952D6E224E15A6200EA786D /* QCUsbWatcher.swift */; };
 /* End PBXBuildFile section */
 
@@ -42,7 +41,7 @@
 		F43539762D1B1B85002188A6 /* QCDisplaySleepManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = QCDisplaySleepManager.swift; sourceTree = "<group>"; };
 		F43539782D1B1B85002188A7 /* QCPreferencesController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = QCPreferencesController.swift; sourceTree = "<group>"; };
 		F435397A2D1B1B8B002188A8 /* QCHelpViewerController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = QCHelpViewerController.swift; sourceTree = "<group>"; };
-		F43D252A16BB508900CBC272 /* icon.icns */ = {isa = PBXFileReference; lastKnownFileType = image.icns; path = icon.icns; sourceTree = "<group>"; };
+		F435397C2D1B1B8D002188A9 /* QCColorCorrectionController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = QCColorCorrectionController.swift; sourceTree = "<group>"; };
 		F43D252C16BB703100CBC272 /* CapturePlay.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = CapturePlay.entitlements; sourceTree = "<group>"; };
 		F4CBD39316B8CE5F003A4794 /* CapturePlay.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = CapturePlay.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		F4CBD39616B8CE5F003A4794 /* Cocoa.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Cocoa.framework; path = System/Library/Frameworks/Cocoa.framework; sourceTree = SDKROOT; };
@@ -50,19 +49,29 @@
 		F4CBD39A16B8CE5F003A4794 /* CoreData.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreData.framework; path = System/Library/Frameworks/CoreData.framework; sourceTree = SDKROOT; };
 		F4CBD39B16B8CE5F003A4794 /* Foundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Foundation.framework; path = System/Library/Frameworks/Foundation.framework; sourceTree = SDKROOT; };
 		F508C9F62EC67FD300B65399 /* README.md */ = {isa = PBXFileReference; lastKnownFileType = net.daringfireball.markdown; path = README.md; sourceTree = "<group>"; };
-		F56A622E2EC84E5F00387772 /* MANUAL.html */ = {isa = PBXFileReference; lastKnownFileType = text.html; path = MANUAL.html; sourceTree = "<group>"; };
-		F56A622F2EC84E5F00387772 /* MANUAL.pdf */ = {isa = PBXFileReference; lastKnownFileType = image.pdf; path = MANUAL.pdf; sourceTree = "<group>"; };
+		F594165B2EC9209E0053EC09 /* MANUAL.md */ = {isa = PBXFileReference; lastKnownFileType = net.daringfireball.markdown; path = MANUAL.md; sourceTree = "<group>"; };
+		F5F6AC9E2ECD77FF0019412B /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; name = Assets.xcassets; path = captureplay/Assets.xcassets; sourceTree = "<group>"; };
 		F952D6E224E15A6200EA786D /* QCUsbWatcher.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = QCUsbWatcher.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
+
+/* Begin PBXFileSystemSynchronizedRootGroup section */
+		F594164C2EC918E60053EC09 /* Resources */ = {
+			isa = PBXFileSystemSynchronizedRootGroup;
+			path = Resources;
+			sourceTree = "<group>";
+		};
+/* End PBXFileSystemSynchronizedRootGroup section */
 
 /* Begin PBXFrameworksBuildPhase section */
 		F4CBD39016B8CE5F003A4794 /* Frameworks */ = {
 			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
 			files = (
 				87673A631E35C97A002ECF15 /* AVFoundation.framework in Frameworks */,
 				87FF95021E355CDB0017DADB /* AVKit.framework in Frameworks */,
 				F4CBD39716B8CE5F003A4794 /* Cocoa.framework in Frameworks */,
 			);
+			runOnlyForDeploymentPostprocessing = 0;
 		};
 /* End PBXFrameworksBuildPhase section */
 
@@ -70,11 +79,12 @@
 		F4CBD38A16B8CE5F003A4794 = {
 			isa = PBXGroup;
 			children = (
+				F5F6AC9E2ECD77FF0019412B /* Assets.xcassets */,
 				F4CBD39C16B8CE5F003A4794 /* captureplay */,
 				F4CBD39516B8CE5F003A4794 /* Frameworks */,
 				F508C9F62EC67FD300B65399 /* README.md */,
-				F43D252A16BB508900CBC272 /* icon.icns */,
-				F56A62302EC84E5F00387772 /* Resources */,
+				F594165B2EC9209E0053EC09 /* MANUAL.md */,
+				F594164C2EC918E60053EC09 /* Resources */,
 				F4CBD39416B8CE5F003A4794 /* Products */,
 			);
 			sourceTree = "<group>";
@@ -124,18 +134,10 @@
 				F43539762D1B1B85002188A6 /* QCDisplaySleepManager.swift */,
 				F43539782D1B1B85002188A7 /* QCPreferencesController.swift */,
 				F435397A2D1B1B8B002188A8 /* QCHelpViewerController.swift */,
+				F435397C2D1B1B8D002188A9 /* QCColorCorrectionController.swift */,
 				F952D6E224E15A6200EA786D /* QCUsbWatcher.swift */,
 			);
 			path = captureplay;
-			sourceTree = "<group>";
-		};
-		F56A62302EC84E5F00387772 /* Resources */ = {
-			isa = PBXGroup;
-			children = (
-				F56A622E2EC84E5F00387772 /* MANUAL.html */,
-				F56A622F2EC84E5F00387772 /* MANUAL.pdf */,
-			);
-			path = Resources;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -145,15 +147,20 @@
 			isa = PBXNativeTarget;
 			buildConfigurationList = F4CBD3B016B8CE5F003A4794 /* Build configuration list for PBXNativeTarget "CapturePlay" */;
 			buildPhases = (
-				F56468462EC6989900BA0547 /* ShellScript */,
 				F4CBD38F16B8CE5F003A4794 /* Sources */,
 				F4CBD39016B8CE5F003A4794 /* Frameworks */,
 				F4CBD39116B8CE5F003A4794 /* Resources */,
-				F56468432EC6989600BA0545 /* ShellScript */,
 			);
 			buildRules = (
 			);
+			dependencies = (
+			);
+			fileSystemSynchronizedGroups = (
+				F594164C2EC918E60053EC09 /* Resources */,
+			);
 			name = CapturePlay;
+			packageProductDependencies = (
+			);
 			productName = CapturePlay;
 			productReference = F4CBD39316B8CE5F003A4794 /* CapturePlay.app */;
 			productType = "com.apple.product-type.application";
@@ -166,7 +173,7 @@
 			attributes = {
 				BuildIndependentTargetsInParallel = YES;
 				CLASSPREFIX = WP;
-				LastUpgradeCheck = 1620;
+				LastUpgradeCheck = 2610;
 				ORGANIZATIONNAME = "Windholm Partners";
 				TargetAttributes = {
 					F4CBD39216B8CE5F003A4794 = {
@@ -182,7 +189,7 @@
 				Base,
 			);
 			mainGroup = F4CBD38A16B8CE5F003A4794;
-			preferredProjectObjectVersion = 90;
+			preferredProjectObjectVersion = 77;
 			productRefGroup = F4CBD39416B8CE5F003A4794 /* Products */;
 			projectDirPath = "";
 			projectRoot = "";
@@ -195,148 +202,19 @@
 /* Begin PBXResourcesBuildPhase section */
 		F4CBD39116B8CE5F003A4794 /* Resources */ = {
 			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
 			files = (
-				F56A62312EC84E5F00387772 /* MANUAL.pdf in Resources */,
-				F56A62322EC84E5F00387772 /* MANUAL.html in Resources */,
 				F4CBD3AD16B8CE5F003A4794 /* MainMenu.xib in Resources */,
-				F43D252B16BB508900CBC272 /* icon.icns in Resources */,
+				F5F6AC9F2ECD77FF0019412B /* Assets.xcassets in Resources */,
 			);
+			runOnlyForDeploymentPostprocessing = 0;
 		};
 /* End PBXResourcesBuildPhase section */
-
-/* Begin PBXShellScriptBuildPhase section */
-		F56468432EC6989600BA0545 /* ShellScript */ = {
-			isa = PBXShellScriptBuildPhase;
-			alwaysOutOfDate = 1;
-			shellPath = /bin/sh;
-			shellScript = (
-				"# Update build number from git commit count - POST Info.plist processing",
-				"# This script runs after Info.plist is processed to update CFBundleVersion",
-				"",
-				"# Check if we're inside a git repo",
-				"if git rev-parse --git-dir > /dev/null 2>&1; then",
-				"    # Get commit count",
-				"    BUILD_NUMBER=$(git rev-list --count HEAD 2>/dev/null || echo \"88\")",
-				"    echo \"Git commit count: ${BUILD_NUMBER}\"",
-				"    ",
-				"    # Update CFBundleVersion in the processed Info.plist",
-				"    INFO_PLIST=\"${TARGET_BUILD_DIR}/${INFOPLIST_PATH}\"",
-				"    if [ -f \"${INFO_PLIST}\" ]; then",
-				"        /usr/libexec/PlistBuddy -c \"Set :CFBundleVersion ${BUILD_NUMBER}\" \"${INFO_PLIST}\" 2>/dev/null || echo \"Warning: Could not update Info.plist\"",
-				"        echo \"Updated CFBundleVersion to ${BUILD_NUMBER}\"",
-				"    else",
-				"        echo \"Warning: Info.plist not found at ${INFO_PLIST}\"",
-				"    fi",
-				"else",
-				"    echo \"Not a git repo; using CFBundleVersion from build settings.\"",
-				"fi",
-				"",
-				"",
-				"",
-				"",
-				"",
-				"",
-				"",
-			);
-		};
-		F56468462EC6989900BA0547 /* ShellScript */ = {
-			isa = PBXShellScriptBuildPhase;
-			alwaysOutOfDate = 1;
-			inputPaths = (
-				"$(SRCROOT)/captureplay/MANUAL.md",
-			);
-			outputPaths = (
-				"$(SRCROOT)/captureplay/MANUAL.pdf",
-				"$(SRCROOT)/captureplay/MANUAL.html",
-			);
-			shellPath = /bin/sh;
-			shellScript = (
-				"# Convert MANUAL.md to MANUAL.pdf",
-				"MANUAL_MD=\"${SRCROOT}/captureplay/MANUAL.md\"",
-				"MANUAL_PDF=\"${SRCROOT}/captureplay/MANUAL.pdf\"",
-				"",
-				"if [ ! -f \"${MANUAL_MD}\" ]; then",
-				"    echo \"Warning: ${MANUAL_MD} not found\"",
-				"    exit 0",
-				"fi",
-				"",
-				"# Try pandoc first (most common markdown to PDF converter)",
-				"if command -v pandoc > /dev/null 2>&1; then",
-				"    echo \"Converting MANUAL.md to PDF using pandoc...\"",
-				"    # Try with different PDF engines",
-				"    if command -v xelatex > /dev/null 2>&1; then",
-				"        pandoc \"${MANUAL_MD}\" -o \"${MANUAL_PDF}\" --pdf-engine=xelatex -V geometry:margin=1in 2>/dev/null && echo \"Created PDF using pandoc+xelatex\" && exit 0",
-				"    fi",
-				"    if command -v pdflatex > /dev/null 2>&1; then",
-				"        pandoc \"${MANUAL_MD}\" -o \"${MANUAL_PDF}\" --pdf-engine=pdflatex -V geometry:margin=1in 2>/dev/null && echo \"Created PDF using pandoc+pdflatex\" && exit 0",
-				"    fi",
-				"    # Try using wkhtmltopdf if available",
-				"    if command -v wkhtmltopdf > /dev/null 2>&1; then",
-				"        pandoc \"${MANUAL_MD}\" -t html -o - 2>/dev/null | wkhtmltopdf - \"${MANUAL_PDF}\" 2>/dev/null && echo \"Created PDF using pandoc+wkhtmltopdf\" && exit 0",
-				"    fi",
-				"    # Fallback: create HTML that can be opened and printed to PDF",
-				"    echo \"LaTeX not found. Creating HTML version instead...\"",
-				"    pandoc \"${MANUAL_MD}\" -t html -o \"${SRCROOT}/captureplay/MANUAL.html\" --standalone --css=https://cdn.jsdelivr.net/npm/github-markdown-css@5/github-markdown.min.css 2>/dev/null && echo \"Created MANUAL.html (can be printed to PDF from browser)\"",
-				"fi",
-				"",
-				"# Try Python with markdown and weasyprint/pdfkit",
-				"if command -v python3 > /dev/null 2>&1; then",
-				"    echo \"Trying Python-based conversion...\"",
-				"    python3 -c \"",
-				"import markdown",
-				"from markdown.extensions import codehilite, fenced_code, tables",
-				"import os",
-				"try:",
-				"    with open('${MANUAL_MD}', 'r', encoding='utf-8') as f:",
-				"        md_content = f.read()",
-				"    html = markdown.markdown(md_content, extensions=['codehilite', 'fenced_code', 'tables'])",
-				"    # Try weasyprint",
-				"    try:",
-				"        from weasyprint import HTML",
-				"        HTML(string=html).write_pdf('${MANUAL_PDF}')",
-				"        print('Created PDF using weasyprint')",
-				"        exit(0)",
-				"    except ImportError:",
-				"        pass",
-				"    # Fallback: save HTML for manual conversion",
-				"    html_path = '${SRCROOT}/captureplay/MANUAL.html'",
-				"    with open(html_path, 'w', encoding='utf-8') as f:",
-				"        f.write('<!DOCTYPE html><html><head><meta charset=\"utf-8\"><title>CapturePlay Manual</title><style>body{font-family:Helvetica,Arial,sans-serif;max-width:800px;margin:40px auto;padding:20px;line-height:1.6}h1{border-bottom:2px solid #333}h2{border-bottom:1px solid #999}code{background:#f4f4f4;padding:2px 4px;border-radius:3px}pre{background:#f4f4f4;padding:10px;overflow-x:auto}</style></head><body>' + html + '</body></html>')",
-				"    print('Created HTML (install weasyprint for PDF: pip3 install weasyprint)')",
-				"except Exception as e:",
-				"    print(f'Python conversion failed: {e}')",
-				"    exit(1)",
-				"\" 2>/dev/null",
-				"fi",
-				"",
-				"# Fallback: Create a placeholder PDF file (empty) so build doesn't fail",
-				"if [ ! -f \"${MANUAL_PDF}\" ]; then",
-				"    echo \"Warning: Could not create PDF (LaTeX not installed). Creating placeholder...\"",
-				"    echo \"To create MANUAL.pdf: brew install --cask basictex && brew install pandoc\"",
-				"    # Create a minimal valid PDF file (empty PDF)",
-				"    printf '%%PDF-1.4",
-				"1 0 obj<</Type/Catalog/Pages 2 0 R>>endobj",
-				"2 0 obj<</Type/Pages/Kids[3 0 R]/Count 1>>endobj",
-				"3 0 obj<</Type/Page/MediaBox[0 0 612 792]/Parent 2 0 R/Resources<<>>>>endobj",
-				"xref",
-				"0 4",
-				"trailer<</Size 4/Root 1 0 R>>",
-				"startxref",
-				"149",
-				"%%%%EOF' > \"${MANUAL_PDF}\"",
-				"fi",
-				"",
-				"",
-				"",
-				"",
-				"",
-			);
-		};
-/* End PBXShellScriptBuildPhase section */
 
 /* Begin PBXSourcesBuildPhase section */
 		F4CBD38F16B8CE5F003A4794 /* Sources */ = {
 			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
 			files = (
 				87FF95201E35B7CE0017DADB /* QCAppDelegate.swift in Sources */,
 				F952D6E324E15A6200EA786D /* QCUsbWatcher.swift in Sources */,
@@ -349,7 +227,9 @@
 				F43539752D1B1B86002188A6 /* QCDisplaySleepManager.swift in Sources */,
 				F43539772D1B1B86002188A7 /* QCPreferencesController.swift in Sources */,
 				F43539792D1B1B8A002188A8 /* QCHelpViewerController.swift in Sources */,
+				F435397B2D1B1B8C002188A9 /* QCColorCorrectionController.swift in Sources */,
 			);
+			runOnlyForDeploymentPostprocessing = 0;
 		};
 /* End PBXSourcesBuildPhase section */
 
@@ -365,10 +245,12 @@
 /* End PBXVariantGroup section */
 
 /* Begin XCBuildConfiguration section */
-		F4CBD3AE16B8CE5F003A4794 /* Debug configuration for PBXProject "CapturePlay" */ = {
+		F4CBD3AE16B8CE5F003A4794 /* Debug */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ALWAYS_SEARCH_USER_PATHS = NO;
+				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				ASSETCATALOG_COMPILER_INCLUDE_ALL_APPICON_ASSETS = YES;
 				CLANG_ANALYZER_LOCALIZABILITY_NONLOCALIZED = YES;
 				CLANG_CXX_LANGUAGE_STANDARD = "gnu++0x";
 				CLANG_CXX_LIBRARY = "libc++";
@@ -393,6 +275,7 @@
 				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
 				COPY_PHASE_STRIP = NO;
 				DEAD_CODE_STRIPPING = YES;
+				DEVELOPMENT_TEAM = D6WY385Q4D;
 				ENABLE_STRICT_OBJC_MSGSEND = YES;
 				ENABLE_TESTABILITY = YES;
 				ENABLE_USER_SCRIPT_SANDBOXING = YES;
@@ -415,14 +298,17 @@
 				MACOSX_DEPLOYMENT_TARGET = 12.4;
 				ONLY_ACTIVE_ARCH = YES;
 				SDKROOT = macosx;
+				STRING_CATALOG_GENERATE_SYMBOLS = YES;
 				SWIFT_SWIFT3_OBJC_INFERENCE = Default;
 			};
 			name = Debug;
 		};
-		F4CBD3AF16B8CE5F003A4794 /* Release configuration for PBXProject "CapturePlay" */ = {
+		F4CBD3AF16B8CE5F003A4794 /* Release */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ALWAYS_SEARCH_USER_PATHS = NO;
+				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				ASSETCATALOG_COMPILER_INCLUDE_ALL_APPICON_ASSETS = YES;
 				CLANG_ANALYZER_LOCALIZABILITY_NONLOCALIZED = YES;
 				CLANG_CXX_LANGUAGE_STANDARD = "gnu++0x";
 				CLANG_CXX_LIBRARY = "libc++";
@@ -448,6 +334,7 @@
 				COPY_PHASE_STRIP = YES;
 				DEAD_CODE_STRIPPING = YES;
 				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
+				DEVELOPMENT_TEAM = D6WY385Q4D;
 				ENABLE_STRICT_OBJC_MSGSEND = YES;
 				ENABLE_USER_SCRIPT_SANDBOXING = YES;
 				GCC_C_LANGUAGE_STANDARD = gnu99;
@@ -461,12 +348,13 @@
 				GCC_WARN_UNUSED_VARIABLE = YES;
 				MACOSX_DEPLOYMENT_TARGET = 12.4;
 				SDKROOT = macosx;
+				STRING_CATALOG_GENERATE_SYMBOLS = YES;
 				SWIFT_COMPILATION_MODE = wholemodule;
 				SWIFT_SWIFT3_OBJC_INFERENCE = Default;
 			};
 			name = Release;
 		};
-		F4CBD3B116B8CE5F003A4794 /* Debug configuration for PBXNativeTarget "CapturePlay" */ = {
+		F4CBD3B116B8CE5F003A4794 /* Debug */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				AUTOMATION_APPLE_EVENTS = NO;
@@ -474,11 +362,12 @@
 				CODE_SIGN_ALLOW_ENTITLEMENTS_MODIFICATION = YES;
 				CODE_SIGN_ENTITLEMENTS = captureplay/CapturePlay.entitlements;
 				CODE_SIGN_IDENTITY = "Mac Developer";
-				"CODE_SIGN_IDENTITY[sdk=macosx*]" = "Apple Development";
+				"CODE_SIGN_IDENTITY[sdk=macosx*]" = "-";
+				CODE_SIGN_STYLE = Manual;
 				COMBINE_HIDPI_IMAGES = YES;
-				CURRENT_PROJECT_VERSION = 88;
+				CURRENT_PROJECT_VERSION = 126;
 				DEAD_CODE_STRIPPING = YES;
-				DEVELOPMENT_TEAM = D6WY385Q4D;
+				DEVELOPMENT_TEAM = "";
 				ENABLE_APP_SANDBOX = YES;
 				ENABLE_FILE_ACCESS_DOWNLOADS_FOLDER = readwrite;
 				ENABLE_FILE_ACCESS_MOVIES_FOLDER = readwrite;
@@ -486,17 +375,18 @@
 				ENABLE_FILE_ACCESS_PICTURE_FOLDER = readwrite;
 				ENABLE_HARDENED_RUNTIME = YES;
 				ENABLE_INCOMING_NETWORK_CONNECTIONS = NO;
-				ENABLE_OUTGOING_NETWORK_CONNECTIONS = NO;
+				ENABLE_OUTGOING_NETWORK_CONNECTIONS = YES;
 				ENABLE_RESOURCE_ACCESS_AUDIO_INPUT = YES;
 				ENABLE_RESOURCE_ACCESS_BLUETOOTH = NO;
 				ENABLE_RESOURCE_ACCESS_CALENDARS = NO;
-				ENABLE_RESOURCE_ACCESS_CAMERA = NO;
+				ENABLE_RESOURCE_ACCESS_CAMERA = YES;
 				ENABLE_RESOURCE_ACCESS_CONTACTS = NO;
 				ENABLE_RESOURCE_ACCESS_LOCATION = NO;
 				ENABLE_RESOURCE_ACCESS_PHOTO_LIBRARY = NO;
 				ENABLE_RESOURCE_ACCESS_PRINTING = NO;
 				ENABLE_RESOURCE_ACCESS_USB = YES;
 				ENABLE_USER_SCRIPT_SANDBOXING = NO;
+				ENABLE_USER_SELECTED_FILES = readwrite;
 				GENERATE_INFOPLIST_FILE = NO;
 				INFOPLIST_FILE = "captureplay/CapturePlay-Info.plist";
 				INFOPLIST_KEY_LSApplicationCategoryType = "public.app-category.games";
@@ -504,11 +394,12 @@
 					"$(inherited)",
 					"@executable_path/../Frameworks",
 				);
-				MACOSX_DEPLOYMENT_TARGET = 12.4;
-				MARKETING_VERSION = 3.0;
+				MACOSX_DEPLOYMENT_TARGET = 14.6;
+				MARKETING_VERSION = 3.3;
 				PRODUCT_BUNDLE_IDENTIFIER = org.windholm.captureplay;
 				PRODUCT_NAME = "${TARGET_NAME}";
 				PROVISIONING_PROFILE = "";
+				PROVISIONING_PROFILE_SPECIFIER = "";
 				RUNTIME_EXCEPTION_ALLOW_DYLD_ENVIRONMENT_VARIABLES = NO;
 				RUNTIME_EXCEPTION_ALLOW_JIT = NO;
 				RUNTIME_EXCEPTION_ALLOW_UNSIGNED_EXECUTABLE_MEMORY = NO;
@@ -526,7 +417,7 @@
 			};
 			name = Debug;
 		};
-		F4CBD3B216B8CE5F003A4794 /* Release configuration for PBXNativeTarget "CapturePlay" */ = {
+		F4CBD3B216B8CE5F003A4794 /* Release */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				AUTOMATION_APPLE_EVENTS = NO;
@@ -534,10 +425,10 @@
 				CODE_SIGN_ALLOW_ENTITLEMENTS_MODIFICATION = YES;
 				CODE_SIGN_ENTITLEMENTS = captureplay/CapturePlay.entitlements;
 				CODE_SIGN_IDENTITY = "Mac Developer";
-				"CODE_SIGN_IDENTITY[sdk=macosx*]" = "Apple Development";
+				"CODE_SIGN_IDENTITY[sdk=macosx*]" = "-";
 				CODE_SIGN_STYLE = Manual;
 				COMBINE_HIDPI_IMAGES = YES;
-				CURRENT_PROJECT_VERSION = 88;
+				CURRENT_PROJECT_VERSION = 126;
 				DEAD_CODE_STRIPPING = YES;
 				DEVELOPMENT_TEAM = "";
 				ENABLE_APP_SANDBOX = YES;
@@ -547,17 +438,18 @@
 				ENABLE_FILE_ACCESS_PICTURE_FOLDER = readwrite;
 				ENABLE_HARDENED_RUNTIME = YES;
 				ENABLE_INCOMING_NETWORK_CONNECTIONS = NO;
-				ENABLE_OUTGOING_NETWORK_CONNECTIONS = NO;
+				ENABLE_OUTGOING_NETWORK_CONNECTIONS = YES;
 				ENABLE_RESOURCE_ACCESS_AUDIO_INPUT = YES;
 				ENABLE_RESOURCE_ACCESS_BLUETOOTH = NO;
 				ENABLE_RESOURCE_ACCESS_CALENDARS = NO;
-				ENABLE_RESOURCE_ACCESS_CAMERA = NO;
+				ENABLE_RESOURCE_ACCESS_CAMERA = YES;
 				ENABLE_RESOURCE_ACCESS_CONTACTS = NO;
 				ENABLE_RESOURCE_ACCESS_LOCATION = NO;
 				ENABLE_RESOURCE_ACCESS_PHOTO_LIBRARY = NO;
 				ENABLE_RESOURCE_ACCESS_PRINTING = NO;
 				ENABLE_RESOURCE_ACCESS_USB = YES;
 				ENABLE_USER_SCRIPT_SANDBOXING = NO;
+				ENABLE_USER_SELECTED_FILES = readwrite;
 				GENERATE_INFOPLIST_FILE = NO;
 				INFOPLIST_FILE = "captureplay/CapturePlay-Info.plist";
 				INFOPLIST_KEY_LSApplicationCategoryType = "public.app-category.games";
@@ -565,8 +457,8 @@
 					"$(inherited)",
 					"@executable_path/../Frameworks",
 				);
-				MACOSX_DEPLOYMENT_TARGET = 12.4;
-				MARKETING_VERSION = 3.0;
+				MACOSX_DEPLOYMENT_TARGET = 14.6;
+				MARKETING_VERSION = 3.3;
 				PRODUCT_BUNDLE_IDENTIFIER = org.windholm.captureplay;
 				PRODUCT_NAME = "${TARGET_NAME}";
 				PROVISIONING_PROFILE = "";
@@ -593,17 +485,19 @@
 		F4CBD38E16B8CE5F003A4794 /* Build configuration list for PBXProject "CapturePlay" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
-				F4CBD3AE16B8CE5F003A4794 /* Debug configuration for PBXProject "CapturePlay" */,
-				F4CBD3AF16B8CE5F003A4794 /* Release configuration for PBXProject "CapturePlay" */,
+				F4CBD3AE16B8CE5F003A4794 /* Debug */,
+				F4CBD3AF16B8CE5F003A4794 /* Release */,
 			);
+			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;
 		};
 		F4CBD3B016B8CE5F003A4794 /* Build configuration list for PBXNativeTarget "CapturePlay" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
-				F4CBD3B116B8CE5F003A4794 /* Debug configuration for PBXNativeTarget "CapturePlay" */,
-				F4CBD3B216B8CE5F003A4794 /* Release configuration for PBXNativeTarget "CapturePlay" */,
+				F4CBD3B116B8CE5F003A4794 /* Debug */,
+				F4CBD3B216B8CE5F003A4794 /* Release */,
 			);
+			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;
 		};
 /* End XCConfigurationList section */
