@@ -276,6 +276,9 @@ class QCAppDelegate: NSObject, NSApplicationDelegate, NSMenuDelegate, QCUsbWatch
         windowManager.window = window
         windowManager.playerView = playerView
         
+        // Configure translucent title bar (QuickTime Player style)
+        windowManager.configureTranslucentTitleBar()
+        
         // Initialize capture manager
         captureManager = QCCaptureManager()
         captureManager.delegate = self
@@ -576,11 +579,18 @@ class QCAppDelegate: NSObject, NSApplicationDelegate, NSMenuDelegate, QCUsbWatch
         if let manualURL = Bundle.main.url(forResource: "MANUAL", withExtension: "pdf") {
             pdfURL = manualURL
         }
-        // Second try: Check Resources directory directly
+        // Second try: Check Resources directory directly (including localized directories)
         else if let resourcesPath = Bundle.main.resourcePath {
-            let pdfPath = (resourcesPath as NSString).appendingPathComponent("MANUAL.pdf")
+            // Try localized directory first (en.lproj)
+            var pdfPath = (resourcesPath as NSString).appendingPathComponent("en.lproj/MANUAL.pdf")
             if FileManager.default.fileExists(atPath: pdfPath) {
                 pdfURL = URL(fileURLWithPath: pdfPath)
+            } else {
+                // Fallback to non-localized Resources directory
+                pdfPath = (resourcesPath as NSString).appendingPathComponent("MANUAL.pdf")
+                if FileManager.default.fileExists(atPath: pdfPath) {
+                    pdfURL = URL(fileURLWithPath: pdfPath)
+                }
             }
         }
         // Third try: Source directory (for development)
@@ -589,7 +599,11 @@ class QCAppDelegate: NSObject, NSApplicationDelegate, NSMenuDelegate, QCUsbWatch
             var path = bundlePath.deletingLastPathComponent // Contents
             path = (path as NSString).deletingLastPathComponent // .app
             path = (path as NSString).deletingLastPathComponent // Source directory
-            var pdfPath = (path as NSString).appendingPathComponent("captureplay/Resources/MANUAL.pdf")
+            var pdfPath = (path as NSString).appendingPathComponent("captureplay/Resources/en.lproj/MANUAL.pdf")
+            
+            if !FileManager.default.fileExists(atPath: pdfPath) {
+                pdfPath = (path as NSString).appendingPathComponent("captureplay/Resources/MANUAL.pdf")
+            }
             
             if !FileManager.default.fileExists(atPath: pdfPath) {
                 pdfPath = (path as NSString).appendingPathComponent("captureplay/MANUAL.pdf")
@@ -685,6 +699,9 @@ extension QCAppDelegate {
                       let windowManager = self.windowManager,
                       windowManager.window != nil else { return }
                 windowManager.showRecordingControl()
+                // Update to recording state immediately after showing (since didChangeRecordingState
+                // may have been called before the control was shown)
+                windowManager.updateRecordingControlState(isRecording: true)
             }
         }
         let filename = url.lastPathComponent

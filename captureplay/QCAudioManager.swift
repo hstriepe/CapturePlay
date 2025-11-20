@@ -80,7 +80,7 @@ class QCAudioManager {
     
     private func refreshAudioDeviceLists() {
         let discoverySession = AVCaptureDevice.DiscoverySession(
-            deviceTypes: [.builtInMicrophone, .externalUnknown],
+            deviceTypes: [.microphone, .external],
             mediaType: .audio,
             position: .unspecified
         )

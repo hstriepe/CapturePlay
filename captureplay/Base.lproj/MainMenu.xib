@@ -77,19 +77,17 @@
                                     <action selector="openCaptureFolder:" target="494" id="1pR-bV-dn8"/>
                                 </connections>
                             </menuItem>
-                            <menuItem title="Save Image…" keyEquivalent="s" id="iBa-Au-CgF">
+                            <menuItem title="Save Image…" keyEquivalent="S" id="iBa-Au-CgF">
                                 <connections>
                                     <action selector="saveImage:" target="494" id="2e0-wH-zXa"/>
                                 </connections>
                             </menuItem>
                             <menuItem title="Capture Image" keyEquivalent="s" id="Yrb-NN-Qa2">
-                                <modifierMask key="keyEquivalentModifierMask" option="YES" command="YES"/>
                                 <connections>
                                     <action selector="captureImage:" target="494" id="FDk-M8-uOw"/>
                                 </connections>
                             </menuItem>
                             <menuItem title="Capture Video" keyEquivalent="v" id="4sf-q7-ahZ">
-                                <modifierMask key="keyEquivalentModifierMask" option="YES" command="YES"/>
                                 <connections>
                                     <action selector="captureVideo:" target="494" id="I5A-pO-05x"/>
                                 </connections>
@@ -100,13 +98,14 @@
                 <menuItem title="Edit" id="217">
                     <menu key="submenu" title="Edit" id="205">
                         <items>
-                            <menuItem title="Undo" keyEquivalent="z" id="207">
+                            <menuItem title="Undo" id="207">
+                                <modifierMask key="keyEquivalentModifierMask"/>
                                 <connections>
                                     <action selector="undo:" target="-1" id="223"/>
                                 </connections>
                             </menuItem>
-                            <menuItem title="Redo" keyEquivalent="Z" id="215">
-                                <modifierMask key="keyEquivalentModifierMask" shift="YES" command="YES"/>
+                            <menuItem title="Redo" id="215">
+                                <modifierMask key="keyEquivalentModifierMask"/>
                                 <connections>
                                     <action selector="redo:" target="-1" id="231"/>
                                 </connections>
@@ -114,23 +113,25 @@
                             <menuItem isSeparatorItem="YES" id="206">
                                 <modifierMask key="keyEquivalentModifierMask" command="YES"/>
                             </menuItem>
-                            <menuItem title="Cut" keyEquivalent="x" id="199">
+                            <menuItem title="Cut" id="199">
+                                <modifierMask key="keyEquivalentModifierMask"/>
                                 <connections>
                                     <action selector="cut:" target="-1" id="228"/>
                                 </connections>
                             </menuItem>
                             <menuItem title="Copy" keyEquivalent="c" id="197">
                                 <connections>
-                                    <action selector="copy:" target="-1" id="224"/>
+                                    <action selector="copy:" target="494" id="224"/>
                                 </connections>
                             </menuItem>
-                            <menuItem title="Paste" keyEquivalent="v" id="203">
+                            <menuItem title="Paste" id="203">
+                                <modifierMask key="keyEquivalentModifierMask"/>
                                 <connections>
                                     <action selector="paste:" target="-1" id="226"/>
                                 </connections>
                             </menuItem>
-                            <menuItem title="Paste and Match Style" keyEquivalent="V" id="485">
-                                <modifierMask key="keyEquivalentModifierMask" option="YES" command="YES"/>
+                            <menuItem title="Paste and Match Style" id="485">
+                                <modifierMask key="keyEquivalentModifierMask"/>
                                 <connections>
                                     <action selector="pasteAsPlainText:" target="-1" id="486"/>
                                 </connections>
@@ -140,7 +141,8 @@
                                     <action selector="delete:" target="-1" id="235"/>
                                 </connections>
                             </menuItem>
-                            <menuItem title="Select All" keyEquivalent="a" id="198">
+                            <menuItem title="Select All" id="198">
+                                <modifierMask key="keyEquivalentModifierMask"/>
                                 <connections>
                                     <action selector="selectAll:" target="-1" id="232"/>
                                 </connections>
@@ -338,9 +340,15 @@
                                     </items>
                                 </menu>
                             </menuItem>
-                            <menuItem title="Borderless Mode" keyEquivalent="b" id="651">
+                            <menuItem title="Color Correction…" id="651">
+                                <modifierMask key="keyEquivalentModifierMask"/>
                                 <connections>
-                                    <action selector="borderless:" target="494" id="XSj-SB-hEo"/>
+                                    <action selector="showColorCorrection:" target="494" id="ColorCorrection-Action-1"/>
+                                </connections>
+                            </menuItem>
+                            <menuItem title="Borderless Mode" keyEquivalent="b" id="Yra-Lw-PW5">
+                                <connections>
+                                    <action selector="borderless:" target="494" id="BtL-ys-9Ic"/>
                                 </connections>
                             </menuItem>
                             <menuItem title="Fix Aspect Ratio" keyEquivalent="a" id="eHX-9R-cym">

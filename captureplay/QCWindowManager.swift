@@ -44,6 +44,7 @@ class QCWindowManager: NSObject {
     private var isObservingWindowChanges = false
     private var isBlinkingVisible = true
     private var isShowingControl = false
+    private var isCurrentlyRecording = false
     
     // Settings access (via delegate or direct)
     var isBorderless: Bool {
@@ -95,6 +96,40 @@ class QCWindowManager: NSObject {
         super.init()
     }
     
+    // MARK: - Window Appearance Configuration
+    func configureTranslucentTitleBar() {
+        guard let window = window else { return }
+        
+        // Configure window for translucent title bar like QuickTime Player
+        window.titlebarAppearsTransparent = true
+        window.titleVisibility = .hidden
+        
+        // Enable full-size content view (content extends into title bar area)
+        window.styleMask.insert(.fullSizeContentView)
+        
+        // Set appearance to dark to ensure white title text over video content
+        window.appearance = NSAppearance(named: .darkAqua)
+        
+        // Set up mouse tracking for title bar visibility
+        setupTitleBarMouseTracking()
+    }
+    
+    private func setupTitleBarMouseTracking() {
+        guard let window = window, let contentView = window.contentView else { return }
+        
+        // Create a custom tracking view that covers the entire content area
+        let trackingView = TitleBarTrackingView(windowManager: self)
+        trackingView.frame = contentView.bounds
+        trackingView.autoresizingMask = [.width, .height]
+        
+        // Insert the tracking view as the bottom-most subview
+        contentView.addSubview(trackingView, positioned: .below, relativeTo: nil)
+        
+        // Initially hide the title
+        window.titleVisibility = .hidden
+        hideTitleBar()
+    }
+    
     // MARK: - Window Border Management
     func addBorder() {
         guard let window = window else { return }
@@ -102,6 +137,9 @@ class QCWindowManager: NSObject {
         window.title = windowTitle
         window.level = convertToNSWindowLevel(Int(CGWindowLevelForKey(.normalWindow)))
         window.isMovableByWindowBackground = false
+        
+        // Apply translucent title bar configuration
+        configureTranslucentTitleBar()
     }
     
     func removeBorder() {
@@ -395,6 +433,9 @@ class QCWindowManager: NSObject {
     }
     
     func updateRecordingControlState(isRecording: Bool) {
+        // Update recording state
+        isCurrentlyRecording = isRecording
+        
         // Ensure we're on the main thread for UI updates
         DispatchQueue.main.async { [weak self] in
             guard let self = self,
@@ -408,6 +449,9 @@ class QCWindowManager: NSObject {
             } else {
                 self.stopBlinking()
             }
+            
+            // Update visibility when recording state changes
+            self.updateRecordingControlVisibility()
         }
     }
     
@@ -514,8 +558,11 @@ class QCWindowManager: NSObject {
         let windowIsMain = mainWindow.isMainWindow
         let windowIsVisible = mainWindow.isVisible
         
-        // Hide if app is in background or window is obscured
-        let shouldBeVisible = appIsActive && windowIsVisible && (windowIsKey || windowIsMain)
+        // Check if title bar is currently visible
+        let titleBarIsVisible = mainWindow.titleVisibility == .visible
+        
+        // Always show controls while recording, otherwise follow title bar visibility
+        let shouldBeVisible = appIsActive && windowIsVisible && (windowIsKey || windowIsMain) && (isCurrentlyRecording || titleBarIsVisible)
         
         if shouldBeVisible {
             overlay.orderFront(nil)
@@ -792,8 +839,121 @@ class QCWindowManager: NSObject {
         NSWindow.Level(rawValue: input)
     }
     
+    // MARK: - Mouse Tracking for Title Bar
+    func handleMouseEntered() {
+        showTitleBarTemporarily()
+    }
+    
+    func handleMouseExited() {
+        hideTitleBarAfterDelay()
+    }
+    
+    func handleMouseMoved(at location: NSPoint) {
+        // Check if mouse is in title bar area (top 28 pixels)
+        guard let window = window else { return }
+        let titleBarHeight: CGFloat = 28
+        let windowHeight = window.contentView?.bounds.height ?? 0
+        
+        if location.y > windowHeight - titleBarHeight {
+            showTitleBarTemporarily()
+        } else {
+            hideTitleBarAfterDelay()
+        }
+    }
+    
+    private func showTitleBarTemporarily() {
+        guard let window = window else { return }
+        
+        // Cancel any pending hide operations
+        NSObject.cancelPreviousPerformRequests(withTarget: self, selector: #selector(hideTitleBar), object: nil)
+        
+        // Show title and window controls
+        window.titleVisibility = .visible
+        window.standardWindowButton(.closeButton)?.isHidden = false
+        window.standardWindowButton(.miniaturizeButton)?.isHidden = false
+        window.standardWindowButton(.zoomButton)?.isHidden = false
+        
+        // Update recording control visibility when title bar is shown
+        updateRecordingControlVisibility()
+    }
+    
+    private func hideTitleBarAfterDelay() {
+        // Cancel any previous hide requests
+        NSObject.cancelPreviousPerformRequests(withTarget: self, selector: #selector(hideTitleBar), object: nil)
+        
+        // Hide title bar after 2 seconds of no mouse activity
+        perform(#selector(hideTitleBar), with: nil, afterDelay: 2.0)
+    }
+    
+    @objc private func hideTitleBar() {
+        guard let window = window else { return }
+        
+        // Hide title and window controls
+        window.titleVisibility = .hidden
+        window.standardWindowButton(.closeButton)?.isHidden = true
+        window.standardWindowButton(.miniaturizeButton)?.isHidden = true
+        window.standardWindowButton(.zoomButton)?.isHidden = true
+        
+        // Update recording control visibility when title bar is hidden
+        updateRecordingControlVisibility()
+    }
+    
     deinit {
+        // Cancel any pending operations
+        NSObject.cancelPreviousPerformRequests(withTarget: self)
+        // Clean up any remaining observers
         NotificationCenter.default.removeObserver(self)
+    }
+}
+
+// MARK: - Title Bar Tracking View
+class TitleBarTrackingView: NSView {
+    weak var windowManager: QCWindowManager?
+    
+    init(windowManager: QCWindowManager) {
+        self.windowManager = windowManager
+        super.init(frame: NSRect.zero)
+        
+        // Create tracking area for mouse events
+        updateTrackingAreas()
+    }
+    
+    required init?(coder: NSCoder) {
+        fatalError("init(coder:) has not been implemented")
+    }
+    
+    override func updateTrackingAreas() {
+        super.updateTrackingAreas()
+        
+        // Remove existing tracking areas
+        trackingAreas.forEach { removeTrackingArea($0) }
+        
+        // Add new tracking area covering the entire view
+        let trackingArea = NSTrackingArea(
+            rect: bounds,
+            options: [.mouseEnteredAndExited, .mouseMoved, .activeInKeyWindow, .inVisibleRect],
+            owner: self,
+            userInfo: nil
+        )
+        addTrackingArea(trackingArea)
+    }
+    
+    override func mouseEntered(with event: NSEvent) {
+        windowManager?.handleMouseEntered()
+    }
+    
+    override func mouseExited(with event: NSEvent) {
+        windowManager?.handleMouseExited()
+    }
+    
+    override func mouseMoved(with event: NSEvent) {
+        let location = event.locationInWindow
+        windowManager?.handleMouseMoved(at: location)
+    }
+    
+    // Make view transparent to clicks so it doesn't interfere with content
+    override func hitTest(_ point: NSPoint) -> NSView? {
+        return nil
     }
 }
 

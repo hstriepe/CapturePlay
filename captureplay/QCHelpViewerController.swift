@@ -66,9 +66,16 @@ class QCHelpViewerController: NSWindowController {
         if let manualURL = Bundle.main.url(forResource: "MANUAL", withExtension: "html") {
             htmlURL = manualURL
         } else if let resourcesPath = Bundle.main.resourcePath {
-            let htmlPath = (resourcesPath as NSString).appendingPathComponent("MANUAL.html")
+            // Try localized directory first (en.lproj)
+            var htmlPath = (resourcesPath as NSString).appendingPathComponent("en.lproj/MANUAL.html")
             if FileManager.default.fileExists(atPath: htmlPath) {
                 htmlURL = URL(fileURLWithPath: htmlPath)
+            } else {
+                // Fallback to non-localized Resources directory
+                htmlPath = (resourcesPath as NSString).appendingPathComponent("MANUAL.html")
+                if FileManager.default.fileExists(atPath: htmlPath) {
+                    htmlURL = URL(fileURLWithPath: htmlPath)
+                }
             }
         }
         

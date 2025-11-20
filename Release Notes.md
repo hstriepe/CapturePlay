@@ -1,7 +1,15 @@
 3. - # Release Notes
 
-     #### Version 3.3 (126 - internal) - 11-18-25
+     #### Version 3.4 (136 - internal) - 11-20-25
 
+     1. Translucent, hidden window title bar
+     2. Video capture control start button hidden with title bar
+     3. Some deprecations fixed
+     4. Resource changes in bundle to prep for potential localization
+     5. Bug fixes
+     
+     #### Version 3.3 (126 - internal) - 11-18-25
+     
      1. Added Video control for brightness, contrast, and hue
         1. Saved spearately for each device
         2. Has a reset button

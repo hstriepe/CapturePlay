@@ -63,12 +63,14 @@ class QCColorCorrectionController: NSWindowController {
         // Brightness
         let brightnessLabel = NSTextField(labelWithString: "Brightness:")
         brightnessLabel.frame = NSRect(x: 20, y: 150, width: 100, height: 17)
+        brightnessLabel.textColor = NSColor.labelColor
         contentView.addSubview(brightnessLabel)
         self.brightnessLabel = brightnessLabel
         
         let brightnessValueLabel = NSTextField(labelWithString: "0.0")
         brightnessValueLabel.frame = NSRect(x: 320, y: 150, width: 60, height: 17)
         brightnessValueLabel.alignment = .right
+        brightnessValueLabel.textColor = NSColor.labelColor
         contentView.addSubview(brightnessValueLabel)
         
         let brightnessSlider = NSSlider(frame: NSRect(x: 120, y: 152, width: 200, height: 16))
@@ -90,12 +92,14 @@ class QCColorCorrectionController: NSWindowController {
         // Contrast
         let contrastLabel = NSTextField(labelWithString: "Contrast:")
         contrastLabel.frame = NSRect(x: 20, y: 120, width: 100, height: 17)
+        contrastLabel.textColor = NSColor.labelColor
         contentView.addSubview(contrastLabel)
         self.contrastLabel = contrastLabel
         
         let contrastValueLabel = NSTextField(labelWithString: "1.0")
         contrastValueLabel.frame = NSRect(x: 320, y: 120, width: 60, height: 17)
         contrastValueLabel.alignment = .right
+        contrastValueLabel.textColor = NSColor.labelColor
         contentView.addSubview(contrastValueLabel)
         
         let contrastSlider = NSSlider(frame: NSRect(x: 120, y: 122, width: 200, height: 16))

@@ -1,8 +1,8 @@
 # CapturePlay User Manual
 
-**Version 3,1**
+**Version 3.4**
 
-CapturePlay is a macOS application designed to display video and audio from USB capture devices (such as the USB Camlink 4K) connected to gaming consoles like the PlayStation 5 or Nintendo Switch in a dock. The application provides real-time video display, audio routing, image capture, and video recording capabilities.
+CapturePlay is a macOS application designed to display video and audio from USB capture devices (such as the USB Camlink 4K) connected to gaming consoles, such as the PlayStation 5 or Nintendo Switch, in a dock. It also connects to Continuity Cameras on iPhone. The application provides real-time video display, audio routing, image capture, and video recording capabilities.
 
 ---
 
@@ -38,8 +38,10 @@ CapturePlay enables you to:
 
 ## System Requirements
 
-- **macOS**: 12.4 (Monterey) or later
-- **Hardware**: USB capture device (e.g., Elgato Camlink 4K, AVMedia, 4k HDMI Cpature card, or generic USB capture cards)
+- **macOS**: 14.6 (Sequoia) or later to support Continuity Camera.
+- **Hardware**: 
+  - USB capture device (e.g., Elgato Camlink 4K, AVMedia, 4k HDMI Capture card, or generic USB capture cards)
+  - iPhone Continuity Camera (requires macOS 14.6 Sequoia, or later, and iOS 16.0 or later)
 - **Permissions**: 
   - Camera access (for video capture devices)
   - Microphone access (for audio capture)
@@ -59,6 +61,7 @@ CapturePlay enables you to:
 ### Device Detection
 
 - CapturePlay automatically detects connected USB video capture devices on startup.
+- **Continuity Camera**: iPhone Continuity Camera is supported (macOS 13.0+ required).
 - If no devices are found, the app will display an error and close.
 - USB devices are monitored: connecting or disconnecting a device will automatically update the device list.
 
@@ -68,7 +71,7 @@ CapturePlay enables you to:
 2. **Configure audio** (optional):
    - Choose an audio input: **Audio > Select Source**
    - Choose an audio output: **Audio > Select Output**
-3. **Set capture directory**: Go to **CapturePlay > Preferences** and set where captured images and videos should be saved.
+3. **Set capture directory**: Go to **CapturePlay > Settings** and set where captured images and videos should be saved.
 
 ---
 
@@ -77,7 +80,7 @@ CapturePlay enables you to:
 ### CapturePlay Menu (Application Menu)
 
 - **About CapturePlay**: Displays version information and copyright
-- **Preferences…** (⌘,): Opens the preferences dialog
+- **Settings…** (⌘,): Opens the CapturePlay Settings dialog
 - **Hide CapturePlay** (⌘H): Hides the application window
 - **Hide Others** (⌥⌘H): Hides all other applications
 - **Show All**: Shows all hidden applications
@@ -88,18 +91,30 @@ CapturePlay enables you to:
 ### File Menu
 
 - **Open Capture Folder** (⌘O): Opens the folder where captured images and videos are saved in Finder
-- **Save Image…** (⌘S): Saves the current video frame to a location of your choice
-- **Capture Image** (⌘⇧S): Captures an image and saves it to the capture directory with automatic filename
-- **Capture Video** (⌘⇧V): Starts or stops video recording
+- **Save Image…** (⌘⇧S): Saves the current video frame to a location of your choice
+- **Capture Image** (⌘S): Captures an image and saves it to the capture directory with an automatic filename
+- **Capture Video** (⌘V): Starts or stops video recording
 
 ### Edit Menu
 
-Standard macOS text editing commands (Undo, Redo, Cut, Copy, Paste, Select All, Find, etc.)
+- **Copy** (⌘C): Copies the current window capture to the clipboard
+
+#### Inactive
+
+- **Undo** (⌘Z): Undoes the last action
+- **Redo** (⌘⇧Z): Redoes the last undone action
+- **Cut** (⌘X): Cuts selected text
+- **Copy** (⌘C): Copies the current window capture to the clipboard
+- **Paste** (⌘V): Pastes from the clipboard
+- **Paste and Match Style** (⌥⌘V): Pastes text matching the current style
+- **Delete**: Deletes selected text
+- **Select All** (⌘A): Selects all text
+- **Find**: Standard macOS find commands
 
 ### Video Menu
 
 - **Select Source**: Choose which video capture device to use (submenu lists all available devices)
-- **Image** (⌥): Image transformation options — *Hidden by default; hold Option (⌥) key while opening Video menu to reveal*
+- **Image**: Image transformation options - use the Option key to show the Menu item unless it is set to always show in Settings.
   - **Mirror**:
     - **Mirror Horizontally** (⌘M): Flips the video horizontally (left-right)
     - **Mirror Vertically** (⌘⇧H): Flips the video vertically (top-bottom)
@@ -109,6 +124,7 @@ Standard macOS text editing commands (Undo, Redo, Cut, Copy, Paste, Select All, 
 - **Borderless Mode** (⌘B): Toggles window border on/off
 - **Fix Aspect Ratio** (⌘A): Locks/unlocks the window aspect ratio to match video
 - **Fit to Actual Size** (⌃⌘A): Resizes window to match the video's native resolution
+- **Color Correction…**: Opens the Color Correction dialog for adjusting brightness, contrast, and hue
 - **Enter Full Screen** (⌃⌘F): Enters full-screen mode
 - **Display Sleep** (⌘D): Toggles display sleep prevention on/off
 
@@ -135,16 +151,43 @@ Standard macOS text editing commands (Undo, Redo, Cut, Copy, Paste, Select All, 
 
 ### Selecting a Video Source
 
-1. Connect your USB capture device.
+1. Connect your USB capture device or enable iPhone Continuity Camera.
 2. Go to **Video > Select Source**.
 3. Choose your device from the list.
 4. The video feed will start automatically.
 
 **Note**: CapturePlay monitors USB connections. If you connect or disconnect a device, the device list will update automatically.
 
+#### Using iPhone Continuity Camera
+
+CapturePlay supports iPhone Continuity Camera, which lets you use your iPhone as a video input device over Wi-Fi or USB.
+
+**Requirements**:
+
+- **macOS**: 14.6 (Sequoia) or later
+- **iOS**: 16.0 or later on iPhone
+- **Same Apple ID**: Both devices must be signed in to the same Apple ID with two-factor authentication enabled
+- **Handoff enabled**: On iPhone: Settings > General > AirPlay & Handoff > Enable "Handoff" and "Continuity Camera"
+- **Network**: Both devices must be on the same Wi-Fi network, with Wi-Fi and Bluetooth enabled on both
+- **Positioning**: iPhone should be locked, stable, and positioned with the rear cameras facing you in landscape orientation
+
+**Setup**:
+1. Ensure both devices meet the requirements above.
+2. Position your iPhone as described.
+3. Your iPhone will appear in **Video > Select Source** as "iPhone" or "Continuity Camera".
+4. Select it from the device list.
+5. The video feed will start automatically.
+
+**Troubleshooting Continuity Camera**:
+- Ensure Handoff is enabled on both devices
+- Check that both devices are on the same Wi-Fi network
+- Disable VPNs on both devices (VPNs can interfere with Continuity Camera)
+- Disable AirPlay Receiver on your Mac: System Settings > General > AirDrop & Handoff > Turn off "AirPlay Receiver"
+- Restart both devices if connection issues persist
+
 ### Image Transformations
 
-Image transformation options (Mirror and Rotate) are accessed through **Video > Image**. This menu item is hidden by default and only appears when you hold the Option (⌥) key while opening the Video menu.
+Image transformation options (Mirror and Rotate) are accessed through **Video > Image**.
 
 ### Mirroring
 
@@ -155,7 +198,7 @@ Mirroring flips the video display:
 
 Both mirroring options can be combined. The mirroring state is saved in preferences.
 
-**Note**: To access mirroring options, hold Option (⌥) and open **Video > Image > Mirror**.
+**Note**: If you prefer to keep the Image menu hidden until needed, you can hold Option (⌥) when opening Video > Image. At the same time, the "Always show the Image submenu under Video" setting is off.
 
 ### Rotation
 
@@ -166,7 +209,21 @@ Rotate the video to match your camera orientation:
 
 Rotation position is saved in preferences and applied automatically on startup.
 
-**Note**: To access rotation options, hold Option (⌥) and open **Video > Image > Rotate**.
+**Note**: If you prefer to keep the Image menu hidden until needed, you can hold Option (⌥) when opening Video > Image while the "Always show the Image submenu under Video" setting is off.
+
+### Color Correction
+
+**Color Correction…** (Video menu) opens a non-modal dialog for adjusting video color:
+
+- **Brightness**: Adjust from -1.0 (darker) to 1.0 (brighter)
+- **Contrast**: Adjust from 0.0 (low) to 2.0 (high), default is 1.0
+- **Hue**: Adjust from -180° to +180°
+- **Reset**: Restores all values to defaults (Brightness: 0.0, Contrast: 1.0, Hue: 0.0°)
+- **Close**: Closes the dialog (settings are saved automatically)
+
+**Device-Specific Settings**: Color correction settings are saved per video device by name. Each device (USB capture card, Continuity Camera, etc.) maintains its own brightness, contrast, and hue values. When you switch devices, the saved color correction settings for that device are automatically loaded and applied.
+
+Color correction settings are saved in preferences and applied automatically when you select a device. The dialog can remain open while using the application and can be moved independently.
 
 ### Borderless Mode
 
@@ -200,6 +257,16 @@ Rotation position is saved in preferences and applied automatically on startup.
 - Useful during long recording sessions
 - Can be enabled/disabled manually via menu
 - Automatically enabled in full-screen mode (if configured in preferences)
+
+### Translucent Title Bar
+
+CapturePlay features a QuickTime Player-style translucent title bar for a clean viewing experience:
+
+- **Auto-Hide**: The window title and controls are hidden by default to provide an unobstructed view
+- **Mouse Hover**: Move your mouse to the top area of the window to reveal the title bar and window controls
+- **Auto-Disappear**: Title bar and controls automatically hide after 2 seconds of no mouse activity
+- **White Text**: Title text appears in white for visibility over video content
+- **Recording Controls Integration**: Video capture controls follow the same visibility behavior, appearing on hover and hiding when the mouse moves away (except during recording when they remain always visible)
 
 ---
 
@@ -244,16 +311,24 @@ Adjust volume using the slider in **Audio > Volume**:
 
 ### Image Capture
 
-Two methods for capturing images:
+Three methods for capturing images:
 
-#### Method 1: Quick Capture (⌘⇧S)
+#### Method 1: Copy to Clipboard (⌘C)
+
+- Copies the current window capture to the clipboard
+- Available via **Edit > Copy**
+- Useful for quickly pasting into other applications
+- Image is copied in PNG format
+- Works the same as saving, but places the image directly in the clipboard
+
+#### Method 2: Quick Capture (⌘S)
 
 - Captures current frame instantly
 - Saves to capture directory with automatic filename
 - Filename format: `CapturePlay Image YYYY-MM-DD at HH.mm.ss.png`
 - Shows notification when saved
 
-#### Method 2: Save Image (⌘S)
+#### Method 3: Save Image (⌘⇧S)
 
 - Opens a save dialog to choose location
 - Allows you to name the file
@@ -261,11 +336,11 @@ Two methods for capturing images:
 
 **Image Format**: PNG (highest quality)
 
-**Note**: Image capture temporarily removes the window border (if present) to capture a clean image, then restores it.
+**Note**: Image capture temporarily removes the window border (if present) to capture a clean image, then restores it. Copy to clipboard uses the same capture method.
 
 ### Video Recording
 
-**Capture Video** (⌘⇧V) toggles video recording:
+**Capture Video** (⌘V) toggles video recording:
 
 - **Start Recording**: Creates a new video file in the capture directory
 - **Stop Recording**: Finalizes the video file
@@ -273,6 +348,7 @@ Two methods for capturing images:
 - **Audio**: Included if an audio input is selected
 - **Filename Format**: `CapturePlay Video YYYY-MM-DD at HH.mm.ss.mov`
 - **Notifications**: Shows notifications when recording starts and stops
+- **Cooldown Period**: After stopping recording, there is a 1-second delay before you can start recording again to prevent errors
 
 **Video Recording Details**:
 
@@ -285,7 +361,14 @@ Two methods for capturing images:
 
 - The "Capture Video" menu item shows a checkmark (✓) when recording is active
 - A notification appears when recording starts and stops
-- Recording can be stopped by pressing ⌘⇧V again
+- Recording can be stopped by pressing ⌘V again
+- An on-screen recording control button appears when recording starts (if enabled in Settings)
+  - **Red Circle**: Idle state (click to start recording)
+  - **Red Square**: Recording state (slowly blinks, click to stop recording)
+  - The control is positioned in the bottom-right corner of the video window
+  - The control is excluded from screen recordings and saved videos
+  - **Visibility**: Controls follow the translucent title bar behavior - they appear when you hover over the window and disappear when the mouse moves away, except while recording when they remain always visible
+  - These controls can be disabled in Settings.
 
 **Note**: Ensure you have sufficient disk space. Video files can be large, especially at high resolutions and frame rates.
 
@@ -297,9 +380,9 @@ Two methods for capturing images:
 
 ## Settings and Preferences
 
-### Preferences Dialog
+### CapturePlay Settings Dialog
 
-Open **CapturePlay > Preferences…** (⌘,)
+Open **CapturePlay > Settings…** (⌘,)
 
 #### Capture Image Directory
 
@@ -311,11 +394,26 @@ Open **CapturePlay > Preferences…** (⌘,)
 
 #### Display Sleep in Full Screen
 
-- **Checkbox**: "Automatically prevent display sleep during full screen"
+- **Toggle**: "Automatically prevent display sleep during full screen"
 - When enabled, display sleep prevention is automatically activated when entering full-screen mode
 - When disabled, you must manually toggle display sleep prevention
 
-#### Saving Preferences
+#### Image Menu Visibility
+
+- **Toggle**: "Always show the Image submenu under Video"
+- When enabled, the **Video > Image** menu is always visible.
+- When disabled, the Image menu can still be revealed by holding Option (⌥) while opening the Video menu.
+
+#### Video Capture Controls
+
+- **Toggle**: "Show Video Capture Controls"
+- When enabled, an on-screen recording control button appears when recording starts
+- When disabled, the on-screen control button is hidden
+- The button appears in the bottom-right corner of the video window
+- **Behavior**: The control follows the translucent title bar visibility - it appears on mouse hover and hides when the mouse moves away, except during recording, when it remains always visible
+- Click the button to start or stop recording
+
+#### Saving Settings
 
 - Click **OK** to save changes
 - Click **Cancel** to discard changes
@@ -328,7 +426,8 @@ CapturePlay automatically saves and restores your settings:
 - **Window position and size**: Automatically saved when you close the application
 - **Video settings**: Rotation, mirroring, borderless mode, and aspect ratio preferences
 - **Audio settings**: Input/output device selections and volume
-- **Preferences**: Capture directory and display sleep preferences
+- **Color correction settings**: Brightness, contrast, and hue values (saved per device by name)
+- **Settings**: Capture directory, display sleep preferences, Image menu visibility, and video capture controls visibility
 
 All settings are automatically loaded when you launch CapturePlay.
 
@@ -344,14 +443,15 @@ All settings are automatically saved when you close the application and automati
 
 | Shortcut | Action | Menu Location |
 |----------|--------|---------------|
-| ⌘, | Preferences | CapturePlay > Preferences… |
+| ⌘, | Settings | CapturePlay > Settings… |
 | ⌘H | Hide App | CapturePlay > Hide CapturePlay |
 | ⌥⌘H | Hide Others | CapturePlay > Hide Others |
 | ⌘Q | Quit | CapturePlay > Quit CapturePlay |
 | ⌘O | Open Capture Folder | File > Open Capture Folder |
-| ⌘S | Save Image | File > Save Image… |
-| ⌘⇧S | Capture Image | File > Capture Image |
-| ⌘⇧V | Capture Video | File > Capture Video |
+| ⌘C | Copy Window | Edit > Copy |
+| ⌘⇧S | Save Image | File > Save Image… |
+| ⌘S | Capture Image | File > Capture Image |
+| ⌘V | Capture Video | File > Capture Video |
 | ⌘M | Mirror Horizontally | Video > Image > Mirror > Mirror Horizontally |
 | ⌘⇧H | Mirror Vertically | Video > Image > Mirror > Mirror Vertically |
 | ⌘L | Rotate Left | Video > Image > Rotate > Rotate Left |
@@ -447,7 +547,7 @@ On first launch, macOS will ask for notification permissions. Grant permission t
 2. **Check disk space**: Video files can be large — ensure sufficient free space
 3. **Check permissions**: Ensure CapturePlay can write to the capture directory
 4. **Verify device supports recording**: Some devices may have limitations
-5. **Try stopping and restarting**: Use ⌘⇧V to stop, then start again
+5. **Try stopping and restarting**: Use ⌘V to stop, then start again (note: there is a 1-second cooldown after stopping)
 
 ### Window Won't Resize or Position Incorrectly
 
@@ -482,16 +582,28 @@ On first launch, macOS will ask for notification permissions. Grant permission t
 
 ### Device Not Detected
 
-**Problem**: USB capture device is not listed in "Select Source".
+**Problem**: USB capture device or Continuity Camera is not listed in "Select Source".
 
 **Solutions**:
 
-1. **Check USB connection**: Unplug and reconnect the device
+1. **Check USB connection**: Unplug and reconnect the device (for USB devices)
 2. **Try different USB port**: Use a USB 3.0 port if available
 3. **Check System Information**: Open System Information > USB and verify the device appears
 4. **Install drivers**: Some devices require manufacturer drivers
 5. **Restart CapturePlay**: The app detects devices on launch
 6. **Check device compatibility**: Ensure the device is compatible with macOS
+
+**For Continuity Camera specifically**:
+
+1. **Check macOS version**: Continuity Camera requires macOS 13.0 (Ventura) or later
+2. **Check iOS version**: iPhone must be running iOS 16.0 or later
+3. **Verify Apple ID**: Both devices must be signed in to the same Apple ID with two-factor authentication
+4. **Enable Handoff**: On iPhone: Settings > General > AirPlay & Handoff > Enable "Handoff" and "Continuity Camera"
+5. **Check network**: Ensure both devices are on the same Wi-Fi network with Wi-Fi and Bluetooth enabled
+6. **Disable VPNs**: VPNs can interfere with Continuity Camera — disable VPNs on both devices
+7. **Disable AirPlay Receiver**: On Mac: System Settings > General > AirDrop & Handoff > Turn off "AirPlay Receiver"
+8. **Position iPhone correctly**: iPhone should be locked, stable, and positioned with rear cameras facing you in landscape
+9. **Restart both devices**: Restart both iPhone and Mac if connection issues persist
 
 ### App Crashes or Freezes
 
@@ -554,7 +666,7 @@ Preferences are stored in macOS UserDefaults, typically at:
 ## Credits
 
 **CapturePlay**  
-Version 3.1  
+Version 3.4  
 Copyright © 2025 Harald Striepe
 
 **Original Quick Camera Code**  
@@ -578,5 +690,4 @@ This manual and the CapturePlay application are provided as-is. Please refer to 
 
 For issues, feature requests, or contributions, please refer to the project repository or contact the maintainer at hstriepe@mac.com
 
-**Last Updated**: 2025
-
+[GitHub]: https://github.com/hstriepe/CapturePlay
