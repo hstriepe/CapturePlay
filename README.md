@@ -8,6 +8,11 @@ Key eatures:
 
 - Audio routing from any input to any output.
   - Mute and volume controls.
+- Video Controls
+  - Brightness, contrast, hue
+  - Saved per inut choice
+  - Video capture button overlay
+
 - Image and video capture through shortcut keys.
   - Directory can be changed in Settings.
 
