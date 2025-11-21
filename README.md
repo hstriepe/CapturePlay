@@ -45,3 +45,11 @@ You can find the app on the Mac App Store: https://itunes.apple.com/us/app/qcame
 
 License: Apache V2.0
 
+### Screenshots
+
+![Clear Window](https://github.com/hstriepe/CapturePlay/blob/main/Screenshots/CapturePlay%20Clear%20Window.png)
+
+![Video Menu](https://github.com/hstriepe/CapturePlay/blob/main/Screenshots/CapturePlay%20Video%20Menu.png)
+
+![Audio Menu](https://github.com/hstriepe/CapturePlay/blob/main/Screenshots/CapturePlay%20Audio%20Menu.png)
+
