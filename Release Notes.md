@@ -3,12 +3,12 @@
 #### Version 3.5 (169 - internal) - 11-22-25
 
 1. Refactored all names and internal code prefixes from QC to CP.
-2. Further performance optimizations based on system capabilty. Auto mode can be overriden in Settings.
+2. Further performance optimizations based on system capability. Auto mode can be overridden in Settings.
 
 #### Version 3.5 (160 - internal) - 11-21-25
 
 1. Some generic capture devices have an odd audio sample rate. We now convert to 48Khz in those cases for video-audio recording using AAC.
-2. Continuity Camera audio is never selected by default at launch; it can cause long pauses at startup. Video is only last resort.
+2. Continuity Camera audio is never selected by default at launch; it can cause long pauses at startup. Video is only a last resort.
 3. Settings item cleanup.
 4. Align entitlements with App Store requirements.
 
