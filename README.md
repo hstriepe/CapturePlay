@@ -33,7 +33,7 @@ Your project build settings will determine the app location. I use Archive and t
 
 ### Inspired by Quick Camera by Simon Guest
 
-CapturePlay was inspired by and includes code from the [Quick Camera app on GitHub,](https://github.com/simonguest/quick-camera) created by Simon Guest. Quick Camera is a macOS utility to display the output from any USB-based camera on your desktop. Quick Camera is often used for presentations where you need to show the output from an external device to your audience.  You can find the app on the Mac App Store: https://itunes.apple.com/us/app/qcamera/id598853070?mt=12
+CapturePlay was inspired by and includes code (QCUSBWatcher.swift) from the [Quick Camera app on GitHub,](https://github.com/simonguest/quick-camera) created by Simon Guest. Quick Camera is a macOS utility to display the output from any USB-based camera on your desktop. Quick Camera is often used for presentations where you need to show the output from an external device to your audience.  You can find the app on the Mac App Store: https://itunes.apple.com/us/app/qcamera/id598853070?mt=12
 
 License: Apache V2.0
 
