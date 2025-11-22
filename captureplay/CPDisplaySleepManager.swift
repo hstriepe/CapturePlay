@@ -1,22 +1,22 @@
-// Copyright H. Striepe - 2025
+// Copyright H. Striepe ©2025
 
 import Cocoa
 import IOKit.pwr_mgt
 
-// MARK: - QCDisplaySleepManagerDelegate Protocol
-protocol QCDisplaySleepManagerDelegate: AnyObject {
-    func displaySleepManager(_ manager: QCDisplaySleepManager, didChangeState isPreventing: Bool)
-    func displaySleepManager(_ manager: QCDisplaySleepManager, needsNotification title: String, body: String, sound: Bool)
-    func displaySleepManager(_ manager: QCDisplaySleepManager, needsErrorDisplay message: String)
-    func displaySleepManager(_ manager: QCDisplaySleepManager, needsMenuItemUpdate isPreventing: Bool)
-    func displaySleepManager(_ manager: QCDisplaySleepManager, needsMenuItemEnabled enabled: Bool)
+// MARK: - CPDisplaySleepManagerDelegate Protocol
+protocol CPDisplaySleepManagerDelegate: AnyObject {
+    func displaySleepManager(_ manager: CPDisplaySleepManager, didChangeState isPreventing: Bool)
+    func displaySleepManager(_ manager: CPDisplaySleepManager, needsNotification title: String, body: String, sound: Bool)
+    func displaySleepManager(_ manager: CPDisplaySleepManager, needsErrorDisplay message: String)
+    func displaySleepManager(_ manager: CPDisplaySleepManager, needsMenuItemUpdate isPreventing: Bool)
+    func displaySleepManager(_ manager: CPDisplaySleepManager, needsMenuItemEnabled enabled: Bool)
 }
 
-// MARK: - QCDisplaySleepManager Class
-class QCDisplaySleepManager {
+// MARK: - CPDisplaySleepManager Class
+class CPDisplaySleepManager {
     
     // MARK: - Properties
-    weak var delegate: QCDisplaySleepManagerDelegate?
+    weak var delegate: CPDisplaySleepManagerDelegate?
     
     private var displaySleepAssertionID: IOPMAssertionID = 0
     private(set) var isPreventingDisplaySleep: Bool = false {
@@ -50,7 +50,7 @@ class QCDisplaySleepManager {
         if enabled {
             if isPreventingDisplaySleep {
                 if persist {
-                    QCSettingsManager.shared.setPreventDisplaySleep(true)
+                    CPSettingsManager.shared.setPreventDisplaySleep(true)
                 }
                 return
             }
@@ -68,7 +68,7 @@ class QCDisplaySleepManager {
                 displaySleepAssertionID = assertionID
                 isPreventingDisplaySleep = true
                 if persist {
-                    QCSettingsManager.shared.setPreventDisplaySleep(true)
+                    CPSettingsManager.shared.setPreventDisplaySleep(true)
                 }
                 delegate?.displaySleepManager(self, needsNotification: "Display Sleep", body: "Display sleep prevention enabled", sound: false)
                 return
@@ -88,7 +88,7 @@ class QCDisplaySleepManager {
         let wasPreventing = isPreventingDisplaySleep
         isPreventingDisplaySleep = false
         if persist {
-            QCSettingsManager.shared.setPreventDisplaySleep(false)
+            CPSettingsManager.shared.setPreventDisplaySleep(false)
         }
         if wasPreventing {
             delegate?.displaySleepManager(self, needsNotification: "Display Sleep", body: "Display sleep prevention disabled", sound: false)
@@ -100,7 +100,7 @@ class QCDisplaySleepManager {
     
     func applyDisplaySleepPreferenceFromSettings(force: Bool = false) {
         if isFullScreenActive && !force { return }
-        let shouldPrevent = QCSettingsManager.shared.preventDisplaySleep
+        let shouldPrevent = CPSettingsManager.shared.preventDisplaySleep
         setDisplaySleepPrevention(
             enabled: shouldPrevent,
             persist: false,
@@ -122,7 +122,7 @@ class QCDisplaySleepManager {
             displaySleepStateBeforeFullScreen = isPreventingDisplaySleep
         }
         delegate?.displaySleepManager(self, needsMenuItemEnabled: false)
-        if QCSettingsManager.shared.autoDisplaySleepInFullScreen {
+        if CPSettingsManager.shared.autoDisplaySleepInFullScreen {
             setDisplaySleepPrevention(
                 enabled: true,
                 persist: false,
@@ -132,7 +132,7 @@ class QCDisplaySleepManager {
     }
     
     func handleWillExitFullScreen() {
-        let previous = displaySleepStateBeforeFullScreen ?? QCSettingsManager.shared.preventDisplaySleep
+        let previous = displaySleepStateBeforeFullScreen ?? CPSettingsManager.shared.preventDisplaySleep
         setDisplaySleepPrevention(
             enabled: previous,
             persist: true,

@@ -1,17 +1,17 @@
-// Copyright H. Striepe - 2025
+// Copyright H. Striepe ©2025
 
 import Cocoa
 
-// MARK: - QCPreferencesControllerDelegate Protocol
-protocol QCPreferencesControllerDelegate: AnyObject {
-    func preferencesController(_ controller: QCPreferencesController, didSavePreferences: Void)
+// MARK: - CPPreferencesControllerDelegate Protocol
+protocol CPPreferencesControllerDelegate: AnyObject {
+    func preferencesController(_ controller: CPPreferencesController, didSavePreferences: Void)
 }
 
-// MARK: - QCPreferencesController Class
-class QCPreferencesController {
+// MARK: - CPPreferencesController Class
+class CPPreferencesController {
     
     // MARK: - Properties
-    weak var delegate: QCPreferencesControllerDelegate?
+    weak var delegate: CPPreferencesControllerDelegate?
     weak var parentWindow: NSWindow?
     
     private var preferencesDirectoryTextField: NSTextField?
@@ -35,8 +35,25 @@ class QCPreferencesController {
         alert.addButton(withTitle: "OK")
         alert.addButton(withTitle: "Cancel")
         
-        // Create a custom view for preferences
-        let view = NSView(frame: NSRect(x: 0, y: 0, width: 500, height: 170))
+        // Create a custom view for preferences (increased height for performance mode)
+        let view = NSView(frame: NSRect(x: 0, y: 0, width: 500, height: 200))
+        
+        // Performance Mode selector
+        let performanceLabel = NSTextField(labelWithString: "Performance Mode:")
+        performanceLabel.frame = NSRect(x: 20, y: 180, width: 150, height: 17)
+        view.addSubview(performanceLabel)
+        
+        // Right-align popup with directory text field (which is 380 wide starting at x: 20, so right edge at x: 400)
+        // Popup is 200 wide, so position at x: 200 to right-align at x: 400
+        let performancePopup = NSPopUpButton(frame: NSRect(x: 200, y: 177, width: 200, height: 22))
+        performancePopup.addItems(withTitles: ["Auto", "High", "Medium", "Low"])
+        let currentMode = CPSettingsManager.shared.performanceMode.capitalized
+        if let index = performancePopup.itemTitles.firstIndex(of: currentMode) {
+            performancePopup.selectItem(at: index)
+        } else {
+            performancePopup.selectItem(at: 0) // Default to Auto
+        }
+        view.addSubview(performancePopup)
         
         // Toggle: Always show Video > Image submenu
         let imageMenuLabel = NSTextField(labelWithString: "Always show the Image submenu under Video")
@@ -44,7 +61,7 @@ class QCPreferencesController {
         view.addSubview(imageMenuLabel)
         
         let imageMenuToggle = NSSwitch(frame: NSRect(x: 429, y: 148, width: 51, height: 31))
-        imageMenuToggle.state = QCSettingsManager.shared.alwaysShowImageMenu ? .on : .off
+        imageMenuToggle.state = CPSettingsManager.shared.alwaysShowImageMenu ? .on : .off
         imageMenuToggle.isEnabled = true
         view.addSubview(imageMenuToggle)
         
@@ -54,7 +71,7 @@ class QCPreferencesController {
         view.addSubview(displaySleepLabel)
         
         let displaySleepToggle = NSSwitch(frame: NSRect(x: 429, y: 118, width: 51, height: 31))
-        displaySleepToggle.state = QCSettingsManager.shared.autoDisplaySleepInFullScreen ? .on : .off
+        displaySleepToggle.state = CPSettingsManager.shared.autoDisplaySleepInFullScreen ? .on : .off
         displaySleepToggle.isEnabled = true
         view.addSubview(displaySleepToggle)
         
@@ -64,7 +81,7 @@ class QCPreferencesController {
         view.addSubview(captureControlsLabel)
         
         let captureControlsToggle = NSSwitch(frame: NSRect(x: 429, y: 88, width: 51, height: 31))
-        captureControlsToggle.state = QCSettingsManager.shared.showVideoCaptureControls ? .on : .off
+        captureControlsToggle.state = CPSettingsManager.shared.showVideoCaptureControls ? .on : .off
         captureControlsToggle.isEnabled = true
         view.addSubview(captureControlsToggle)
         
@@ -74,7 +91,7 @@ class QCPreferencesController {
         view.addSubview(directoryLabel)
         
         let directoryTextField = NSTextField(frame: NSRect(x: 20, y: 30, width: 380, height: 22))
-        var directoryPath = QCSettingsManager.shared.captureImageDirectory
+        var directoryPath = CPSettingsManager.shared.captureImageDirectory
         if directoryPath.isEmpty {
             let homePath = NSHomeDirectory()
             directoryPath = (homePath as NSString).appendingPathComponent("Pictures/CapturePlay")
@@ -95,6 +112,7 @@ class QCPreferencesController {
         weak var weakDisplaySleepToggle = displaySleepToggle
         weak var weakImageMenuToggle = imageMenuToggle
         weak var weakCaptureControlsToggle = captureControlsToggle
+        weak var weakPerformancePopup = performancePopup
         weak var weakSelf = self
         
         // Use beginSheetModal instead of runModal to allow nested dialogs
@@ -108,24 +126,30 @@ class QCPreferencesController {
                     if !path.isEmpty {
                         // Always expand tilde paths when saving to avoid issues
                         path = weakSelf?.expandTildePath(path) ?? path
-                        QCSettingsManager.shared.setCaptureImageDirectory(path)
+                        CPSettingsManager.shared.setCaptureImageDirectory(path)
                         NSLog("Saved capture directory: %@", path)
                     } else {
                         // Reset to default
-                        QCSettingsManager.shared.setCaptureImageDirectory("")
+                        CPSettingsManager.shared.setCaptureImageDirectory("")
                         NSLog("Reset capture directory to default")
                     }
                 }
                 if let toggle = weakDisplaySleepToggle {
-                    QCSettingsManager.shared.setAutoDisplaySleepInFullScreen(toggle.state == .on)
+                    CPSettingsManager.shared.setAutoDisplaySleepInFullScreen(toggle.state == .on)
                 }
                 if let toggle = weakImageMenuToggle {
-                    QCSettingsManager.shared.setAlwaysShowImageMenu(toggle.state == .on)
+                    CPSettingsManager.shared.setAlwaysShowImageMenu(toggle.state == .on)
                 }
                 if let toggle = weakCaptureControlsToggle {
-                    QCSettingsManager.shared.setShowVideoCaptureControls(toggle.state == .on)
+                    CPSettingsManager.shared.setShowVideoCaptureControls(toggle.state == .on)
                 }
-                QCSettingsManager.shared.saveSettings()
+                if let popup = weakPerformancePopup {
+                    let selectedTitle = popup.selectedItem?.title ?? "Auto"
+                    let mode = selectedTitle.lowercased()
+                    CPSettingsManager.shared.setPerformanceMode(mode)
+                    NSLog("Performance mode set to: %@", mode)
+                }
+                CPSettingsManager.shared.saveSettings()
                 weakSelf?.delegate?.preferencesController(weakSelf!, didSavePreferences: ())
             }
         }
@@ -145,7 +169,7 @@ class QCPreferencesController {
         panel.allowsMultipleSelection = false
         panel.message = "Select a directory for captured images"
         
-        let settings = QCSettingsManager.shared
+        let settings = CPSettingsManager.shared
         var initialPath = settings.captureImageDirectory
         if initialPath.isEmpty {
             let homePath = NSHomeDirectory()
@@ -158,16 +182,16 @@ class QCPreferencesController {
                 // Create security-scoped bookmark for persistent access
                 do {
                     let bookmarkData = try url.bookmarkData(options: [.withSecurityScope], includingResourceValuesForKeys: nil, relativeTo: nil)
-                    QCSettingsManager.shared.setCaptureImageDirectoryBookmark(bookmarkData)
-                    QCSettingsManager.shared.setCaptureImageDirectory(url.path)
-                    QCSettingsManager.shared.saveSettings()
+                    CPSettingsManager.shared.setCaptureImageDirectoryBookmark(bookmarkData)
+                    CPSettingsManager.shared.setCaptureImageDirectory(url.path)
+                    CPSettingsManager.shared.saveSettings()
                     NSLog("Saved security-scoped bookmark for directory: %@", url.path)
                 } catch {
                     NSLog("WARNING: Failed to create security-scoped bookmark: %@", error.localizedDescription)
                     // Still save the path, but without bookmark
-                    QCSettingsManager.shared.setCaptureImageDirectory(url.path)
-                    QCSettingsManager.shared.setCaptureImageDirectoryBookmark(nil)
-                    QCSettingsManager.shared.saveSettings()
+                    CPSettingsManager.shared.setCaptureImageDirectory(url.path)
+                    CPSettingsManager.shared.setCaptureImageDirectoryBookmark(nil)
+                    CPSettingsManager.shared.saveSettings()
                 }
                 
                 if let textField = self?.preferencesDirectoryTextField {

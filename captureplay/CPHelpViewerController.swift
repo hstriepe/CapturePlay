@@ -1,5 +1,5 @@
-//
-//  QCHelpViewerController.swift
+// Copyright H. Striepe ©2025
+//  CPHelpViewerController.swift
 //  CapturePlay
 //
 //  Created on 11/14/25.
@@ -8,13 +8,13 @@
 import Cocoa
 import WebKit
 
-protocol QCHelpViewerDelegate: AnyObject {
-    func helpViewerDidClose(_ helpViewer: QCHelpViewerController)
+protocol CPHelpViewerDelegate: AnyObject {
+    func helpViewerDidClose(_ helpViewer: CPHelpViewerController)
 }
 
-class QCHelpViewerController: NSWindowController {
+class CPHelpViewerController: NSWindowController {
     
-    weak var delegate: QCHelpViewerDelegate?
+    weak var delegate: CPHelpViewerDelegate?
     
     private var webView: WKWebView!
     
@@ -125,13 +125,13 @@ class QCHelpViewerController: NSWindowController {
     }
 }
 
-extension QCHelpViewerController: NSWindowDelegate {
+extension CPHelpViewerController: NSWindowDelegate {
     func windowWillClose(_ notification: Notification) {
         delegate?.helpViewerDidClose(self)
     }
 }
 
-extension QCHelpViewerController: WKNavigationDelegate {
+extension CPHelpViewerController: WKNavigationDelegate {
     func webView(_ webView: WKWebView, didFail navigation: WKNavigation!, withError error: Error) {
         // Only show error for non-cancelled navigations
         let nsError = error as NSError

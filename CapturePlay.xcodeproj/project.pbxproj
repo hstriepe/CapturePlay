@@ -9,39 +9,39 @@
 /* Begin PBXBuildFile section */
 		87673A631E35C97A002ECF15 /* AVFoundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 87673A621E35C97A002ECF15 /* AVFoundation.framework */; };
 		87FF95021E355CDB0017DADB /* AVKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 87FF95011E355CDB0017DADB /* AVKit.framework */; };
-		87FF95201E35B7CE0017DADB /* QCAppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 87FF951F1E35B7CE0017DADB /* QCAppDelegate.swift */; };
-		F435396A2D1B1B86002188A0 /* QCSettingsManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = F43539692D1B1B85002188A0 /* QCSettingsManager.swift */; };
-		F435396B2D1B1B86002188A1 /* QCCaptureManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = F435396C2D1B1B85002188A1 /* QCCaptureManager.swift */; };
-		F435396D2D1B1B86002188A2 /* QCAudioManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = F435396E2D1B1B85002188A2 /* QCAudioManager.swift */; };
-		F435396F2D1B1B86002188A3 /* QCWindowManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = F43539702D1B1B85002188A3 /* QCWindowManager.swift */; };
-		F43539712D1B1B86002188A4 /* QCCaptureFileManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = F43539722D1B1B85002188A4 /* QCCaptureFileManager.swift */; };
-		F43539732D1B1B86002188A5 /* QCNotificationManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = F43539742D1B1B85002188A5 /* QCNotificationManager.swift */; };
-		F43539752D1B1B86002188A6 /* QCDisplaySleepManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = F43539762D1B1B85002188A6 /* QCDisplaySleepManager.swift */; };
-		F43539772D1B1B86002188A7 /* QCPreferencesController.swift in Sources */ = {isa = PBXBuildFile; fileRef = F43539782D1B1B85002188A7 /* QCPreferencesController.swift */; };
-		F43539792D1B1B8A002188A8 /* QCHelpViewerController.swift in Sources */ = {isa = PBXBuildFile; fileRef = F435397A2D1B1B8B002188A8 /* QCHelpViewerController.swift */; };
-		F435397B2D1B1B8C002188A9 /* QCColorCorrectionController.swift in Sources */ = {isa = PBXBuildFile; fileRef = F435397C2D1B1B8D002188A9 /* QCColorCorrectionController.swift */; };
+		87FF95201E35B7CE0017DADB /* CPAppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 87FF951F1E35B7CE0017DADB /* CPAppDelegate.swift */; };
+		F435396A2D1B1B86002188A0 /* CPSettingsManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = F43539692D1B1B85002188A0 /* CPSettingsManager.swift */; };
+		F435396B2D1B1B86002188A1 /* CPCaptureManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = F435396C2D1B1B85002188A1 /* CPCaptureManager.swift */; };
+		F435396D2D1B1B86002188A2 /* CPAudioManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = F435396E2D1B1B85002188A2 /* CPAudioManager.swift */; };
+		F435396F2D1B1B86002188A3 /* CPWindowManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = F43539702D1B1B85002188A3 /* CPWindowManager.swift */; };
+		F43539712D1B1B86002188A4 /* CPCaptureFileManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = F43539722D1B1B85002188A4 /* CPCaptureFileManager.swift */; };
+		F43539732D1B1B86002188A5 /* CPNotificationManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = F43539742D1B1B85002188A5 /* CPNotificationManager.swift */; };
+		F43539752D1B1B86002188A6 /* CPDisplaySleepManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = F43539762D1B1B85002188A6 /* CPDisplaySleepManager.swift */; };
+		F43539772D1B1B86002188A7 /* CPPreferencesController.swift in Sources */ = {isa = PBXBuildFile; fileRef = F43539782D1B1B85002188A7 /* CPPreferencesController.swift */; };
+		F43539792D1B1B8A002188A8 /* CPHelpViewerController.swift in Sources */ = {isa = PBXBuildFile; fileRef = F435397A2D1B1B8B002188A8 /* CPHelpViewerController.swift */; };
+		F435397B2D1B1B8C002188A9 /* CPColorCorrectionController.swift in Sources */ = {isa = PBXBuildFile; fileRef = F435397C2D1B1B8D002188A9 /* CPColorCorrectionController.swift */; };
 		F4CBD39716B8CE5F003A4794 /* Cocoa.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = F4CBD39616B8CE5F003A4794 /* Cocoa.framework */; };
 		F4CBD3AD16B8CE5F003A4794 /* MainMenu.xib in Resources */ = {isa = PBXBuildFile; fileRef = F4CBD3AB16B8CE5F003A4794 /* MainMenu.xib */; };
 		F5F6AC9F2ECD77FF0019412B /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = F5F6AC9E2ECD77FF0019412B /* Assets.xcassets */; };
-		F952D6E324E15A6200EA786D /* QCUsbWatcher.swift in Sources */ = {isa = PBXBuildFile; fileRef = F952D6E224E15A6200EA786D /* QCUsbWatcher.swift */; };
+		F952D6E324E15A6200EA786D /* CPUsbWatcher.swift in Sources */ = {isa = PBXBuildFile; fileRef = F952D6E224E15A6200EA786D /* CPUsbWatcher.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
 		87673A621E35C97A002ECF15 /* AVFoundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = AVFoundation.framework; path = System/Library/Frameworks/AVFoundation.framework; sourceTree = SDKROOT; };
 		87FF95011E355CDB0017DADB /* AVKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = AVKit.framework; path = System/Library/Frameworks/AVKit.framework; sourceTree = SDKROOT; };
-		87FF951F1E35B7CE0017DADB /* QCAppDelegate.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = QCAppDelegate.swift; sourceTree = "<group>"; };
+		87FF951F1E35B7CE0017DADB /* CPAppDelegate.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = CPAppDelegate.swift; sourceTree = "<group>"; };
 		87FF95211E35BA3B0017DADB /* CapturePlay-Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = "CapturePlay-Info.plist"; sourceTree = "<group>"; };
 		F40A9A182AB7BC630082BBC6 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.xib; name = Base; path = Base.lproj/MainMenu.xib; sourceTree = "<group>"; };
-		F43539692D1B1B85002188A0 /* QCSettingsManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = QCSettingsManager.swift; sourceTree = "<group>"; };
-		F435396C2D1B1B85002188A1 /* QCCaptureManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = QCCaptureManager.swift; sourceTree = "<group>"; };
-		F435396E2D1B1B85002188A2 /* QCAudioManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = QCAudioManager.swift; sourceTree = "<group>"; };
-		F43539702D1B1B85002188A3 /* QCWindowManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = QCWindowManager.swift; sourceTree = "<group>"; };
-		F43539722D1B1B85002188A4 /* QCCaptureFileManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = QCCaptureFileManager.swift; sourceTree = "<group>"; };
-		F43539742D1B1B85002188A5 /* QCNotificationManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = QCNotificationManager.swift; sourceTree = "<group>"; };
-		F43539762D1B1B85002188A6 /* QCDisplaySleepManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = QCDisplaySleepManager.swift; sourceTree = "<group>"; };
-		F43539782D1B1B85002188A7 /* QCPreferencesController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = QCPreferencesController.swift; sourceTree = "<group>"; };
-		F435397A2D1B1B8B002188A8 /* QCHelpViewerController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = QCHelpViewerController.swift; sourceTree = "<group>"; };
-		F435397C2D1B1B8D002188A9 /* QCColorCorrectionController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = QCColorCorrectionController.swift; sourceTree = "<group>"; };
+		F43539692D1B1B85002188A0 /* CPSettingsManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CPSettingsManager.swift; sourceTree = "<group>"; };
+		F435396C2D1B1B85002188A1 /* CPCaptureManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CPCaptureManager.swift; sourceTree = "<group>"; };
+		F435396E2D1B1B85002188A2 /* CPAudioManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CPAudioManager.swift; sourceTree = "<group>"; };
+		F43539702D1B1B85002188A3 /* CPWindowManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CPWindowManager.swift; sourceTree = "<group>"; };
+		F43539722D1B1B85002188A4 /* CPCaptureFileManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CPCaptureFileManager.swift; sourceTree = "<group>"; };
+		F43539742D1B1B85002188A5 /* CPNotificationManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CPNotificationManager.swift; sourceTree = "<group>"; };
+		F43539762D1B1B85002188A6 /* CPDisplaySleepManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CPDisplaySleepManager.swift; sourceTree = "<group>"; };
+		F43539782D1B1B85002188A7 /* CPPreferencesController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CPPreferencesController.swift; sourceTree = "<group>"; };
+		F435397A2D1B1B8B002188A8 /* CPHelpViewerController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CPHelpViewerController.swift; sourceTree = "<group>"; };
+		F435397C2D1B1B8D002188A9 /* CPColorCorrectionController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CPColorCorrectionController.swift; sourceTree = "<group>"; };
 		F43D252C16BB703100CBC272 /* CapturePlay.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = CapturePlay.entitlements; sourceTree = "<group>"; };
 		F4CBD39316B8CE5F003A4794 /* CapturePlay.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = CapturePlay.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		F4CBD39616B8CE5F003A4794 /* Cocoa.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Cocoa.framework; path = System/Library/Frameworks/Cocoa.framework; sourceTree = SDKROOT; };
@@ -50,8 +50,9 @@
 		F4CBD39B16B8CE5F003A4794 /* Foundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Foundation.framework; path = System/Library/Frameworks/Foundation.framework; sourceTree = SDKROOT; };
 		F508C9F62EC67FD300B65399 /* README.md */ = {isa = PBXFileReference; lastKnownFileType = net.daringfireball.markdown; path = README.md; sourceTree = "<group>"; };
 		F594165B2EC9209E0053EC09 /* MANUAL.md */ = {isa = PBXFileReference; lastKnownFileType = net.daringfireball.markdown; path = MANUAL.md; sourceTree = "<group>"; };
+		F5EAF9A92ED230C0001724E5 /* Release Notes.md */ = {isa = PBXFileReference; lastKnownFileType = net.daringfireball.markdown; path = "Release Notes.md"; sourceTree = "<group>"; };
 		F5F6AC9E2ECD77FF0019412B /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; name = Assets.xcassets; path = captureplay/Assets.xcassets; sourceTree = "<group>"; };
-		F952D6E224E15A6200EA786D /* QCUsbWatcher.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = QCUsbWatcher.swift; sourceTree = "<group>"; };
+		F952D6E224E15A6200EA786D /* CPUsbWatcher.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CPUsbWatcher.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFileSystemSynchronizedRootGroup section */
@@ -82,6 +83,7 @@
 				F5F6AC9E2ECD77FF0019412B /* Assets.xcassets */,
 				F4CBD39C16B8CE5F003A4794 /* captureplay */,
 				F4CBD39516B8CE5F003A4794 /* Frameworks */,
+				F5EAF9A92ED230C0001724E5 /* Release Notes.md */,
 				F508C9F62EC67FD300B65399 /* README.md */,
 				F594165B2EC9209E0053EC09 /* MANUAL.md */,
 				F594164C2EC918E60053EC09 /* Resources */,
@@ -122,20 +124,20 @@
 			isa = PBXGroup;
 			children = (
 				87FF95211E35BA3B0017DADB /* CapturePlay-Info.plist */,
-				87FF951F1E35B7CE0017DADB /* QCAppDelegate.swift */,
+				87FF951F1E35B7CE0017DADB /* CPAppDelegate.swift */,
 				F43D252C16BB703100CBC272 /* CapturePlay.entitlements */,
 				F4CBD3AB16B8CE5F003A4794 /* MainMenu.xib */,
-				F43539692D1B1B85002188A0 /* QCSettingsManager.swift */,
-				F435396C2D1B1B85002188A1 /* QCCaptureManager.swift */,
-				F435396E2D1B1B85002188A2 /* QCAudioManager.swift */,
-				F43539702D1B1B85002188A3 /* QCWindowManager.swift */,
-				F43539722D1B1B85002188A4 /* QCCaptureFileManager.swift */,
-				F43539742D1B1B85002188A5 /* QCNotificationManager.swift */,
-				F43539762D1B1B85002188A6 /* QCDisplaySleepManager.swift */,
-				F43539782D1B1B85002188A7 /* QCPreferencesController.swift */,
-				F435397A2D1B1B8B002188A8 /* QCHelpViewerController.swift */,
-				F435397C2D1B1B8D002188A9 /* QCColorCorrectionController.swift */,
-				F952D6E224E15A6200EA786D /* QCUsbWatcher.swift */,
+				F43539692D1B1B85002188A0 /* CPSettingsManager.swift */,
+				F435396C2D1B1B85002188A1 /* CPCaptureManager.swift */,
+				F435396E2D1B1B85002188A2 /* CPAudioManager.swift */,
+				F43539702D1B1B85002188A3 /* CPWindowManager.swift */,
+				F43539722D1B1B85002188A4 /* CPCaptureFileManager.swift */,
+				F43539742D1B1B85002188A5 /* CPNotificationManager.swift */,
+				F43539762D1B1B85002188A6 /* CPDisplaySleepManager.swift */,
+				F43539782D1B1B85002188A7 /* CPPreferencesController.swift */,
+				F435397A2D1B1B8B002188A8 /* CPHelpViewerController.swift */,
+				F435397C2D1B1B8D002188A9 /* CPColorCorrectionController.swift */,
+				F952D6E224E15A6200EA786D /* CPUsbWatcher.swift */,
 			);
 			path = captureplay;
 			sourceTree = "<group>";
@@ -216,18 +218,18 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				87FF95201E35B7CE0017DADB /* QCAppDelegate.swift in Sources */,
-				F952D6E324E15A6200EA786D /* QCUsbWatcher.swift in Sources */,
-				F435396A2D1B1B86002188A0 /* QCSettingsManager.swift in Sources */,
-				F435396B2D1B1B86002188A1 /* QCCaptureManager.swift in Sources */,
-				F435396D2D1B1B86002188A2 /* QCAudioManager.swift in Sources */,
-				F435396F2D1B1B86002188A3 /* QCWindowManager.swift in Sources */,
-				F43539712D1B1B86002188A4 /* QCCaptureFileManager.swift in Sources */,
-				F43539732D1B1B86002188A5 /* QCNotificationManager.swift in Sources */,
-				F43539752D1B1B86002188A6 /* QCDisplaySleepManager.swift in Sources */,
-				F43539772D1B1B86002188A7 /* QCPreferencesController.swift in Sources */,
-				F43539792D1B1B8A002188A8 /* QCHelpViewerController.swift in Sources */,
-				F435397B2D1B1B8C002188A9 /* QCColorCorrectionController.swift in Sources */,
+				87FF95201E35B7CE0017DADB /* CPAppDelegate.swift in Sources */,
+				F952D6E324E15A6200EA786D /* CPUsbWatcher.swift in Sources */,
+				F435396A2D1B1B86002188A0 /* CPSettingsManager.swift in Sources */,
+				F435396B2D1B1B86002188A1 /* CPCaptureManager.swift in Sources */,
+				F435396D2D1B1B86002188A2 /* CPAudioManager.swift in Sources */,
+				F435396F2D1B1B86002188A3 /* CPWindowManager.swift in Sources */,
+				F43539712D1B1B86002188A4 /* CPCaptureFileManager.swift in Sources */,
+				F43539732D1B1B86002188A5 /* CPNotificationManager.swift in Sources */,
+				F43539752D1B1B86002188A6 /* CPDisplaySleepManager.swift in Sources */,
+				F43539772D1B1B86002188A7 /* CPPreferencesController.swift in Sources */,
+				F43539792D1B1B8A002188A8 /* CPHelpViewerController.swift in Sources */,
+				F435397B2D1B1B8C002188A9 /* CPColorCorrectionController.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -364,7 +366,7 @@
 				CODE_SIGN_IDENTITY = "Mac Developer";
 				"CODE_SIGN_IDENTITY[sdk=macosx*]" = "Apple Development";
 				COMBINE_HIDPI_IMAGES = YES;
-				CURRENT_PROJECT_VERSION = 160;
+				CURRENT_PROJECT_VERSION = 169;
 				DEAD_CODE_STRIPPING = YES;
 				ENABLE_APP_SANDBOX = YES;
 				ENABLE_FILE_ACCESS_DOWNLOADS_FOLDER = readwrite;
@@ -422,12 +424,10 @@
 				CODE_SIGN_ALLOW_ENTITLEMENTS_MODIFICATION = YES;
 				CODE_SIGN_ENTITLEMENTS = captureplay/CapturePlay.entitlements;
 				CODE_SIGN_IDENTITY = "Mac Developer";
-				"CODE_SIGN_IDENTITY[sdk=macosx*]" = "-";
-				CODE_SIGN_STYLE = Manual;
+				"CODE_SIGN_IDENTITY[sdk=macosx*]" = "Apple Development";
 				COMBINE_HIDPI_IMAGES = YES;
-				CURRENT_PROJECT_VERSION = 160;
+				CURRENT_PROJECT_VERSION = 169;
 				DEAD_CODE_STRIPPING = YES;
-				DEVELOPMENT_TEAM = "";
 				ENABLE_APP_SANDBOX = YES;
 				ENABLE_FILE_ACCESS_PICTURE_FOLDER = readwrite;
 				ENABLE_HARDENED_RUNTIME = YES;
@@ -456,7 +456,6 @@
 				PRODUCT_BUNDLE_IDENTIFIER = org.windholm.captureplay;
 				PRODUCT_NAME = "${TARGET_NAME}";
 				PROVISIONING_PROFILE = "";
-				PROVISIONING_PROFILE_SPECIFIER = "";
 				RUNTIME_EXCEPTION_ALLOW_DYLD_ENVIRONMENT_VARIABLES = NO;
 				RUNTIME_EXCEPTION_ALLOW_JIT = NO;
 				RUNTIME_EXCEPTION_ALLOW_UNSIGNED_EXECUTABLE_MEMORY = NO;

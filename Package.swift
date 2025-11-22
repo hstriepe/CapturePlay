@@ -19,9 +19,9 @@ let package = Package(
             name: "CapturePlay",
             path: "CapturePlay",
             sources: [
-                "QCAppDelegate.swift",
-                "QCSettingsManager.swift",
-                "QCUsbWatcher.swift",
+                "CPAppDelegate.swift",
+                "CPSettingsManager.swift",
+                "CPUsbWatcher.swift",
             ]
         )
     ]

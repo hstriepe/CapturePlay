@@ -1,5 +1,10 @@
 # Release Notes
 
+#### Version 3.5 (169 - internal) - 11-22-25
+
+1. Refactored all names and internal code prefixes from QC to CP.
+2. Further performance optimizations based on system capabilty. Auto mode can be overriden in Settings.
+
 #### Version 3.5 (160 - internal) - 11-21-25
 
 1. Some generic capture devices have an odd audio sample rate. We now convert to 48Khz in those cases for video-audio recording using AAC.

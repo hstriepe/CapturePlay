@@ -1,17 +1,17 @@
-// Copyright H. Striepe - 2025
+// Copyright H. Striepe ©2025
 
 import Cocoa
 
-// MARK: - QCColorCorrectionControllerDelegate Protocol
-protocol QCColorCorrectionControllerDelegate: AnyObject {
-    func colorCorrectionController(_ controller: QCColorCorrectionController, didChangeBrightness brightness: Float, contrast: Float, hue: Float)
+// MARK: - CPColorCorrectionControllerDelegate Protocol
+protocol CPColorCorrectionControllerDelegate: AnyObject {
+    func colorCorrectionController(_ controller: CPColorCorrectionController, didChangeBrightness brightness: Float, contrast: Float, hue: Float)
 }
 
-// MARK: - QCColorCorrectionController Class
-class QCColorCorrectionController: NSWindowController {
+// MARK: - CPColorCorrectionController Class
+class CPColorCorrectionController: NSWindowController {
     
     // MARK: - Properties
-    weak var delegate: QCColorCorrectionControllerDelegate?
+    weak var delegate: CPColorCorrectionControllerDelegate?
     var deviceName: String? {
         didSet {
             updateUIForCurrentDevice()
@@ -77,7 +77,7 @@ class QCColorCorrectionController: NSWindowController {
         brightnessSlider.minValue = -1.0
         brightnessSlider.maxValue = 1.0
         // Load device-specific or default value
-        let initialBrightness = deviceName.map { QCSettingsManager.shared.getColorCorrection(forDevice: $0).brightness } ?? QCSettingsManager.shared.brightness
+        let initialBrightness = deviceName.map { CPSettingsManager.shared.getColorCorrection(forDevice: $0).brightness } ?? CPSettingsManager.shared.brightness
         brightnessSlider.doubleValue = Double(initialBrightness)
         brightnessSlider.target = self
         brightnessSlider.action = #selector(brightnessChanged(_:))
@@ -106,7 +106,7 @@ class QCColorCorrectionController: NSWindowController {
         contrastSlider.minValue = 0.0
         contrastSlider.maxValue = 2.0
         // Load device-specific or default value
-        let initialContrast = deviceName.map { QCSettingsManager.shared.getColorCorrection(forDevice: $0).contrast } ?? QCSettingsManager.shared.contrast
+        let initialContrast = deviceName.map { CPSettingsManager.shared.getColorCorrection(forDevice: $0).contrast } ?? CPSettingsManager.shared.contrast
         contrastSlider.doubleValue = Double(initialContrast)
         contrastSlider.target = self
         contrastSlider.action = #selector(contrastChanged(_:))
@@ -133,7 +133,7 @@ class QCColorCorrectionController: NSWindowController {
         hueSlider.minValue = -180.0
         hueSlider.maxValue = 180.0
         // Load device-specific or default value
-        let initialHue = deviceName.map { QCSettingsManager.shared.getColorCorrection(forDevice: $0).hue } ?? QCSettingsManager.shared.hue
+        let initialHue = deviceName.map { CPSettingsManager.shared.getColorCorrection(forDevice: $0).hue } ?? CPSettingsManager.shared.hue
         hueSlider.doubleValue = Double(initialHue)
         hueSlider.target = self
         hueSlider.action = #selector(hueChanged(_:))
@@ -165,9 +165,9 @@ class QCColorCorrectionController: NSWindowController {
         let currentHue = Float(hueSlider?.doubleValue ?? 0.0)
         
         if let deviceName = deviceName {
-            QCSettingsManager.shared.setColorCorrection(forDevice: deviceName, brightness: value, contrast: currentContrast, hue: currentHue)
+            CPSettingsManager.shared.setColorCorrection(forDevice: deviceName, brightness: value, contrast: currentContrast, hue: currentHue)
         } else {
-            QCSettingsManager.shared.setBrightness(value)
+            CPSettingsManager.shared.setBrightness(value)
         }
         
         brightnessValueLabel?.stringValue = String(format: "%.2f", sender.doubleValue)
@@ -180,9 +180,9 @@ class QCColorCorrectionController: NSWindowController {
         let currentHue = Float(hueSlider?.doubleValue ?? 0.0)
         
         if let deviceName = deviceName {
-            QCSettingsManager.shared.setColorCorrection(forDevice: deviceName, brightness: currentBrightness, contrast: value, hue: currentHue)
+            CPSettingsManager.shared.setColorCorrection(forDevice: deviceName, brightness: currentBrightness, contrast: value, hue: currentHue)
         } else {
-            QCSettingsManager.shared.setContrast(value)
+            CPSettingsManager.shared.setContrast(value)
         }
         
         contrastValueLabel?.stringValue = String(format: "%.2f", sender.doubleValue)
@@ -195,9 +195,9 @@ class QCColorCorrectionController: NSWindowController {
         let currentContrast = Float(contrastSlider?.doubleValue ?? 1.0)
         
         if let deviceName = deviceName {
-            QCSettingsManager.shared.setColorCorrection(forDevice: deviceName, brightness: currentBrightness, contrast: currentContrast, hue: value)
+            CPSettingsManager.shared.setColorCorrection(forDevice: deviceName, brightness: currentBrightness, contrast: currentContrast, hue: value)
         } else {
-            QCSettingsManager.shared.setHue(value)
+            CPSettingsManager.shared.setHue(value)
         }
         
         hueValueLabel?.stringValue = String(format: "%.1f", sender.doubleValue)
@@ -211,13 +211,13 @@ class QCColorCorrectionController: NSWindowController {
         hueSlider?.doubleValue = 0.0
         
         if let deviceName = deviceName {
-            QCSettingsManager.shared.setColorCorrection(forDevice: deviceName, brightness: 0.0, contrast: 1.0, hue: 0.0)
+            CPSettingsManager.shared.setColorCorrection(forDevice: deviceName, brightness: 0.0, contrast: 1.0, hue: 0.0)
         } else {
-            QCSettingsManager.shared.setBrightness(0.0)
-            QCSettingsManager.shared.setContrast(1.0)
-            QCSettingsManager.shared.setHue(0.0)
+            CPSettingsManager.shared.setBrightness(0.0)
+            CPSettingsManager.shared.setContrast(1.0)
+            CPSettingsManager.shared.setHue(0.0)
         }
-        QCSettingsManager.shared.saveSettings()
+        CPSettingsManager.shared.saveSettings()
         
         // Update value labels
         brightnessValueLabel?.stringValue = "0.00"
@@ -230,7 +230,7 @@ class QCColorCorrectionController: NSWindowController {
     private func updateUIForCurrentDevice() {
         guard brightnessSlider != nil, contrastSlider != nil, hueSlider != nil else { return }
         
-        let correction = deviceName.map { QCSettingsManager.shared.getColorCorrection(forDevice: $0) } ?? (brightness: 0.0, contrast: 1.0, hue: 0.0)
+        let correction = deviceName.map { CPSettingsManager.shared.getColorCorrection(forDevice: $0) } ?? (brightness: 0.0, contrast: 1.0, hue: 0.0)
         
         brightnessSlider?.doubleValue = Double(correction.brightness)
         contrastSlider?.doubleValue = Double(correction.contrast)

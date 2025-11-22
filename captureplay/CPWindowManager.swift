@@ -1,31 +1,31 @@
-// Copyright H. Striepe - 2025
+// Copyright H. Striepe ©2025
 
 import AVFoundation
 import Cocoa
 import CoreImage
 import CoreGraphics
 
-// MARK: - QCWindowManagerDelegate Protocol
-protocol QCWindowManagerDelegate: AnyObject {
-    func windowManager(_ manager: QCWindowManager, willEnterFullScreen: Bool)
-    func windowManager(_ manager: QCWindowManager, didEnterFullScreen: Bool)
-    func windowManager(_ manager: QCWindowManager, willExitFullScreen: Bool)
-    func windowManager(_ manager: QCWindowManager, didExitFullScreen: Bool)
-    func windowManager(_ manager: QCWindowManager, didChangeFrame frame: NSRect)
-    func windowManager(_ manager: QCWindowManager, needsSettingsUpdate: Void)
-    func windowManager(_ manager: QCWindowManager, didChangeBorderless isBorderless: Bool)
-    func windowManager(_ manager: QCWindowManager, didChangeRotation position: Int)
-    func windowManager(_ manager: QCWindowManager, didChangeMirroring isMirrored: Bool)
-    func windowManager(_ manager: QCWindowManager, didChangeUpsideDown isUpsideDown: Bool)
-    func windowManager(_ manager: QCWindowManager, didChangeAspectRatioFixed isFixed: Bool)
-    func windowManager(_ manager: QCWindowManager, didClickRecordingControl: Void)
+// MARK: - CPWindowManagerDelegate Protocol
+protocol CPWindowManagerDelegate: AnyObject {
+    func windowManager(_ manager: CPWindowManager, willEnterFullScreen: Bool)
+    func windowManager(_ manager: CPWindowManager, didEnterFullScreen: Bool)
+    func windowManager(_ manager: CPWindowManager, willExitFullScreen: Bool)
+    func windowManager(_ manager: CPWindowManager, didExitFullScreen: Bool)
+    func windowManager(_ manager: CPWindowManager, didChangeFrame frame: NSRect)
+    func windowManager(_ manager: CPWindowManager, needsSettingsUpdate: Void)
+    func windowManager(_ manager: CPWindowManager, didChangeBorderless isBorderless: Bool)
+    func windowManager(_ manager: CPWindowManager, didChangeRotation position: Int)
+    func windowManager(_ manager: CPWindowManager, didChangeMirroring isMirrored: Bool)
+    func windowManager(_ manager: CPWindowManager, didChangeUpsideDown isUpsideDown: Bool)
+    func windowManager(_ manager: CPWindowManager, didChangeAspectRatioFixed isFixed: Bool)
+    func windowManager(_ manager: CPWindowManager, didClickRecordingControl: Void)
 }
 
-// MARK: - QCWindowManager Class
-class QCWindowManager: NSObject {
+// MARK: - CPWindowManager Class
+class CPWindowManager: NSObject {
     
     // MARK: - Properties
-    weak var delegate: QCWindowManagerDelegate?
+    weak var delegate: CPWindowManagerDelegate?
     weak var window: NSWindow?
     weak var playerView: NSView?
     weak var captureLayer: AVCaptureVideoPreviewLayer?
@@ -48,44 +48,44 @@ class QCWindowManager: NSObject {
     
     // Settings access (via delegate or direct)
     var isBorderless: Bool {
-        get { QCSettingsManager.shared.isBorderless }
+        get { CPSettingsManager.shared.isBorderless }
         set {
-            QCSettingsManager.shared.setBorderless(newValue)
+            CPSettingsManager.shared.setBorderless(newValue)
             delegate?.windowManager(self, didChangeBorderless: newValue)
         }
     }
     
     var position: Int {
-        get { QCSettingsManager.shared.position }
+        get { CPSettingsManager.shared.position }
         set {
-            QCSettingsManager.shared.setPosition(newValue)
+            CPSettingsManager.shared.setPosition(newValue)
             setRotation(newValue)
             delegate?.windowManager(self, didChangeRotation: newValue)
         }
     }
     
     var isMirrored: Bool {
-        get { QCSettingsManager.shared.isMirrored }
+        get { CPSettingsManager.shared.isMirrored }
         set {
-            QCSettingsManager.shared.setMirrored(newValue)
+            CPSettingsManager.shared.setMirrored(newValue)
             applyMirroring()
             delegate?.windowManager(self, didChangeMirroring: newValue)
         }
     }
     
     var isUpsideDown: Bool {
-        get { QCSettingsManager.shared.isUpsideDown }
+        get { CPSettingsManager.shared.isUpsideDown }
         set {
-            QCSettingsManager.shared.setUpsideDown(newValue)
+            CPSettingsManager.shared.setUpsideDown(newValue)
             setRotation(position)
             delegate?.windowManager(self, didChangeUpsideDown: newValue)
         }
     }
     
     var isAspectRatioFixed: Bool {
-        get { QCSettingsManager.shared.isAspectRatioFixed }
+        get { CPSettingsManager.shared.isAspectRatioFixed }
         set {
-            QCSettingsManager.shared.setAspectRatioFixed(newValue)
+            CPSettingsManager.shared.setAspectRatioFixed(newValue)
             fixAspectRatio()
             delegate?.windowManager(self, didChangeAspectRatioFixed: newValue)
         }
@@ -210,9 +210,47 @@ class QCWindowManager: NSObject {
         captureLayer.connection?.isVideoMirrored = isMirrored
     }
     
+    // MARK: - Rendering Optimizations
+    private func optimizeViewForSmoothRendering(previewView: NSView) {
+        // Configure view for optimal video rendering performance
+        previewView.wantsLayer = true
+        
+        guard let layer = previewView.layer else { return }
+        
+        // Enable hardware acceleration
+        layer.drawsAsynchronously = true // Use background thread for drawing
+        
+        // Optimize for video content
+        layer.isOpaque = true // No transparency needed for video
+        layer.contentsGravity = .resizeAspectFill
+        
+        // Reduce compositing overhead
+        layer.shouldRasterize = false // Don't rasterize video layers
+        
+        // Use optimal pixel format for video
+        if #available(macOS 10.15, *) {
+            layer.contentsFormat = .RGBA8Uint
+        }
+        
+        // Disable unnecessary effects that can cause frame drops
+        layer.shadowOpacity = 0.0
+        layer.cornerRadius = 0.0
+        layer.borderWidth = 0.0
+    }
+    
     // MARK: - Color Correction
     func applyColorCorrection(brightness: Float, contrast: Float, hue: Float) {
         guard let playerView = playerView, let layer = playerView.layer else { return }
+        
+        // Performance optimization: Skip filter application if all values are at defaults
+        // This avoids expensive CoreImage processing on every frame when no correction is needed
+        if brightness == 0.0 && contrast == 1.0 && hue == 0.0 {
+            // Remove filters if they exist (for when user resets to defaults)
+            if layer.filters != nil && !layer.filters!.isEmpty {
+                layer.filters = nil
+            }
+            return
+        }
         
         // Enable layer-backed rendering for filters
         playerView.wantsLayer = true
@@ -225,6 +263,7 @@ class QCWindowManager: NSObject {
             if let brightnessFilter = CIFilter(name: "CIColorControls") {
                 brightnessFilter.setValue(brightness, forKey: kCIInputBrightnessKey)
                 brightnessFilter.setValue(contrast, forKey: kCIInputContrastKey)
+                // CoreImage filters are automatically GPU-accelerated
                 filters.append(brightnessFilter)
             }
         }
@@ -238,6 +277,8 @@ class QCWindowManager: NSObject {
         }
         
         // Apply filters to the layer
+        // CoreImage filters are GPU-accelerated, but still have overhead
+        // Only apply when actually needed (checked above)
         layer.filters = filters.isEmpty ? nil : filters
     }
     
@@ -811,7 +852,7 @@ class QCWindowManager: NSObject {
         guard !window.styleMask.contains(.fullScreen) else { return }
         let frame = window.frame
         let contentSize = window.contentLayoutRect.size
-        QCSettingsManager.shared.setFrameProperties(
+        CPSettingsManager.shared.setFrameProperties(
             x: Float(frame.minX),
             y: Float(frame.minY),
             width: Float(contentSize.width),
@@ -821,11 +862,11 @@ class QCWindowManager: NSObject {
     
     func loadWindowFrame() {
         guard let window = window else { return }
-        let savedW = QCSettingsManager.shared.frameWidth
-        let savedH = QCSettingsManager.shared.frameHeight
+        let savedW = CPSettingsManager.shared.frameWidth
+        let savedH = CPSettingsManager.shared.frameHeight
         if 100 < savedW && 100 < savedH {
-            let savedX = QCSettingsManager.shared.frameX
-            let savedY = QCSettingsManager.shared.frameY
+            let savedX = CPSettingsManager.shared.frameX
+            let savedY = CPSettingsManager.shared.frameY
             NSLog("loaded : x:%f,y:%f,w:%f,h:%f", savedX, savedY, savedW, savedH)
             var currentSize: CGSize = window.contentLayoutRect.size
             currentSize.width = CGFloat(savedW)
@@ -909,9 +950,9 @@ class QCWindowManager: NSObject {
 
 // MARK: - Title Bar Tracking View
 class TitleBarTrackingView: NSView {
-    weak var windowManager: QCWindowManager?
+    weak var windowManager: CPWindowManager?
     
-    init(windowManager: QCWindowManager) {
+    init(windowManager: CPWindowManager) {
         self.windowManager = windowManager
         super.init(frame: NSRect.zero)
         

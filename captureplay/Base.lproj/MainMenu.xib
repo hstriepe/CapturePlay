@@ -455,7 +455,7 @@
             </view>
             <point key="canvasLocation" x="140.5" y="-105"/>
         </window>
-        <customObject id="494" customClass="QCAppDelegate" customModule="CapturePlay">
+        <customObject id="494" customClass="CPAppDelegate" customModule="CapturePlay">
             <connections>
                 <outlet property="aspectRatioFixedMenu" destination="eHX-9R-cym" id="GfZ-zt-Ngf"/>
                 <outlet property="borderlessMenu" destination="651" id="4dH-7A-gNz"/>

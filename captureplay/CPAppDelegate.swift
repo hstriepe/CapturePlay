@@ -1,27 +1,27 @@
-// Copyright H. Striepe - 2025
-// Code inspiration - copyright Simon Guest - 2025
+// Copyright H. Striepe ©2025
+// Inspired by Quick-Camera - Simon Guest ©2025
 
 import AVFoundation
 import AVKit
 import Cocoa
 import CoreAudio
 
-// MARK: - QCAppDelegate Class
+// MARK: - CPAppDelegate Class
 @NSApplicationMain
-class QCAppDelegate: NSObject, NSApplicationDelegate, NSMenuDelegate, QCUsbWatcherDelegate, QCCaptureManagerDelegate, QCAudioManagerDelegate, QCWindowManagerDelegate, QCCaptureFileManagerDelegate, QCNotificationManagerDelegate, QCDisplaySleepManagerDelegate, QCPreferencesControllerDelegate, QCColorCorrectionControllerDelegate {
+class CPAppDelegate: NSObject, NSApplicationDelegate, NSMenuDelegate, CPUsbWatcherDelegate, CPCaptureManagerDelegate, CPAudioManagerDelegate, CPWindowManagerDelegate, CPCaptureFileManagerDelegate, CPNotificationManagerDelegate, CPDisplaySleepManagerDelegate, CPPreferencesControllerDelegate, CPColorCorrectionControllerDelegate {
 
     // MARK: - Managers
-    private var captureManager: QCCaptureManager!
-    private var audioManager: QCAudioManager!
-    private var windowManager: QCWindowManager!
-    private var fileManager: QCCaptureFileManager!
-    private var notificationManager: QCNotificationManager!
-    private var displaySleepManager: QCDisplaySleepManager!
-    private var preferencesController: QCPreferencesController!
-    private var colorCorrectionController: QCColorCorrectionController?
+    private var captureManager: CPCaptureManager!
+    private var audioManager: CPAudioManager!
+    private var windowManager: CPWindowManager!
+    private var fileManager: CPCaptureFileManager!
+    private var notificationManager: CPNotificationManager!
+    private var displaySleepManager: CPDisplaySleepManager!
+    private var preferencesController: CPPreferencesController!
+    private var colorCorrectionController: CPColorCorrectionController?
 
     // MARK: - USB Watcher
-    let usb: QCUsbWatcher = QCUsbWatcher()
+    let usb: CPUsbWatcher = CPUsbWatcher()
     func deviceCountChanged() {
         captureManager.detectVideoDevices()
         captureManager.startCaptureWithVideoDevice(deviceIndex: captureManager.selectedDeviceIndex)
@@ -46,28 +46,28 @@ class QCAppDelegate: NSObject, NSApplicationDelegate, NSMenuDelegate, QCUsbWatch
 
     // MARK: - Settings Properties (delegated to window manager)
     var isMirrored: Bool {
-        get { windowManager?.isMirrored ?? QCSettingsManager.shared.isMirrored }
+        get { windowManager?.isMirrored ?? CPSettingsManager.shared.isMirrored }
         set { windowManager?.isMirrored = newValue }
     }
     var isUpsideDown: Bool {
-        get { windowManager?.isUpsideDown ?? QCSettingsManager.shared.isUpsideDown }
+        get { windowManager?.isUpsideDown ?? CPSettingsManager.shared.isUpsideDown }
         set { windowManager?.isUpsideDown = newValue }
     }
     var position: Int {
-        get { windowManager?.position ?? QCSettingsManager.shared.position }
+        get { windowManager?.position ?? CPSettingsManager.shared.position }
         set { windowManager?.position = newValue }
     }
     var isBorderless: Bool {
-        get { windowManager?.isBorderless ?? QCSettingsManager.shared.isBorderless }
+        get { windowManager?.isBorderless ?? CPSettingsManager.shared.isBorderless }
         set { windowManager?.isBorderless = newValue }
     }
     var isAspectRatioFixed: Bool {
-        get { windowManager?.isAspectRatioFixed ?? QCSettingsManager.shared.isAspectRatioFixed }
+        get { windowManager?.isAspectRatioFixed ?? CPSettingsManager.shared.isAspectRatioFixed }
         set { windowManager?.isAspectRatioFixed = newValue }
     }
     var deviceName: String {
-        get { QCSettingsManager.shared.deviceName }
-        set { QCSettingsManager.shared.setDeviceName(newValue) }
+        get { CPSettingsManager.shared.deviceName }
+        set { CPSettingsManager.shared.setDeviceName(newValue) }
     }
 
     // MARK: - Window Properties
@@ -169,21 +169,21 @@ class QCAppDelegate: NSObject, NSApplicationDelegate, NSMenuDelegate, QCUsbWatch
 
     // MARK: - Settings Management
     func logSettings(label: String) {
-        QCSettingsManager.shared.logSettings(label: label)
+        CPSettingsManager.shared.logSettings(label: label)
     }
 
     func loadSettings() {
-        QCSettingsManager.shared.loadSettings()
+        CPSettingsManager.shared.loadSettings()
     }
 
     func applySettings() {
-        QCSettingsManager.shared.logSettings(label: "applySettings")
+        CPSettingsManager.shared.logSettings(label: "applySettings")
 
         guard let windowManager = windowManager else { return }
         windowManager.setRotation(windowManager.position)
         windowManager.applyMirroring()
         windowManager.fixAspectRatio()
-        let settings = QCSettingsManager.shared
+        let settings = CPSettingsManager.shared
         windowManager.applyColorCorrection(brightness: settings.brightness, contrast: settings.contrast, hue: settings.hue)
 
         self.borderlessMenu.state = convertToNSControlStateValue(
@@ -289,7 +289,7 @@ class QCAppDelegate: NSObject, NSApplicationDelegate, NSMenuDelegate, QCUsbWatch
     // MARK: - Application Lifecycle
     func applicationDidFinishLaunching(_ aNotification: Notification) {
         // Initialize window manager
-        windowManager = QCWindowManager()
+        windowManager = CPWindowManager()
         windowManager.delegate = self
         windowManager.window = window
         windowManager.playerView = playerView
@@ -298,31 +298,31 @@ class QCAppDelegate: NSObject, NSApplicationDelegate, NSMenuDelegate, QCUsbWatch
         windowManager.configureTranslucentTitleBar()
         
         // Initialize capture manager
-        captureManager = QCCaptureManager()
+        captureManager = CPCaptureManager()
         captureManager.delegate = self
         captureManager.previewView = playerView
         
         // Initialize audio manager (will be connected to session after capture starts)
-        audioManager = QCAudioManager(captureSession: nil)
+        audioManager = CPAudioManager(captureSession: nil)
         audioManager.delegate = self
         
         // Initialize file manager
-        fileManager = QCCaptureFileManager()
+        fileManager = CPCaptureFileManager()
         fileManager.delegate = self
         fileManager.window = window
         fileManager.windowManager = windowManager
         
         // Initialize notification manager
-        notificationManager = QCNotificationManager()
+        notificationManager = CPNotificationManager()
         notificationManager.delegate = self
         
         // Initialize display sleep manager
-        displaySleepManager = QCDisplaySleepManager()
+        displaySleepManager = CPDisplaySleepManager()
         displaySleepManager.delegate = self
         displaySleepManager.isFullScreenActive = windowManager.isFullScreenActive
         
         // Initialize preferences controller
-        preferencesController = QCPreferencesController(parentWindow: window)
+        preferencesController = CPPreferencesController(parentWindow: window)
         preferencesController.delegate = self
         
         // Load settings first (needed for device detection)
@@ -441,7 +441,7 @@ class QCAppDelegate: NSObject, NSApplicationDelegate, NSMenuDelegate, QCUsbWatch
         videoMenu.delegate = self
         
         // Respect preference: show always or default to hidden until Option is held
-        if QCSettingsManager.shared.alwaysShowImageMenu {
+        if CPSettingsManager.shared.alwaysShowImageMenu {
             imageMenu?.isHidden = false
         } else {
             imageMenu?.isHidden = true
@@ -452,7 +452,7 @@ class QCAppDelegate: NSObject, NSApplicationDelegate, NSMenuDelegate, QCUsbWatch
     func menuWillOpen(_ menu: NSMenu) {
         // Check if this is the Video menu
         if menu.title == "Video" {
-            if QCSettingsManager.shared.alwaysShowImageMenu {
+            if CPSettingsManager.shared.alwaysShowImageMenu {
                 imageMenu?.isHidden = false
                 return
             }
@@ -495,7 +495,7 @@ class QCAppDelegate: NSObject, NSApplicationDelegate, NSMenuDelegate, QCUsbWatch
         let slider = NSSlider(frame: NSRect(x: 60, y: 4, width: 110, height: 16))
         slider.minValue = 0.0
         slider.maxValue = 1.0
-        slider.doubleValue = Double(QCSettingsManager.shared.audioVolume)
+        slider.doubleValue = Double(CPSettingsManager.shared.audioVolume)
         slider.target = self
         slider.action = #selector(volumeSliderChanged(_:))
         slider.isContinuous = true
@@ -508,11 +508,11 @@ class QCAppDelegate: NSObject, NSApplicationDelegate, NSMenuDelegate, QCUsbWatch
     @objc private func volumeSliderChanged(_ sender: NSSlider) {
         let volume = Float(sender.doubleValue)
         audioManager.setVolume(volume)
-        QCSettingsManager.shared.saveSettings()
+        CPSettingsManager.shared.saveSettings()
     }
 
     private func updateVolumeSlider() {
-        volumeSlider?.doubleValue = Double(QCSettingsManager.shared.audioVolume)
+        volumeSlider?.doubleValue = Double(CPSettingsManager.shared.audioVolume)
     }
 
     private func requestAudioAccessIfNeeded() {
@@ -561,7 +561,7 @@ class QCAppDelegate: NSObject, NSApplicationDelegate, NSMenuDelegate, QCUsbWatch
     
     @IBAction func showColorCorrection(_ sender: NSMenuItem) {
         if colorCorrectionController == nil {
-            colorCorrectionController = QCColorCorrectionController(deviceName: deviceName)
+            colorCorrectionController = CPColorCorrectionController(deviceName: deviceName)
             colorCorrectionController?.delegate = self
         } else {
             // Update device name if it changed
@@ -571,23 +571,23 @@ class QCAppDelegate: NSObject, NSApplicationDelegate, NSMenuDelegate, QCUsbWatch
     }
 
     // Help viewer instance
-    private var helpViewer: QCHelpViewerController?
+    private var helpViewer: CPHelpViewerController?
     
     // Handle the standard help action - show HTML manual in WebView
     @IBAction func showHelp(_ sender: Any?) {
-        print("QCAppDelegate: showHelp called")
+        print("CPAppDelegate: showHelp called")
         
         // Show HTML help in WebView
         if let existingViewer = helpViewer, let window = existingViewer.window, window.isVisible {
             window.makeKeyAndOrderFront(sender)
-            print("QCAppDelegate: Showing existing help window")
+            print("CPAppDelegate: Showing existing help window")
         } else {
-            print("QCAppDelegate: Creating new help viewer")
-            let viewer = QCHelpViewerController()
+            print("CPAppDelegate: Creating new help viewer")
+            let viewer = CPHelpViewerController()
             viewer.delegate = self
             helpViewer = viewer
             viewer.showWindow(sender)
-            print("QCAppDelegate: showWindow called")
+            print("CPAppDelegate: showWindow called")
         }
     }
     
@@ -651,7 +651,7 @@ class QCAppDelegate: NSObject, NSApplicationDelegate, NSMenuDelegate, QCUsbWatch
         displaySleepManager?.cleanup()
         windowManager?.hideRecordingControl()
         windowManager?.updateWindowFrameSettings()
-        QCSettingsManager.shared.saveSettings()
+        CPSettingsManager.shared.saveSettings()
     }
 
 
@@ -660,9 +660,9 @@ class QCAppDelegate: NSObject, NSApplicationDelegate, NSMenuDelegate, QCUsbWatch
     }
 }
 
-// MARK: - QCCaptureManagerDelegate
-extension QCAppDelegate {
-    func captureManager(_ manager: QCCaptureManager, didDetectDevices devices: [AVCaptureDevice]) {
+// MARK: - CPCaptureManagerDelegate
+extension CPAppDelegate {
+    func captureManager(_ manager: CPCaptureManager, didDetectDevices devices: [AVCaptureDevice]) {
         NSLog("didDetectDevices called with %d devices", devices.count)
         // Build device menu
         let currentDeviceIndex: Int
@@ -685,7 +685,7 @@ extension QCAppDelegate {
         }
     }
     
-    func captureManager(_ manager: QCCaptureManager, didChangeDevice device: AVCaptureDevice, deviceIndex: Int) {
+    func captureManager(_ manager: CPCaptureManager, didChangeDevice device: AVCaptureDevice, deviceIndex: Int) {
         // Update device menu selection
         if let menu = selectSourceMenu.submenu {
             for (index, item) in menu.items.enumerated() {
@@ -708,11 +708,11 @@ extension QCAppDelegate {
         
         // Load device-specific color correction settings
         let deviceNameToUse = device.localizedName
-        QCSettingsManager.shared.loadColorCorrection(forDevice: deviceNameToUse)
+        CPSettingsManager.shared.loadColorCorrection(forDevice: deviceNameToUse)
         windowManager?.applyColorCorrection(
-            brightness: QCSettingsManager.shared.brightness,
-            contrast: QCSettingsManager.shared.contrast,
-            hue: QCSettingsManager.shared.hue
+            brightness: CPSettingsManager.shared.brightness,
+            contrast: CPSettingsManager.shared.contrast,
+            hue: CPSettingsManager.shared.hue
         )
         
         // Update color correction controller if it exists
@@ -721,10 +721,10 @@ extension QCAppDelegate {
         }
     }
     
-    func captureManager(_ manager: QCCaptureManager, didStartRecordingTo url: URL) {
+    func captureManager(_ manager: CPCaptureManager, didStartRecordingTo url: URL) {
         updateCaptureVideoMenuItemState()
         // Show recording control when recording starts (if enabled in settings)
-        if QCSettingsManager.shared.showVideoCaptureControls {
+        if CPSettingsManager.shared.showVideoCaptureControls {
             DispatchQueue.main.async { [weak self] in
                 guard let self = self,
                       let windowManager = self.windowManager,
@@ -739,7 +739,7 @@ extension QCAppDelegate {
         notificationManager.sendNotification(title: "Video Recording", body: "Recording started: \(filename)", sound: true)
     }
     
-    func captureManager(_ manager: QCCaptureManager, didFinishRecordingTo url: URL, error: Error?) {
+    func captureManager(_ manager: CPCaptureManager, didFinishRecordingTo url: URL, error: Error?) {
         updateCaptureVideoMenuItemState()
         if error == nil {
             let filename = url.lastPathComponent
@@ -747,11 +747,11 @@ extension QCAppDelegate {
         }
     }
     
-    func captureManager(_ manager: QCCaptureManager, didEncounterError error: Error, message: String) {
+    func captureManager(_ manager: CPCaptureManager, didEncounterError error: Error, message: String) {
         errorMessage(message: message)
     }
     
-    func captureManager(_ manager: QCCaptureManager, needsAudioDeviceUpdateFor videoDevice: AVCaptureDevice) {
+    func captureManager(_ manager: CPCaptureManager, needsAudioDeviceUpdateFor videoDevice: AVCaptureDevice) {
         audioManager.updatePreferredInputFromVideo(videoDevice: videoDevice)
         // detectAudioDevices will be called in didChangeDevice, but we can also call it here
         // to ensure devices are refreshed after video device change
@@ -760,48 +760,48 @@ extension QCAppDelegate {
         }
     }
     
-    func captureManager(_ manager: QCCaptureManager, needsSettingsApplication: Void) {
+    func captureManager(_ manager: CPCaptureManager, needsSettingsApplication: Void) {
         applySettings()
     }
     
-    func captureManager(_ manager: QCCaptureManager, needsWindowTitleUpdate title: String) {
+    func captureManager(_ manager: CPCaptureManager, needsWindowTitleUpdate title: String) {
         windowManager.setWindowTitle(title)
     }
     
-    func captureManager(_ manager: QCCaptureManager, needsDeviceNameUpdate name: String) {
+    func captureManager(_ manager: CPCaptureManager, needsDeviceNameUpdate name: String) {
         deviceName = name
         
         // Update color correction controller device name
         colorCorrectionController?.deviceName = name
     }
     
-    func captureManager(_ manager: QCCaptureManager, didChangeRecordingState isRecording: Bool) {
+    func captureManager(_ manager: CPCaptureManager, didChangeRecordingState isRecording: Bool) {
         updateCaptureVideoMenuItemState()
         windowManager?.updateRecordingControlState(isRecording: isRecording)
     }
     
 }
 
-// MARK: - QCAudioManagerDelegate
-extension QCAppDelegate {
-    func audioManager(_ manager: QCAudioManager, didDetectInputDevices devices: [AVCaptureDevice]) {
+// MARK: - CPAudioManagerDelegate
+extension CPAppDelegate {
+    func audioManager(_ manager: CPAudioManager, didDetectInputDevices devices: [AVCaptureDevice]) {
         // Devices detected, menus will be updated via needsMenuUpdateForInput
     }
     
-    func audioManager(_ manager: QCAudioManager, didDetectOutputDevices devices: [AudioOutputDeviceInfo]) {
+    func audioManager(_ manager: CPAudioManager, didDetectOutputDevices devices: [AudioOutputDeviceInfo]) {
         // Devices detected, menus will be updated via needsMenuUpdateForOutput
     }
     
-    func audioManager(_ manager: QCAudioManager, didChangeInput device: AVCaptureDevice?) {
+    func audioManager(_ manager: CPAudioManager, didChangeInput device: AVCaptureDevice?) {
         // Input changed, update capture manager reference
         captureManager.audioCaptureInput = manager.getAudioCaptureInput()
     }
     
-    func audioManager(_ manager: QCAudioManager, didChangeOutput deviceUID: String?) {
+    func audioManager(_ manager: CPAudioManager, didChangeOutput deviceUID: String?) {
         // Output changed
     }
     
-    func audioManager(_ manager: QCAudioManager, needsMenuUpdateForInput devices: [AVCaptureDevice], selectedUID: String?) {
+    func audioManager(_ manager: CPAudioManager, needsMenuUpdateForInput devices: [AVCaptureDevice], selectedUID: String?) {
         let menu = NSMenu()
         if devices.isEmpty {
             let item = NSMenuItem(
@@ -829,7 +829,7 @@ extension QCAppDelegate {
         selectAudioSourceMenu.submenu = menu
     }
     
-    func audioManager(_ manager: QCAudioManager, needsMenuUpdateForOutput devices: [AudioOutputDeviceInfo], selectedUID: String?) {
+    func audioManager(_ manager: CPAudioManager, needsMenuUpdateForOutput devices: [AudioOutputDeviceInfo], selectedUID: String?) {
         let menu = NSMenu()
         if devices.isEmpty {
             let item = NSMenuItem(
@@ -857,69 +857,69 @@ extension QCAppDelegate {
         selectAudioOutputMenu.submenu = menu
     }
     
-    func audioManager(_ manager: QCAudioManager, didChangeMuteState muted: Bool) {
+    func audioManager(_ manager: CPAudioManager, didChangeMuteState muted: Bool) {
         muteAudioMenuItem?.state = muted ? .on : .off
     }
     
-    func audioManager(_ manager: QCAudioManager, didChangeVolume volume: Float) {
+    func audioManager(_ manager: CPAudioManager, didChangeVolume volume: Float) {
         updateVolumeSlider()
     }
 }
 
-// MARK: - QCWindowManagerDelegate
-extension QCAppDelegate {
-    func windowManager(_ manager: QCWindowManager, willEnterFullScreen: Bool) {
+// MARK: - CPWindowManagerDelegate
+extension CPAppDelegate {
+    func windowManager(_ manager: CPWindowManager, willEnterFullScreen: Bool) {
         displaySleepManager.isFullScreenActive = manager.isFullScreenActive
         displaySleepManager.handleWillEnterFullScreen()
     }
 
-    func windowManager(_ manager: QCWindowManager, didEnterFullScreen: Bool) {
+    func windowManager(_ manager: CPWindowManager, didEnterFullScreen: Bool) {
         displaySleepManager.isFullScreenActive = manager.isFullScreenActive
     }
     
-    func windowManager(_ manager: QCWindowManager, willExitFullScreen: Bool) {
+    func windowManager(_ manager: CPWindowManager, willExitFullScreen: Bool) {
         displaySleepManager.handleWillExitFullScreen()
     }
 
-    func windowManager(_ manager: QCWindowManager, didExitFullScreen: Bool) {
+    func windowManager(_ manager: CPWindowManager, didExitFullScreen: Bool) {
         displaySleepManager.isFullScreenActive = manager.isFullScreenActive
         displaySleepManager.handleDidExitFullScreen()
         windowManager.updateWindowFrameSettings()
     }
     
-    func windowManager(_ manager: QCWindowManager, didChangeFrame frame: NSRect) {
+    func windowManager(_ manager: CPWindowManager, didChangeFrame frame: NSRect) {
         // Frame changed, settings will be updated automatically via notifications
     }
     
-    func windowManager(_ manager: QCWindowManager, needsSettingsUpdate: Void) {
+    func windowManager(_ manager: CPWindowManager, needsSettingsUpdate: Void) {
         applySettings()
     }
     
-    func windowManager(_ manager: QCWindowManager, didChangeBorderless isBorderless: Bool) {
+    func windowManager(_ manager: CPWindowManager, didChangeBorderless isBorderless: Bool) {
         borderlessMenu.state = convertToNSControlStateValue(
             (isBorderless ? NSControl.StateValue.on.rawValue : NSControl.StateValue.off.rawValue))
     }
     
-    func windowManager(_ manager: QCWindowManager, didChangeRotation position: Int) {
+    func windowManager(_ manager: CPWindowManager, didChangeRotation position: Int) {
         // Rotation changed, settings applied via needsSettingsUpdate
     }
     
-    func windowManager(_ manager: QCWindowManager, didChangeMirroring isMirrored: Bool) {
+    func windowManager(_ manager: CPWindowManager, didChangeMirroring isMirrored: Bool) {
         mirroredMenu.state = convertToNSControlStateValue(
             (isMirrored ? NSControl.StateValue.on.rawValue : NSControl.StateValue.off.rawValue))
     }
     
-    func windowManager(_ manager: QCWindowManager, didChangeUpsideDown isUpsideDown: Bool) {
+    func windowManager(_ manager: CPWindowManager, didChangeUpsideDown isUpsideDown: Bool) {
         upsideDownMenu.state = convertToNSControlStateValue(
             (isUpsideDown ? NSControl.StateValue.on.rawValue : NSControl.StateValue.off.rawValue))
     }
     
-    func windowManager(_ manager: QCWindowManager, didChangeAspectRatioFixed isFixed: Bool) {
+    func windowManager(_ manager: CPWindowManager, didChangeAspectRatioFixed isFixed: Bool) {
         aspectRatioFixedMenu.state = convertToNSControlStateValue(
             (isFixed ? NSControl.StateValue.on.rawValue : NSControl.StateValue.off.rawValue))
     }
     
-    func windowManager(_ manager: QCWindowManager, didClickRecordingControl: Void) {
+    func windowManager(_ manager: CPWindowManager, didClickRecordingControl: Void) {
         // Toggle recording when control is clicked
         guard let captureDir = fileManager.getCaptureDirectory() else {
             errorMessage(message: "Unable to access the capture directory.\n\nPlease check your settings.")
@@ -929,66 +929,66 @@ extension QCAppDelegate {
     }
 }
 
-// MARK: - QCCaptureFileManagerDelegate
-extension QCAppDelegate {
-    func captureFileManager(_ manager: QCCaptureFileManager, didSaveImageTo url: URL, filename: String) {
+// MARK: - CPCaptureFileManagerDelegate
+extension CPAppDelegate {
+    func captureFileManager(_ manager: CPCaptureFileManager, didSaveImageTo url: URL, filename: String) {
         NSLog("Image saved to: %@", url.path)
     }
     
-    func captureFileManager(_ manager: QCCaptureFileManager, didEncounterError error: Error, message: String) {
+    func captureFileManager(_ manager: CPCaptureFileManager, didEncounterError error: Error, message: String) {
         errorMessage(message: message)
     }
     
-    func captureFileManager(_ manager: QCCaptureFileManager, needsNotification title: String, body: String, sound: Bool) {
+    func captureFileManager(_ manager: CPCaptureFileManager, needsNotification title: String, body: String, sound: Bool) {
         notificationManager.sendNotification(title: title, body: body, sound: sound)
     }
 }
 
-// MARK: - QCNotificationManagerDelegate
-extension QCAppDelegate {
-    func notificationManager(_ manager: QCNotificationManager, didRequestPermissions granted: Bool, error: Error?) {
+// MARK: - CPNotificationManagerDelegate
+extension CPAppDelegate {
+    func notificationManager(_ manager: CPNotificationManager, didRequestPermissions granted: Bool, error: Error?) {
         // Permissions requested, can handle if needed
     }
     
-    func notificationManager(_ manager: QCNotificationManager, didSendNotification title: String, body: String, error: Error?) {
+    func notificationManager(_ manager: CPNotificationManager, didSendNotification title: String, body: String, error: Error?) {
         // Notification sent, can handle if needed
     }
 }
 
-// MARK: - QCDisplaySleepManagerDelegate
-extension QCAppDelegate {
-    func displaySleepManager(_ manager: QCDisplaySleepManager, didChangeState isPreventing: Bool) {
+// MARK: - CPDisplaySleepManagerDelegate
+extension CPAppDelegate {
+    func displaySleepManager(_ manager: CPDisplaySleepManager, didChangeState isPreventing: Bool) {
         // State changed, can handle if needed
     }
     
-    func displaySleepManager(_ manager: QCDisplaySleepManager, needsNotification title: String, body: String, sound: Bool) {
+    func displaySleepManager(_ manager: CPDisplaySleepManager, needsNotification title: String, body: String, sound: Bool) {
         notificationManager.sendNotification(title: title, body: body, sound: sound)
     }
     
-    func displaySleepManager(_ manager: QCDisplaySleepManager, needsErrorDisplay message: String) {
+    func displaySleepManager(_ manager: CPDisplaySleepManager, needsErrorDisplay message: String) {
         errorMessage(message: message)
     }
     
-    func displaySleepManager(_ manager: QCDisplaySleepManager, needsMenuItemUpdate isPreventing: Bool) {
+    func displaySleepManager(_ manager: CPDisplaySleepManager, needsMenuItemUpdate isPreventing: Bool) {
         displaySleepMenuItem?.state = isPreventing ? .off : .on
     }
     
-    func displaySleepManager(_ manager: QCDisplaySleepManager, needsMenuItemEnabled enabled: Bool) {
+    func displaySleepManager(_ manager: CPDisplaySleepManager, needsMenuItemEnabled enabled: Bool) {
         displaySleepMenuItem?.isEnabled = enabled
     }
 }
 
-// MARK: - QCColorCorrectionControllerDelegate
-extension QCAppDelegate {
-    func colorCorrectionController(_ controller: QCColorCorrectionController, didChangeBrightness brightness: Float, contrast: Float, hue: Float) {
+// MARK: - CPColorCorrectionControllerDelegate
+extension CPAppDelegate {
+    func colorCorrectionController(_ controller: CPColorCorrectionController, didChangeBrightness brightness: Float, contrast: Float, hue: Float) {
         windowManager?.applyColorCorrection(brightness: brightness, contrast: contrast, hue: hue)
-        QCSettingsManager.shared.saveSettings()
+        CPSettingsManager.shared.saveSettings()
     }
 }
 
-// MARK: - QCHelpViewerDelegate
-extension QCAppDelegate: QCHelpViewerDelegate {
-    func helpViewerDidClose(_ helpViewer: QCHelpViewerController) {
+// MARK: - CPHelpViewerDelegate
+extension CPAppDelegate: CPHelpViewerDelegate {
+    func helpViewerDidClose(_ helpViewer: CPHelpViewerController) {
         // Help viewer was closed, clear reference
         if self.helpViewer === helpViewer {
             self.helpViewer = nil
@@ -996,15 +996,15 @@ extension QCAppDelegate: QCHelpViewerDelegate {
     }
 }
 
-// MARK: - QCPreferencesControllerDelegate
-extension QCAppDelegate {
-    func preferencesController(_ controller: QCPreferencesController, didSavePreferences: Void) {
+// MARK: - CPPreferencesControllerDelegate
+extension CPAppDelegate {
+    func preferencesController(_ controller: CPPreferencesController, didSavePreferences: Void) {
         // Hide control if setting was disabled
-        if !QCSettingsManager.shared.showVideoCaptureControls {
+        if !CPSettingsManager.shared.showVideoCaptureControls {
             windowManager?.hideRecordingControl()
         }
         // Update Image menu visibility according to new setting
-        if QCSettingsManager.shared.alwaysShowImageMenu {
+        if CPSettingsManager.shared.alwaysShowImageMenu {
             imageMenu?.isHidden = false
         } else {
             imageMenu?.isHidden = true

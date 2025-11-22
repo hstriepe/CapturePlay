@@ -1,6 +1,6 @@
 # CapturePlay User Manual
 
-**Version 3.4**
+**Version 3.5**
 
 CapturePlay is a macOS application designed to display video and audio from USB capture devices (such as the USB Camlink 4K) connected to gaming consoles, such as the PlayStation 5 or Nintendo Switch, in a dock. It also connects to Continuity Cameras on iPhone. The application provides real-time video display, audio routing, image capture, and video recording capabilities.
 
@@ -392,6 +392,40 @@ Open **CapturePlay > Settings…** (⌘,)
 - When enabled, the **Video > Image** menu is always visible.
 - When disabled, the Image menu can still be revealed by holding Option (⌥) while opening the Video menu.
 
+#### Performance Mode
+
+- **Selector**: "Performance Mode" popup menu
+- Controls video quality and frame rate optimizations for different system capabilities
+- **Options**:
+  - **Auto** (default): Automatically detects your system's performance and applies appropriate optimizations
+    - Slower systems (≤4 CPU cores or <8GB RAM): Uses Medium optimizations
+    - Faster systems (>4 cores and ≥8GB RAM): Uses High quality settings
+  - **High**: Maximum quality, no performance optimizations
+    - Uses highest available resolution and frame rate
+    - Best for modern Macs with powerful CPUs/GPUs
+  - **Medium**: Balanced quality and performance
+    - Limits resolution to 720p (1280×720) maximum
+    - Frame rate limited to 30fps for smoother playback
+    - Best for mid-range systems or when you want smoother playback
+  - **Low**: Maximum performance, reduced quality
+    - Limits resolution to 480p (640×480) maximum
+    - Frame rate limited to 24fps for consistent playback
+    - Best for older/slower systems or when prioritizing smooth playback over quality
+    - Note: Some games may show poor framerates despite these optimizations on slower systems and capture devices.
+
+**What Gets Optimized**:
+
+- Video resolution (lower resolutions reduce processing load)
+- Frame rate (limits to 24–30fps for consistent timing)
+- Session preset (controls capture quality level)
+- Frame smoothing (uses VSync and frame timing for smoother playback)
+
+**Recommendations**:
+- **Leave on Auto** unless you have specific needs — it automatically adapts to your system
+- Use **High** if you have a powerful Mac and want maximum quality
+- Use **Medium** if you experience stuttering or frame drops
+- Use **Low** if you have an older Mac or need the smoothest possible playback
+
 #### Video Capture Controls
 
 - **Toggle**: "Show video capture controls"
@@ -400,7 +434,6 @@ Open **CapturePlay > Settings…** (⌘,)
 - The button appears in the bottom-right corner of the video window
 - **Behavior**: The control follows the translucent title bar visibility - it appears on mouse hover and hides when the mouse moves away, except during recording, when it remains always visible
 - Click the button to start or stop recording
-
 
 #### Saving Settings
 
@@ -416,7 +449,7 @@ CapturePlay automatically saves and restores your settings:
 - **Video settings**: Rotation, mirroring, borderless mode, and aspect ratio preferences
 - **Audio settings**: Input/output device selections and volume
 - **Color correction settings**: Brightness, contrast, and hue values (saved per device by name)
-- **Settings**: Capture directory, display sleep preferences, Image menu visibility, and video capture controls visibility
+- **Settings**: Capture directory, display sleep preferences, Image menu visibility, video capture controls visibility, and performance mode
 
 All settings are automatically loaded when you launch CapturePlay.
 
@@ -448,7 +481,7 @@ All settings are automatically saved when you close the application and automati
 | ⌘B | Borderless Mode | Video > Borderless Mode |
 | ⌘A | Fix Aspect Ratio | Video > Fix Aspect Ratio |
 | ⌃⌘A | Fit to Actual Size | Video > Fit to Actual Size |
-| ⌃⌘F | Enter Full Screen | Video > Enter Full Screen |
+| ⌃⌘F/FnF | Enter Full Screen | Video > Enter Full Screen |
 | ⌘D | Display Sleep | Video > Display Sleep |
 
 ### Menu-Specific Shortcuts
@@ -486,7 +519,7 @@ On first launch, macOS will ask for notification permissions. Grant permission t
 
 **Solutions**:
 
-1. **Check device connection**: Ensure your USB capture device is connected
+1. **Check device connection**: Ensure your USB capture device is connected. Use System Information > USB to see whether the device is showing up
 2. **Select correct source**: Go to **Video > Select Source** and verify the correct device is selected
 3. **Check device permissions**: Ensure CapturePlay has camera access (System Preferences > Security & Privacy > Privacy > Camera)
 4. **Try a different USB port**: Some USB ports may not provide sufficient power
@@ -508,7 +541,7 @@ On first launch, macOS will ask for notification permissions. Grant permission t
 
 ### Audio Stops Working After Changing Video Source
 
-**Problem**: Audio works initially but stops after switching video devices.
+**Problem**: Audio works initially, but stops after switching video devices.
 
 **Solution**: This is a known behavior when switching devices. The audio manager should automatically reconnect. If it doesn't:
 
@@ -521,10 +554,9 @@ On first launch, macOS will ask for notification permissions. Grant permission t
 
 **Solutions**:
 
-1. **Check macOS version**: Image capture requires macOS 10.12 (Sierra) or later
-2. **Check capture directory**: Ensure the capture directory exists and is writable (Preferences > Browse…)
+1. Check capture directory**: Ensure the capture directory exists and is writable (Preferences > Browse…)
 3. **Check disk space**: Ensure you have sufficient free disk space
-4. **Check permissions**: If using a custom directory, grant CapturePlay permission to access it (macOS will prompt)
+4. **Check permissions**: If using a custom directory, grant CapturePlay permission to access it. Use the Browse button to select your desired directory, and macOS will prompt for permissions if they are required
 
 ### Video Recording Not Working
 
@@ -538,7 +570,7 @@ On first launch, macOS will ask for notification permissions. Grant permission t
 4. **Verify device supports recording**: Some devices may have limitations
 5. **Try stopping and restarting**: Use ⌘V to stop, then start again (note: there is a 1-second cooldown after stopping)
 
-### Window Won't Resize or Position Incorrectly
+### Window Won't Resize or Position Correctly
 
 **Problem**: Window size or position is not as expected.
 
@@ -575,12 +607,13 @@ On first launch, macOS will ask for notification permissions. Grant permission t
 
 **Solutions**:
 
-1. **Check USB connection**: Unplug and reconnect the device (for USB devices)
-2. **Try different USB port**: Use a USB 3.0 port if available
-3. **Check System Information**: Open System Information > USB and verify the device appears
-4. **Install drivers**: Some devices require manufacturer drivers
-5. **Restart CapturePlay**: The app detects devices on launch
-6. **Check device compatibility**: Ensure the device is compatible with macOS
+1. Check whether the USB device exists in System Information. You can open that quickly by pressing the Option key while selecting the Apple Menu
+2. **Check USB connection**: Unplug and reconnect the device (for USB devices)
+3. **Try different USB port**: Use a USB 3.0 port if available
+4. **Check System Information**: Open System Information > USB and verify the device appears
+5. **Install drivers**: Some devices require manufacturer drivers
+6. **Restart CapturePlay**: The app detects devices on launch
+7. **Check device compatibility**: Ensure the device is compatible with macOS
 
 **For Continuity Camera specifically**:
 
@@ -591,7 +624,7 @@ On first launch, macOS will ask for notification permissions. Grant permission t
 5. **Check network**: Ensure both devices are on the same Wi-Fi network with Wi-Fi and Bluetooth enabled
 6. **Disable VPNs**: VPNs can interfere with Continuity Camera — disable VPNs on both devices
 7. **Disable AirPlay Receiver**: On Mac: System Settings > General > AirDrop & Handoff > Turn off "AirPlay Receiver"
-8. **Position iPhone correctly**: iPhone should be locked, stable, and positioned with rear cameras facing you in landscape
+8. **Position iPhone correctly**: iPhone should be locked, stable, and positioned with the rear cameras facing you in landscape
 9. **Restart both devices**: Restart both iPhone and Mac if connection issues persist
 
 ### App Crashes or Freezes
@@ -612,11 +645,16 @@ On first launch, macOS will ask for notification permissions. Grant permission t
 
 **Solutions**:
 
-1. **Close other applications**: Free up CPU and memory resources
-2. **Check device resolution**: High-resolution devices require more processing power
-3. **Lower frame rate**: Some devices allow frame rate adjustment (device-specific)
-4. **Check USB bandwidth**: Use USB 3.0 ports for high-resolution devices
-5. **Disable other video apps**: Close other apps using video capture devices
+1. **Adjust Performance Mode**: Go to **CapturePlay > Settings** and try a lower performance mode:
+   - If set to "High", try "Medium" or "Auto"
+   - If set to "Medium", try "Low" for maximum smoothness
+   - "Auto" mode will automatically detect slower systems and apply optimizations
+2. **Close other applications**: Free up CPU and memory resources
+3. **Check device resolution**: High-resolution devices require more processing power
+4. **Lower frame rate**: Some devices allow frame rate adjustment (device-specific)
+5. **Check USB bandwidth**: Use USB 3.0 ports for high-resolution devices
+6. **Disable other video apps**: Close other apps using video capture devices
+7. **Disable color correction**: If you're using color correction (brightness, contrast, hue), try resetting to defaults to reduce processing overhead
 
 ---
 
@@ -655,7 +693,7 @@ Preferences are stored in macOS UserDefaults, typically at:
 ## Credits
 
 **CapturePlay**  
-Version 3.4  
+Version 3.5  
 Copyright © 2025 Harald Striepe
 
 **Original Quick Camera Code**  

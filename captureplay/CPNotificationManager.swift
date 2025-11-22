@@ -1,19 +1,19 @@
-// Copyright H. Striepe - 2025
+// Copyright H. Striepe ©2025
 
 import Cocoa
 import UserNotifications
 
-// MARK: - QCNotificationManagerDelegate Protocol
-protocol QCNotificationManagerDelegate: AnyObject {
-    func notificationManager(_ manager: QCNotificationManager, didRequestPermissions granted: Bool, error: Error?)
-    func notificationManager(_ manager: QCNotificationManager, didSendNotification title: String, body: String, error: Error?)
+// MARK: - CPNotificationManagerDelegate Protocol
+protocol CPNotificationManagerDelegate: AnyObject {
+    func notificationManager(_ manager: CPNotificationManager, didRequestPermissions granted: Bool, error: Error?)
+    func notificationManager(_ manager: CPNotificationManager, didSendNotification title: String, body: String, error: Error?)
 }
 
-// MARK: - QCNotificationManager Class
-class QCNotificationManager: NSObject {
+// MARK: - CPNotificationManager Class
+class CPNotificationManager: NSObject {
     
     // MARK: - Properties
-    weak var delegate: QCNotificationManagerDelegate?
+    weak var delegate: CPNotificationManagerDelegate?
     
     // MARK: - Initialization
     override init() {
@@ -79,7 +79,7 @@ class QCNotificationManager: NSObject {
 }
 
 // MARK: - UNUserNotificationCenterDelegate
-extension QCNotificationManager: UNUserNotificationCenterDelegate {
+extension CPNotificationManager: UNUserNotificationCenterDelegate {
     func userNotificationCenter(_ center: UNUserNotificationCenter, willPresent notification: UNNotification, withCompletionHandler completionHandler: @escaping (UNNotificationPresentationOptions) -> Void) {
         // Show notification even when app is in foreground
         if #available(macOS 11.0, *) {

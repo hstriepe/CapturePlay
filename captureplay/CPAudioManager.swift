@@ -1,4 +1,4 @@
-// Copyright H. Striepe - 2025
+// Copyright H. Striepe ©2025
 
 import AVFoundation
 import Cocoa
@@ -11,23 +11,23 @@ struct AudioOutputDeviceInfo {
     let name: String
 }
 
-// MARK: - QCAudioManagerDelegate Protocol
-protocol QCAudioManagerDelegate: AnyObject {
-    func audioManager(_ manager: QCAudioManager, didDetectInputDevices devices: [AVCaptureDevice])
-    func audioManager(_ manager: QCAudioManager, didDetectOutputDevices devices: [AudioOutputDeviceInfo])
-    func audioManager(_ manager: QCAudioManager, didChangeInput device: AVCaptureDevice?)
-    func audioManager(_ manager: QCAudioManager, didChangeOutput deviceUID: String?)
-    func audioManager(_ manager: QCAudioManager, needsMenuUpdateForInput devices: [AVCaptureDevice], selectedUID: String?)
-    func audioManager(_ manager: QCAudioManager, needsMenuUpdateForOutput devices: [AudioOutputDeviceInfo], selectedUID: String?)
-    func audioManager(_ manager: QCAudioManager, didChangeMuteState muted: Bool)
-    func audioManager(_ manager: QCAudioManager, didChangeVolume volume: Float)
+// MARK: - CPAudioManagerDelegate Protocol
+protocol CPAudioManagerDelegate: AnyObject {
+    func audioManager(_ manager: CPAudioManager, didDetectInputDevices devices: [AVCaptureDevice])
+    func audioManager(_ manager: CPAudioManager, didDetectOutputDevices devices: [AudioOutputDeviceInfo])
+    func audioManager(_ manager: CPAudioManager, didChangeInput device: AVCaptureDevice?)
+    func audioManager(_ manager: CPAudioManager, didChangeOutput deviceUID: String?)
+    func audioManager(_ manager: CPAudioManager, needsMenuUpdateForInput devices: [AVCaptureDevice], selectedUID: String?)
+    func audioManager(_ manager: CPAudioManager, needsMenuUpdateForOutput devices: [AudioOutputDeviceInfo], selectedUID: String?)
+    func audioManager(_ manager: CPAudioManager, didChangeMuteState muted: Bool)
+    func audioManager(_ manager: CPAudioManager, didChangeVolume volume: Float)
 }
 
-// MARK: - QCAudioManager Class
-class QCAudioManager {
+// MARK: - CPAudioManager Class
+class CPAudioManager {
     
     // MARK: - Properties
-    weak var delegate: QCAudioManagerDelegate?
+    weak var delegate: CPAudioManagerDelegate?
     var captureSession: AVCaptureSession? {
         didSet {
             // Clear audio inputs/outputs when session changes to force recreation
@@ -91,7 +91,7 @@ class QCAudioManager {
     }
     
     private func ensureAudioSelections() {
-        let settings = QCSettingsManager.shared
+        let settings = CPSettingsManager.shared
         
         // Determine preferred input UID
         var preferredInputUID = settings.audioInputUID
@@ -203,8 +203,8 @@ class QCAudioManager {
         // Add audio preview output if needed
         if audioPreviewOutput == nil {
             let previewOutput = AVCaptureAudioPreviewOutput()
-            let volume = QCSettingsManager.shared.audioVolume
-            previewOutput.volume = QCSettingsManager.shared.isAudioMuted ? 0.0 : Float(volume)
+            let volume = CPSettingsManager.shared.audioVolume
+            previewOutput.volume = CPSettingsManager.shared.isAudioMuted ? 0.0 : Float(volume)
             if session.canAddOutput(previewOutput) {
                 session.addOutput(previewOutput)
                 audioPreviewOutput = previewOutput
@@ -234,20 +234,20 @@ class QCAudioManager {
     // MARK: - Input/Output Selection
     func setAudioInput(uid: String) {
         selectedAudioInputUID = uid
-        QCSettingsManager.shared.setAudioInputUID(uid)
+        CPSettingsManager.shared.setAudioInputUID(uid)
         delegate?.audioManager(self, needsMenuUpdateForInput: audioInputDevices, selectedUID: selectedAudioInputUID)
         applyAudioConfiguration()
     }
     
     func setAudioOutput(uid: String) {
         selectedAudioOutputUID = uid
-        QCSettingsManager.shared.setAudioOutputUID(uid)
+        CPSettingsManager.shared.setAudioOutputUID(uid)
         delegate?.audioManager(self, needsMenuUpdateForOutput: audioOutputDevices, selectedUID: selectedAudioOutputUID)
         updateAudioOutputRouting()
     }
     
     func updatePreferredInputFromVideo(videoDevice: AVCaptureDevice) {
-        let settings = QCSettingsManager.shared
+        let settings = CPSettingsManager.shared
         guard settings.audioInputUID.isEmpty else { return }
         
         // Don't auto-select audio from Continuity Camera - prefer other audio devices
@@ -268,8 +268,8 @@ class QCAudioManager {
     
     // MARK: - Volume and Mute Management
     func applyAudioMute() {
-        let muted = QCSettingsManager.shared.isAudioMuted
-        let volume = QCSettingsManager.shared.audioVolume
+        let muted = CPSettingsManager.shared.isAudioMuted
+        let volume = CPSettingsManager.shared.audioVolume
         if let preview = audioPreviewOutput {
             preview.volume = muted ? 0.0 : Float(volume)
         }
@@ -277,8 +277,8 @@ class QCAudioManager {
     }
     
     func applyAudioVolume() {
-        let muted = QCSettingsManager.shared.isAudioMuted
-        let volume = QCSettingsManager.shared.audioVolume
+        let muted = CPSettingsManager.shared.isAudioMuted
+        let volume = CPSettingsManager.shared.audioVolume
         if let preview = audioPreviewOutput {
             preview.volume = muted ? 0.0 : Float(volume)
         }
@@ -286,13 +286,13 @@ class QCAudioManager {
     }
     
     func toggleMute() {
-        let newValue = !QCSettingsManager.shared.isAudioMuted
-        QCSettingsManager.shared.setAudioMuted(newValue)
+        let newValue = !CPSettingsManager.shared.isAudioMuted
+        CPSettingsManager.shared.setAudioMuted(newValue)
         applyAudioMute()
     }
     
     func setVolume(_ volume: Float) {
-        QCSettingsManager.shared.setAudioVolume(volume)
+        CPSettingsManager.shared.setAudioVolume(volume)
         applyAudioVolume()
     }
     

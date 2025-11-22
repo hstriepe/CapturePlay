@@ -1,9 +1,9 @@
-// Copyright H. Striepe - 2025
+// Copyright H. Striepe ©2025
 
 import AVFoundation
 import Cocoa
 
-class QCSettingsManager {
+class CPSettingsManager {
     // MARK: - Properties
     private(set) var isMirrored: Bool = false
     private(set) var isUpsideDown: Bool = false
@@ -22,6 +22,7 @@ class QCSettingsManager {
     private(set) var captureImageDirectoryBookmark: Data?
     private(set) var alwaysShowImageMenu: Bool = true
     private(set) var showVideoCaptureControls: Bool = true
+    private(set) var performanceMode: String = "auto" // "auto", "high", "medium", "low"
     
     
     // MARK: - Color Correction Properties
@@ -39,7 +40,7 @@ class QCSettingsManager {
     private(set) var frameHeight: Float = 0
 
     // MARK: - Singleton
-    static let shared: QCSettingsManager = QCSettingsManager()
+    static let shared: CPSettingsManager = CPSettingsManager()
 
     private init() {
         loadSettings()
@@ -110,6 +111,9 @@ class QCSettingsManager {
         showVideoCaptureControls = value
     }
     
+    func setPerformanceMode(_ value: String) {
+        performanceMode = value
+    }
     
     func setBrightness(_ value: Float) {
         brightness = value
@@ -183,6 +187,8 @@ class QCSettingsManager {
             UserDefaults.standard.object(forKey: "alwaysShowImageMenu") as? Bool ?? true
         showVideoCaptureControls =
             UserDefaults.standard.object(forKey: "showVideoCaptureControls") as? Bool ?? true
+        performanceMode =
+            UserDefaults.standard.object(forKey: "performanceMode") as? String ?? "auto"
         
         // Load device-specific color corrections
         if let deviceCorrectionsDict = UserDefaults.standard.dictionary(forKey: "deviceColorCorrections") as? [String: [String: Float]] {
@@ -231,6 +237,7 @@ class QCSettingsManager {
         }
         UserDefaults.standard.set(alwaysShowImageMenu, forKey: "alwaysShowImageMenu")
         UserDefaults.standard.set(showVideoCaptureControls, forKey: "showVideoCaptureControls")
+        UserDefaults.standard.set(performanceMode, forKey: "performanceMode")
         
         // Save device-specific color corrections
         var deviceCorrectionsDict: [String: [String: Float]] = [:]

@@ -1,23 +1,23 @@
-// Copyright H. Striepe - 2025
+// Copyright H. Striepe ©2025
 
 import AVFoundation
 import Cocoa
 import UniformTypeIdentifiers
 
-// MARK: - QCCaptureFileManagerDelegate Protocol
-protocol QCCaptureFileManagerDelegate: AnyObject {
-    func captureFileManager(_ manager: QCCaptureFileManager, didSaveImageTo url: URL, filename: String)
-    func captureFileManager(_ manager: QCCaptureFileManager, didEncounterError error: Error, message: String)
-    func captureFileManager(_ manager: QCCaptureFileManager, needsNotification title: String, body: String, sound: Bool)
+// MARK: - CPCaptureFileManagerDelegate Protocol
+protocol CPCaptureFileManagerDelegate: AnyObject {
+    func captureFileManager(_ manager: CPCaptureFileManager, didSaveImageTo url: URL, filename: String)
+    func captureFileManager(_ manager: CPCaptureFileManager, didEncounterError error: Error, message: String)
+    func captureFileManager(_ manager: CPCaptureFileManager, needsNotification title: String, body: String, sound: Bool)
 }
 
-// MARK: - QCCaptureFileManager Class
-class QCCaptureFileManager {
+// MARK: - CPCaptureFileManager Class
+class CPCaptureFileManager {
     
     // MARK: - Properties
-    weak var delegate: QCCaptureFileManagerDelegate?
+    weak var delegate: CPCaptureFileManagerDelegate?
     weak var window: NSWindow?
-    weak var windowManager: QCWindowManager?
+    weak var windowManager: CPWindowManager?
     weak var captureSession: AVCaptureSession?
     weak var captureLayer: AVCaptureVideoPreviewLayer?
     
@@ -27,7 +27,7 @@ class QCCaptureFileManager {
     
     // MARK: - Capture Directory Management
     func getCaptureDirectory() -> URL? {
-        let settings = QCSettingsManager.shared
+        let settings = CPSettingsManager.shared
         
         // First, try to resolve security-scoped bookmark if available
         if let bookmarkData = settings.captureImageDirectoryBookmark {
@@ -171,28 +171,28 @@ class QCCaptureFileManager {
     // MARK: - Image Capture
     func captureImage() {
         guard let window = window else {
-            let error = NSError(domain: "QCCaptureFileManager", code: -1, userInfo: [NSLocalizedDescriptionKey: "Window is not available"])
+            let error = NSError(domain: "CPCaptureFileManager", code: -1, userInfo: [NSLocalizedDescriptionKey: "Window is not available"])
             delegate?.captureFileManager(self, didEncounterError: error, message: "Window is not available")
             return
         }
         
         if window.styleMask.contains(.fullScreen) {
-            let error = NSError(domain: "QCCaptureFileManager", code: -2, userInfo: [NSLocalizedDescriptionKey: "Capture is not supported as window is full screen"])
+            let error = NSError(domain: "CPCaptureFileManager", code: -2, userInfo: [NSLocalizedDescriptionKey: "Capture is not supported as window is full screen"])
             delegate?.captureFileManager(self, didEncounterError: error, message: "Capture is not supported as window is full screen")
             return
         }
         
         guard let captureDir = getCaptureDirectory() else {
-            let settings = QCSettingsManager.shared
+            let settings = CPSettingsManager.shared
             let dirPath = settings.captureImageDirectory.isEmpty ? "~/Pictures/CapturePlay" : settings.captureImageDirectory
             let message = "Unable to access or create the capture directory: \(dirPath)\n\nPlease check that:\n• The path is correct\n• You have write permissions\n• The directory can be created\n\nNote: For sandboxed apps, you may need to select the folder via the Browse button in Preferences to grant access."
-            let error = NSError(domain: "QCCaptureFileManager", code: -3, userInfo: [NSLocalizedDescriptionKey: message])
+            let error = NSError(domain: "CPCaptureFileManager", code: -3, userInfo: [NSLocalizedDescriptionKey: message])
             delegate?.captureFileManager(self, didEncounterError: error, message: message)
             return
         }
         
         guard captureSession != nil && captureLayer != nil else {
-            let error = NSError(domain: "QCCaptureFileManager", code: -4, userInfo: [NSLocalizedDescriptionKey: "Capture session is not available"])
+            let error = NSError(domain: "CPCaptureFileManager", code: -4, userInfo: [NSLocalizedDescriptionKey: "Capture session is not available"])
             delegate?.captureFileManager(self, didEncounterError: error, message: "Capture session is not available")
             return
         }
@@ -200,26 +200,26 @@ class QCCaptureFileManager {
         if #available(OSX 10.12, *) {
             captureImageToDirectory(captureDir)
         } else {
-            let error = NSError(domain: "QCCaptureFileManager", code: -5, userInfo: [NSLocalizedDescriptionKey: "Unfortunately, saving images is only supported in Mac OSX 10.12 (Sierra) and higher."])
+            let error = NSError(domain: "CPCaptureFileManager", code: -5, userInfo: [NSLocalizedDescriptionKey: "Unfortunately, saving images is only supported in Mac OSX 10.12 (Sierra) and higher."])
             delegate?.captureFileManager(self, didEncounterError: error, message: error.localizedDescription)
         }
     }
     
     func saveImage() {
         guard let window = window else {
-            let error = NSError(domain: "QCCaptureFileManager", code: -1, userInfo: [NSLocalizedDescriptionKey: "Window is not available"])
+            let error = NSError(domain: "CPCaptureFileManager", code: -1, userInfo: [NSLocalizedDescriptionKey: "Window is not available"])
             delegate?.captureFileManager(self, didEncounterError: error, message: "Window is not available")
             return
         }
         
         if window.styleMask.contains(.fullScreen) {
-            let error = NSError(domain: "QCCaptureFileManager", code: -2, userInfo: [NSLocalizedDescriptionKey: "Save is not supported as window is full screen"])
+            let error = NSError(domain: "CPCaptureFileManager", code: -2, userInfo: [NSLocalizedDescriptionKey: "Save is not supported as window is full screen"])
             delegate?.captureFileManager(self, didEncounterError: error, message: "Save is not supported as window is full screen")
             return
         }
         
         guard captureSession != nil else {
-            let error = NSError(domain: "QCCaptureFileManager", code: -4, userInfo: [NSLocalizedDescriptionKey: "Capture session is not available"])
+            let error = NSError(domain: "CPCaptureFileManager", code: -4, userInfo: [NSLocalizedDescriptionKey: "Capture session is not available"])
             delegate?.captureFileManager(self, didEncounterError: error, message: "Capture session is not available")
             return
         }
@@ -227,14 +227,14 @@ class QCCaptureFileManager {
         if #available(OSX 10.12, *) {
             saveImageWithSavePanel()
         } else {
-            let error = NSError(domain: "QCCaptureFileManager", code: -5, userInfo: [NSLocalizedDescriptionKey: "Unfortunately, saving images is only supported in Mac OSX 10.12 (Sierra) and higher."])
+            let error = NSError(domain: "CPCaptureFileManager", code: -5, userInfo: [NSLocalizedDescriptionKey: "Unfortunately, saving images is only supported in Mac OSX 10.12 (Sierra) and higher."])
             delegate?.captureFileManager(self, didEncounterError: error, message: error.localizedDescription)
         }
     }
     
     private func captureImageToDirectory(_ captureDir: URL) {
         guard let cgImage = captureWindowImage() else {
-            let error = NSError(domain: "QCCaptureFileManager", code: -8, userInfo: [NSLocalizedDescriptionKey: "Failed to capture window image"])
+            let error = NSError(domain: "CPCaptureFileManager", code: -8, userInfo: [NSLocalizedDescriptionKey: "Failed to capture window image"])
             delegate?.captureFileManager(self, didEncounterError: error, message: "Failed to capture window image")
             return
         }
@@ -255,7 +255,7 @@ class QCCaptureFileManager {
                 fileURL as CFURL, UTType.png.identifier as CFString, 1, nil)
             if destination == nil {
                 NSLog("Could not write file - destination returned from CGImageDestinationCreateWithURL was nil")
-                let error = NSError(domain: "QCCaptureFileManager", code: -6, userInfo: [NSLocalizedDescriptionKey: "Unfortunately, the image could not be saved to this location."])
+                let error = NSError(domain: "CPCaptureFileManager", code: -6, userInfo: [NSLocalizedDescriptionKey: "Unfortunately, the image could not be saved to this location."])
                 self.delegate?.captureFileManager(self, didEncounterError: error, message: error.localizedDescription)
             } else {
                 CGImageDestinationAddImage(destination!, cgImage, nil)
@@ -270,7 +270,7 @@ class QCCaptureFileManager {
     private func saveImageWithSavePanel() {
         guard let window = window else { return }
         guard let cgImage = captureWindowImage() else {
-            let error = NSError(domain: "QCCaptureFileManager", code: -8, userInfo: [NSLocalizedDescriptionKey: "Failed to capture window image"])
+            let error = NSError(domain: "CPCaptureFileManager", code: -8, userInfo: [NSLocalizedDescriptionKey: "Failed to capture window image"])
             delegate?.captureFileManager(self, didEncounterError: error, message: "Failed to capture window image")
             return
         }
@@ -295,7 +295,7 @@ class QCCaptureFileManager {
                         panel.url! as CFURL, UTType.png.identifier as CFString, 1, nil)
                     if destination == nil {
                         NSLog("Could not write file - destination returned from CGImageDestinationCreateWithURL was nil")
-                        let error = NSError(domain: "QCCaptureFileManager", code: -6, userInfo: [NSLocalizedDescriptionKey: "Unfortunately, the image could not be saved to this location."])
+                        let error = NSError(domain: "CPCaptureFileManager", code: -6, userInfo: [NSLocalizedDescriptionKey: "Unfortunately, the image could not be saved to this location."])
                         self.delegate?.captureFileManager(self, didEncounterError: error, message: error.localizedDescription)
                     } else {
                         CGImageDestinationAddImage(destination!, cgImage, nil)
@@ -334,26 +334,26 @@ class QCCaptureFileManager {
     // MARK: - Clipboard Operations
     func copyImageToClipboard() -> Bool {
         guard let window = window else {
-            let error = NSError(domain: "QCCaptureFileManager", code: -1, userInfo: [NSLocalizedDescriptionKey: "Window is not available"])
+            let error = NSError(domain: "CPCaptureFileManager", code: -1, userInfo: [NSLocalizedDescriptionKey: "Window is not available"])
             delegate?.captureFileManager(self, didEncounterError: error, message: "Window is not available")
             return false
         }
         
         if window.styleMask.contains(.fullScreen) {
-            let error = NSError(domain: "QCCaptureFileManager", code: -2, userInfo: [NSLocalizedDescriptionKey: "Copy is not supported as window is full screen"])
+            let error = NSError(domain: "CPCaptureFileManager", code: -2, userInfo: [NSLocalizedDescriptionKey: "Copy is not supported as window is full screen"])
             delegate?.captureFileManager(self, didEncounterError: error, message: "Copy is not supported as window is full screen")
             return false
         }
         
         guard captureSession != nil else {
-            let error = NSError(domain: "QCCaptureFileManager", code: -4, userInfo: [NSLocalizedDescriptionKey: "Capture session is not available"])
+            let error = NSError(domain: "CPCaptureFileManager", code: -4, userInfo: [NSLocalizedDescriptionKey: "Capture session is not available"])
             delegate?.captureFileManager(self, didEncounterError: error, message: "Capture session is not available")
             return false
         }
         
         if #available(OSX 10.12, *) {
             guard let cgImage = captureWindowImage() else {
-                let error = NSError(domain: "QCCaptureFileManager", code: -8, userInfo: [NSLocalizedDescriptionKey: "Failed to capture window image"])
+                let error = NSError(domain: "CPCaptureFileManager", code: -8, userInfo: [NSLocalizedDescriptionKey: "Failed to capture window image"])
                 delegate?.captureFileManager(self, didEncounterError: error, message: "Failed to capture window image")
                 return false
             }
@@ -371,7 +371,7 @@ class QCCaptureFileManager {
             NSLog("Image copied to clipboard")
             return true
         } else {
-            let error = NSError(domain: "QCCaptureFileManager", code: -5, userInfo: [NSLocalizedDescriptionKey: "Unfortunately, copying images is only supported in Mac OSX 10.12 (Sierra) and higher."])
+            let error = NSError(domain: "CPCaptureFileManager", code: -5, userInfo: [NSLocalizedDescriptionKey: "Unfortunately, copying images is only supported in Mac OSX 10.12 (Sierra) and higher."])
             delegate?.captureFileManager(self, didEncounterError: error, message: error.localizedDescription)
             return false
         }
@@ -381,7 +381,7 @@ class QCCaptureFileManager {
     func openCaptureFolder() {
         guard let captureDir = getCaptureDirectory() else {
             let message = "Unable to access the capture directory.\n\nPlease check your settings."
-            let error = NSError(domain: "QCCaptureFileManager", code: -7, userInfo: [NSLocalizedDescriptionKey: message])
+            let error = NSError(domain: "CPCaptureFileManager", code: -7, userInfo: [NSLocalizedDescriptionKey: message])
             delegate?.captureFileManager(self, didEncounterError: error, message: message)
             return
         }
