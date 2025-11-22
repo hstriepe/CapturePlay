@@ -128,25 +128,43 @@ class QCAppDelegate: NSObject, NSApplicationDelegate, NSMenuDelegate, QCUsbWatch
     }
     
     private func buildDeviceMenu(devices: [AVCaptureDevice], currentDeviceIndex: Int) {
-        let deviceMenu: NSMenu = NSMenu()
-        var deviceIndex: Int = 0
-
-        for device: AVCaptureDevice in devices {
-            let deviceMenuItem: NSMenuItem = NSMenuItem(
-                title: device.localizedName, action: #selector(deviceMenuChanged), keyEquivalent: ""
-            )
-            deviceMenuItem.target = self
-            deviceMenuItem.representedObject = deviceIndex
-            if deviceIndex == currentDeviceIndex {
-                deviceMenuItem.state = NSControl.StateValue.on
+        NSLog("Building device menu with %d devices, currentDeviceIndex: %d", devices.count, currentDeviceIndex)
+        
+        DispatchQueue.main.async {
+            // Create a completely new menu to avoid XIB conflicts
+            let deviceMenu = NSMenu(title: "Select Source")
+            deviceMenu.autoenablesItems = true
+            
+            var deviceIndex: Int = 0
+            for device: AVCaptureDevice in devices {
+                NSLog("Adding menu item %d: %@ (type: %@)", deviceIndex, device.localizedName, device.deviceType.rawValue)
+                let deviceMenuItem: NSMenuItem = NSMenuItem(
+                    title: device.localizedName, action: #selector(self.deviceMenuChanged), keyEquivalent: ""
+                )
+                deviceMenuItem.target = self
+                deviceMenuItem.representedObject = deviceIndex
+                if deviceIndex == currentDeviceIndex {
+                    deviceMenuItem.state = NSControl.StateValue.on
+                    NSLog("Setting device %d as selected", deviceIndex)
+                }
+                if deviceIndex < 9 {
+                    deviceMenuItem.keyEquivalent = String(deviceIndex + 1)
+                }
+                deviceMenu.addItem(deviceMenuItem)
+                deviceIndex += 1
             }
-            if deviceIndex < 9 {
-                deviceMenuItem.keyEquivalent = String(deviceIndex + 1)
+            
+            // Force replace the submenu completely
+            self.selectSourceMenu.submenu = deviceMenu
+            NSLog("Device menu built with %d items and assigned to selectSourceMenu", deviceMenu.items.count)
+            
+            // Verify the assignment worked
+            if let submenu = self.selectSourceMenu.submenu {
+                NSLog("Verification: selectSourceMenu.submenu now has %d items", submenu.items.count)
+            } else {
+                NSLog("ERROR: selectSourceMenu.submenu is still nil after assignment!")
             }
-            deviceMenu.addItem(deviceMenuItem)
-            deviceIndex += 1
         }
-        selectSourceMenu.submenu = deviceMenu
     }
 
     // MARK: - Settings Management
@@ -319,8 +337,10 @@ class QCAppDelegate: NSObject, NSApplicationDelegate, NSMenuDelegate, QCUsbWatch
             windowManager.removeBorder()
         }
         
+        // Initialize video content state as false until devices are detected and started
+        
         detectVideoDevices()
-        captureManager.startCaptureWithVideoDevice(deviceIndex: defaultDeviceIndex)
+        // Note: Device selection will happen in didDetectDevices delegate method
         usb.delegate = self
         setupFileMenu()
         setupVideoMenu()
@@ -643,15 +663,26 @@ class QCAppDelegate: NSObject, NSApplicationDelegate, NSMenuDelegate, QCUsbWatch
 // MARK: - QCCaptureManagerDelegate
 extension QCAppDelegate {
     func captureManager(_ manager: QCCaptureManager, didDetectDevices devices: [AVCaptureDevice]) {
+        NSLog("didDetectDevices called with %d devices", devices.count)
         // Build device menu
         let currentDeviceIndex: Int
         if captureSession != nil, let currentInput = input {
             let currentDevice = currentInput.device
-            currentDeviceIndex = devices.firstIndex(of: currentDevice) ?? defaultDeviceIndex
+            currentDeviceIndex = devices.firstIndex(of: currentDevice) ?? manager.getPreferredDefaultDeviceIndex(from: devices)
+            NSLog("Using existing device index: %d", currentDeviceIndex)
         } else {
-            currentDeviceIndex = defaultDeviceIndex
+            currentDeviceIndex = manager.getPreferredDefaultDeviceIndex(from: devices)
+            NSLog("Using preferred default device index: %d", currentDeviceIndex)
         }
         buildDeviceMenu(devices: devices, currentDeviceIndex: currentDeviceIndex)
+        
+        // Start capture with the preferred device if not already running
+        if captureSession == nil {
+            NSLog("Starting capture with preferred device at index %d", currentDeviceIndex)
+            manager.startCaptureWithVideoDevice(deviceIndex: currentDeviceIndex)
+        } else {
+            NSLog("Capture session already exists, not starting new device")
+        }
     }
     
     func captureManager(_ manager: QCCaptureManager, didChangeDevice device: AVCaptureDevice, deviceIndex: Int) {
@@ -748,6 +779,7 @@ extension QCAppDelegate {
         updateCaptureVideoMenuItemState()
         windowManager?.updateRecordingControlState(isRecording: isRecording)
     }
+    
 }
 
 // MARK: - QCAudioManagerDelegate

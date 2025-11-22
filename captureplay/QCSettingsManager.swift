@@ -23,6 +23,7 @@ class QCSettingsManager {
     private(set) var alwaysShowImageMenu: Bool = true
     private(set) var showVideoCaptureControls: Bool = true
     
+    
     // MARK: - Color Correction Properties
     private(set) var brightness: Float = 0.0
     private(set) var contrast: Float = 1.0
@@ -108,6 +109,7 @@ class QCSettingsManager {
     func setShowVideoCaptureControls(_ value: Bool) {
         showVideoCaptureControls = value
     }
+    
     
     func setBrightness(_ value: Float) {
         brightness = value

@@ -322,7 +322,7 @@ class QCCaptureFileManager {
         
         let cgImage: CGImage? = CGWindowListCreateImage(
             CGRect.null, .optionIncludingWindow, CGWindowID(window.windowNumber),
-            [.boundsIgnoreFraming, .bestResolution])
+            .boundsIgnoreFraming)
         
         if borderlessState == false {
             windowManager.addBorder()

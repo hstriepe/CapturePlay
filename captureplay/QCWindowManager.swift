@@ -112,6 +112,7 @@ class QCWindowManager: NSObject {
         
         // Set up mouse tracking for title bar visibility
         setupTitleBarMouseTracking()
+        
     }
     
     private func setupTitleBarMouseTracking() {

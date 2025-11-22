@@ -105,7 +105,15 @@ class QCAudioManager {
             preferredInputUID = defaultInputUID
         }
         if preferredInputUID.isEmpty {
-            preferredInputUID = audioInputDevices.first?.uniqueID ?? ""
+            // Prefer built-in microphones over Continuity Camera devices
+            let preferredDevice = audioInputDevices.first { device in
+                if #available(macOS 13.0, *) {
+                    return device.deviceType != .continuityCamera
+                } else {
+                    return true
+                }
+            } ?? audioInputDevices.first
+            preferredInputUID = preferredDevice?.uniqueID ?? ""
         }
         if preferredInputUID != settings.audioInputUID {
             settings.setAudioInputUID(preferredInputUID)
@@ -113,7 +121,15 @@ class QCAudioManager {
         if !preferredInputUID.isEmpty,
             !audioInputDevices.contains(where: { $0.uniqueID == preferredInputUID })
         {
-            preferredInputUID = audioInputDevices.first?.uniqueID ?? ""
+            // Prefer built-in microphones over Continuity Camera devices
+            let preferredDevice = audioInputDevices.first { device in
+                if #available(macOS 13.0, *) {
+                    return device.deviceType != .continuityCamera
+                } else {
+                    return true
+                }
+            } ?? audioInputDevices.first
+            preferredInputUID = preferredDevice?.uniqueID ?? ""
             settings.setAudioInputUID(preferredInputUID)
         }
         selectedAudioInputUID = preferredInputUID.isEmpty ? nil : preferredInputUID
@@ -233,7 +249,17 @@ class QCAudioManager {
     func updatePreferredInputFromVideo(videoDevice: AVCaptureDevice) {
         let settings = QCSettingsManager.shared
         guard settings.audioInputUID.isEmpty else { return }
+        
+        // Don't auto-select audio from Continuity Camera - prefer other audio devices
+        if #available(macOS 13.0, *) {
+            if videoDevice.deviceType == .continuityCamera {
+                NSLog("Skipping audio auto-selection for Continuity Camera '%@'", videoDevice.localizedName)
+                return
+            }
+        }
+        
         if let linkedAudio = videoDevice.linkedDevices.first(where: { $0.hasMediaType(.audio) }) {
+            NSLog("Auto-selecting linked audio device '%@' for video device '%@'", linkedAudio.localizedName, videoDevice.localizedName)
             settings.setAudioInputUID(linkedAudio.uniqueID)
             selectedAudioInputUID = linkedAudio.uniqueID
             delegate?.audioManager(self, needsMenuUpdateForInput: audioInputDevices, selectedUID: selectedAudioInputUID)

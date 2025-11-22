@@ -36,44 +36,44 @@ class QCPreferencesController {
         alert.addButton(withTitle: "Cancel")
         
         // Create a custom view for preferences
-        let view = NSView(frame: NSRect(x: 0, y: 0, width: 500, height: 160))
+        let view = NSView(frame: NSRect(x: 0, y: 0, width: 500, height: 170))
         
         // Toggle: Always show Video > Image submenu
         let imageMenuLabel = NSTextField(labelWithString: "Always show the Image submenu under Video")
-        imageMenuLabel.frame = NSRect(x: 20, y: 140, width: 400, height: 17)
+        imageMenuLabel.frame = NSRect(x: 20, y: 150, width: 400, height: 17)
         view.addSubview(imageMenuLabel)
         
-        let imageMenuToggle = NSSwitch(frame: NSRect(x: 429, y: 138, width: 51, height: 31))
+        let imageMenuToggle = NSSwitch(frame: NSRect(x: 429, y: 148, width: 51, height: 31))
         imageMenuToggle.state = QCSettingsManager.shared.alwaysShowImageMenu ? .on : .off
         imageMenuToggle.isEnabled = true
         view.addSubview(imageMenuToggle)
         
         // Toggle for auto display sleep in full screen
         let displaySleepLabel = NSTextField(labelWithString: "Automatically prevent display sleep during full screen")
-        displaySleepLabel.frame = NSRect(x: 20, y: 110, width: 400, height: 17)
+        displaySleepLabel.frame = NSRect(x: 20, y: 120, width: 400, height: 17)
         view.addSubview(displaySleepLabel)
         
-        let displaySleepToggle = NSSwitch(frame: NSRect(x: 429, y: 108, width: 51, height: 31))
+        let displaySleepToggle = NSSwitch(frame: NSRect(x: 429, y: 118, width: 51, height: 31))
         displaySleepToggle.state = QCSettingsManager.shared.autoDisplaySleepInFullScreen ? .on : .off
         displaySleepToggle.isEnabled = true
         view.addSubview(displaySleepToggle)
         
         // Toggle for showing video capture controls
-        let captureControlsLabel = NSTextField(labelWithString: "Show Video Capture Controls")
-        captureControlsLabel.frame = NSRect(x: 20, y: 80, width: 400, height: 17)
+        let captureControlsLabel = NSTextField(labelWithString: "Show video capture controls")
+        captureControlsLabel.frame = NSRect(x: 20, y: 90, width: 400, height: 17)
         view.addSubview(captureControlsLabel)
         
-        let captureControlsToggle = NSSwitch(frame: NSRect(x: 429, y: 78, width: 51, height: 31))
+        let captureControlsToggle = NSSwitch(frame: NSRect(x: 429, y: 88, width: 51, height: 31))
         captureControlsToggle.state = QCSettingsManager.shared.showVideoCaptureControls ? .on : .off
         captureControlsToggle.isEnabled = true
         view.addSubview(captureControlsToggle)
         
         // Label and text field for capture directory
-        let directoryLabel = NSTextField(labelWithString: "Capture Image Directory:")
-        directoryLabel.frame = NSRect(x: 20, y: 50, width: 150, height: 17)
+        let directoryLabel = NSTextField(labelWithString: "Capture image directory:")
+        directoryLabel.frame = NSRect(x: 20, y: 60, width: 150, height: 17)
         view.addSubview(directoryLabel)
         
-        let directoryTextField = NSTextField(frame: NSRect(x: 20, y: 20, width: 380, height: 22))
+        let directoryTextField = NSTextField(frame: NSRect(x: 20, y: 30, width: 380, height: 22))
         var directoryPath = QCSettingsManager.shared.captureImageDirectory
         if directoryPath.isEmpty {
             let homePath = NSHomeDirectory()
@@ -85,7 +85,7 @@ class QCPreferencesController {
         preferencesAlert = alert
         
         let browseButton = NSButton(title: "Browse…", target: self, action: #selector(browseCaptureDirectory(_:)))
-        browseButton.frame = NSRect(x: 410, y: 18, width: 70, height: 26)
+        browseButton.frame = NSRect(x: 410, y: 28, width: 70, height: 26)
         view.addSubview(browseButton)
         
         alert.accessoryView = view

@@ -26,7 +26,7 @@ CapturePlay is a macOS application designed to display video and audio from USB 
 
 CapturePlay enables you to:
 
-- **Display video** from USB capture devices in real-time
+- **Display video** from USB capture devices in real-time, including MacBook cameras
 - **Route audio** from capture devices to any output device
 - **Capture images** during gameplay or video viewing
 - **Record video** with audio in QuickTime-compatible MOV format
@@ -41,6 +41,7 @@ CapturePlay enables you to:
 - **macOS**: 14.6 (Sequoia) or later to support Continuity Camera.
 - **Hardware**: 
   - USB capture device (e.g., Elgato Camlink 4K, AVMedia, 4k HDMI Capture card, or generic USB capture cards)
+  - MacBook or Studio Display Camera
   - iPhone Continuity Camera (requires macOS 14.6 Sequoia, or later, and iOS 16.0 or later)
 - **Permissions**: 
   - Camera access (for video capture devices)
@@ -99,17 +100,7 @@ CapturePlay enables you to:
 
 - **Copy** (⌘C): Copies the current window capture to the clipboard
 
-#### Inactive
-
-- **Undo** (⌘Z): Undoes the last action
-- **Redo** (⌘⇧Z): Redoes the last undone action
-- **Cut** (⌘X): Cuts selected text
-- **Copy** (⌘C): Copies the current window capture to the clipboard
-- **Paste** (⌘V): Pastes from the clipboard
-- **Paste and Match Style** (⌥⌘V): Pastes text matching the current style
-- **Delete**: Deletes selected text
-- **Select All** (⌘A): Selects all text
-- **Find**: Standard macOS find commands
+- The rest of the menu is inactive
 
 ### Video Menu
 
@@ -223,7 +214,7 @@ Rotation position is saved in preferences and applied automatically on startup.
 
 **Device-Specific Settings**: Color correction settings are saved per video device by name. Each device (USB capture card, Continuity Camera, etc.) maintains its own brightness, contrast, and hue values. When you switch devices, the saved color correction settings for that device are automatically loaded and applied.
 
-Color correction settings are saved in preferences and applied automatically when you select a device. The dialog can remain open while using the application and can be moved independently.
+The dialog can remain open while using the application and can be moved independently.
 
 ### Borderless Mode
 
@@ -244,9 +235,9 @@ Color correction settings are saved in preferences and applied automatically whe
 **Enter Full Screen** (⌃⌘F) or click the green traffic light button:
 
 - Video fills the entire screen
-- Cursor is automatically hidden
+- The cursor is automatically hidden
 - Display sleep prevention is automatically enabled (if configured in preferences)
-- Press Escape or move mouse to top to exit
+- Press Escape to exit
 
 **Note**: Some features (like "Save Image") are not available in full-screen mode.
 
@@ -262,11 +253,8 @@ Color correction settings are saved in preferences and applied automatically whe
 
 CapturePlay features a QuickTime Player-style translucent title bar for a clean viewing experience:
 
-- **Auto-Hide**: The window title and controls are hidden by default to provide an unobstructed view
-- **Mouse Hover**: Move your mouse to the top area of the window to reveal the title bar and window controls
-- **Auto-Disappear**: Title bar and controls automatically hide after 2 seconds of no mouse activity
-- **White Text**: Title text appears in white for visibility over video content
-- **Recording Controls Integration**: Video capture controls follow the same visibility behavior, appearing on hover and hiding when the mouse moves away (except during recording when they remain always visible)
+- **Recording Controls Integration**: Video capture controls follow the same visibility behavior, appearing on hover and hiding when the mouse moves away (except during recording, when they remain always visible)
+
 
 ---
 
@@ -406,12 +394,13 @@ Open **CapturePlay > Settings…** (⌘,)
 
 #### Video Capture Controls
 
-- **Toggle**: "Show Video Capture Controls"
+- **Toggle**: "Show video capture controls"
 - When enabled, an on-screen recording control button appears when recording starts
 - When disabled, the on-screen control button is hidden
 - The button appears in the bottom-right corner of the video window
 - **Behavior**: The control follows the translucent title bar visibility - it appears on mouse hover and hides when the mouse moves away, except during recording, when it remains always visible
 - Click the button to start or stop recording
+
 
 #### Saving Settings
 

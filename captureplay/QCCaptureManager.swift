@@ -3,6 +3,7 @@
 
 import AVFoundation
 import Cocoa
+import CoreVideo
 
 // MARK: - QCCaptureManagerDelegate Protocol
 protocol QCCaptureManagerDelegate: AnyObject {
@@ -40,11 +41,31 @@ class QCCaptureManager: NSObject {
     // Track last stop time for cooldown
     private var lastStopTime: Date?
     
+    
     // Dependencies (will be injected)
     var audioCaptureInput: AVCaptureDeviceInput? // Reference from audio manager (set by app delegate)
     var previewView: NSView? // Preview view for capture layer
     
     let defaultDeviceIndex: Int = 0
+    
+    // MARK: - Default Device Selection
+    func getPreferredDefaultDeviceIndex(from devices: [AVCaptureDevice]) -> Int {
+        // Never select Continuity Camera as default - prefer physical capture devices
+        for (index, device) in devices.enumerated() {
+            if #available(macOS 13.0, *) {
+                if device.deviceType == .continuityCamera {
+                    NSLog("Skipping Continuity Camera '%@' for default selection", device.localizedName)
+                    continue
+                }
+            }
+            NSLog("Selected '%@' as default video device", device.localizedName)
+            return index
+        }
+        
+        // Fallback to first device if no non-Continuity devices found
+        NSLog("No non-Continuity devices found, using first available device")
+        return defaultDeviceIndex
+    }
     
     // MARK: - Initialization
     override init() {
@@ -68,12 +89,18 @@ class QCCaptureManager: NSObject {
         self.devices = discoverySession.devices
         
         if devices.isEmpty {
+            // Notify that no video content is available
             let message = "Unfortunately, you don't appear to have any cameras connected. Goodbye for now!"
             let error = NSError(domain: "QCCaptureManager", code: -1, userInfo: [NSLocalizedDescriptionKey: message])
             delegate?.captureManager(self, didEncounterError: error, message: message)
             NSApp.terminate(nil)
         } else {
             NSLog("%d devices found", devices.count)
+            // Log all detected devices
+            for (index, device) in devices.enumerated() {
+                NSLog("Device %d: %@ (type: %@)", index, device.localizedName, device.deviceType.rawValue)
+            }
+            NSLog("Calling delegate with %d devices", devices.count)
             delegate?.captureManager(self, didDetectDevices: devices)
         }
     }
@@ -96,6 +123,7 @@ class QCCaptureManager: NSObject {
                 return
             }
             session.stopRunning()
+            // Temporarily notify no content while switching devices
         }
         
         // Create new session
@@ -116,7 +144,11 @@ class QCCaptureManager: NSObject {
             if session.canAddOutput(movieOutput) {
                 session.addOutput(movieOutput)
                 self.movieFileOutput = movieOutput
+                NSLog("Movie file output added successfully for device: %@", device.localizedName)
+            } else {
+                NSLog("WARNING: Cannot add movie file output for device: %@ - recording may not work", device.localizedName)
             }
+            
             
             session.commitConfiguration()
             
@@ -127,13 +159,21 @@ class QCCaptureManager: NSObject {
             
             if let previewView = previewView {
                 previewView.layer = previewLayer
-                previewView.layer?.backgroundColor = CGColor.black
+                // Don't set background color here - let window manager control it
+                previewView.wantsLayer = true
             }
             
             self.captureSession = session
             self.captureLayer = previewLayer
             self.currentVideoDevice = device
             self.selectedDeviceIndex = deviceIndex
+            
+            // Log device capabilities for debugging
+            NSLog("Device capabilities for %@:", device.localizedName)
+            NSLog("  - Device type: %@", device.deviceType.rawValue)
+            NSLog("  - Has video: %@", device.hasMediaType(.video) ? "YES" : "NO")
+            NSLog("  - Active format: %@", device.activeFormat.description)
+            NSLog("  - Movie output available: %@", movieFileOutput != nil ? "YES" : "NO")
             
             // Notify delegate
             let windowTitle = String(format: "CapturePlay: [%@]", device.localizedName)
@@ -146,10 +186,12 @@ class QCCaptureManager: NSObject {
                 session.startRunning()
             }
             
+            // Don't notify content state here - let the frame analysis detect actual content
             delegate?.captureManager(self, needsSettingsApplication: ())
             
         } catch {
             NSLog("Error while opening device: %@", error.localizedDescription)
+            // Notify that video content is not available due to error
             let message = "Unfortunately, there was an error when trying to access the camera. Try again or select a different one."
             delegate?.captureManager(self, didEncounterError: error, message: message)
         }
@@ -157,13 +199,25 @@ class QCCaptureManager: NSObject {
     
     // MARK: - Recording Management
     func startRecording(to captureDirectory: URL) {
-        guard movieFileOutput != nil else {
-            let error = NSError(domain: "QCCaptureManager", code: -2, userInfo: [NSLocalizedDescriptionKey: "Video recording is not available. Please ensure a video device is selected."])
-            delegate?.captureManager(self, didEncounterError: error, message: error.localizedDescription)
+        NSLog("startRecording called - isRecording: %@", isRecording ? "YES" : "NO")
+        
+        // Check if device supports recording
+        if !supportsRecording() {
+            NSLog("ERROR: Device does not support recording")
+            if let device = currentVideoDevice {
+                NSLog("Current device: %@ (type: %@)", device.localizedName, device.deviceType.rawValue)
+                let message = "Video recording is not supported by '\(device.localizedName)'. This capture device may not be compatible with video recording. Image capture will still work normally."
+                let error = NSError(domain: "QCCaptureManager", code: -2, userInfo: [NSLocalizedDescriptionKey: message])
+                delegate?.captureManager(self, didEncounterError: error, message: message)
+            } else {
+                let error = NSError(domain: "QCCaptureManager", code: -2, userInfo: [NSLocalizedDescriptionKey: "Video recording is not available. Please ensure a video device is selected."])
+                delegate?.captureManager(self, didEncounterError: error, message: error.localizedDescription)
+            }
             return
         }
         
         guard let session = captureSession else {
+            NSLog("ERROR: captureSession is nil")
             let error = NSError(domain: "QCCaptureManager", code: -3, userInfo: [NSLocalizedDescriptionKey: "Capture session is not available."])
             delegate?.captureManager(self, didEncounterError: error, message: error.localizedDescription)
             return
@@ -183,13 +237,17 @@ class QCCaptureManager: NSObject {
         }
         
         // Ensure session is running
+        NSLog("Session running state: %@", session.isRunning ? "YES" : "NO")
         if !session.isRunning {
+            NSLog("Starting capture session...")
             session.startRunning()
             // Give it a moment to establish connections
             DispatchQueue.main.asyncAfter(deadline: .now() + 0.2) { [weak self] in
+                NSLog("Session start delay completed, attempting to start recording...")
                 self?.startVideoRecording(to: captureDirectory)
             }
         } else {
+            NSLog("Session already running, starting recording immediately...")
             startVideoRecording(to: captureDirectory)
         }
     }
@@ -214,7 +272,23 @@ class QCCaptureManager: NSObject {
     }
     
     private func startVideoRecording(to captureDir: URL) {
-        guard let movieOutput = movieFileOutput else { return }
+        guard let movieOutput = movieFileOutput else {
+            NSLog("ERROR: movieFileOutput is nil - cannot start recording")
+            let error = NSError(domain: "QCCaptureManager", code: -2, userInfo: [NSLocalizedDescriptionKey: "Video recording is not available. Please ensure a video device is selected."])
+            delegate?.captureManager(self, didEncounterError: error, message: error.localizedDescription)
+            return
+        }
+        
+        guard let session = captureSession, session.isRunning else {
+            NSLog("ERROR: Capture session is not running - cannot start recording")
+            let error = NSError(domain: "QCCaptureManager", code: -3, userInfo: [NSLocalizedDescriptionKey: "Capture session is not running."])
+            delegate?.captureManager(self, didEncounterError: error, message: error.localizedDescription)
+            return
+        }
+        
+        NSLog("Starting video recording - session running: %@, movieOutput available: %@", 
+              session.isRunning ? "YES" : "NO", 
+              movieOutput != nil ? "YES" : "NO")
         
         // Generate unique filename
         let now = Date()
@@ -254,9 +328,10 @@ class QCCaptureManager: NSObject {
         }
         
         // Start recording
+        NSLog("Attempting to start recording to: %@", fileURL.path)
         movieOutput.startRecording(to: fileURL, recordingDelegate: self)
         isRecording = true
-        NSLog("Started video recording to: %@", fileURL.path)
+        NSLog("Recording started successfully to: %@", fileURL.path)
         delegate?.captureManager(self, didStartRecordingTo: fileURL)
     }
     
@@ -264,28 +339,33 @@ class QCCaptureManager: NSObject {
         // Configure audio settings for QuickTime compatibility (AAC, 256Kbps)
         if let audioConnection = movieOutput.connection(with: .audio) {
             // Get audio format from input if available
-            var sampleRate: Double = 44100.0
+            var inputSampleRate: Double = 44100.0
             var channels: Int = 2
             
             if let audioInput = audioCaptureInput {
                 let formatDesc = audioInput.device.activeFormat.formatDescription
                 let asbd = CMAudioFormatDescriptionGetStreamBasicDescription(formatDesc)
                 if let asbd = asbd?.pointee {
-                    sampleRate = Double(asbd.mSampleRate)
+                    inputSampleRate = Double(asbd.mSampleRate)
                     channels = Int(asbd.mChannelsPerFrame)
+                    NSLog("Input audio format: %.0f Hz, %d channels", inputSampleRate, channels)
                 }
             }
+            
+            // Convert to AAC-compatible sample rate
+            let outputSampleRate = getAACCompatibleSampleRate(inputRate: inputSampleRate)
+            NSLog("Converting sample rate from %.0f Hz to %.0f Hz for AAC compatibility", inputSampleRate, outputSampleRate)
             
             // Set AAC audio settings for QuickTime compatibility
             let audioSettings: [String: Any] = [
                 AVFormatIDKey: kAudioFormatMPEG4AAC,
-                AVSampleRateKey: sampleRate,
+                AVSampleRateKey: outputSampleRate,
                 AVNumberOfChannelsKey: channels,
                 AVEncoderBitRateKey: 256000
             ]
             
             movieOutput.setOutputSettings(audioSettings, for: audioConnection)
-            NSLog("Configured AAC audio: %.0f Hz, %d channels, 256Kbps", sampleRate, channels)
+            NSLog("Configured AAC audio: %.0f Hz, %d channels, 256Kbps", outputSampleRate, channels)
         } else {
             NSLog("Note: No audio connection available - video will be recorded without audio")
         }
@@ -313,7 +393,61 @@ class QCCaptureManager: NSObject {
     func getInput() -> AVCaptureDeviceInput? {
         return input
     }
+    
+    func stopCapture() {
+        captureSession?.stopRunning()
+        captureSession = nil
+        captureLayer = nil
+        input = nil
+        currentVideoDevice = nil
+    }
+    
+    // MARK: - Device Capability Checking
+    func supportsRecording() -> Bool {
+        guard let device = currentVideoDevice,
+              let session = captureSession else {
+            return false
+        }
+        
+        // Check if we can add a movie file output to the session
+        let testOutput = AVCaptureMovieFileOutput()
+        let canAdd = session.canAddOutput(testOutput)
+        
+        NSLog("Recording support check for %@: %@", device.localizedName, canAdd ? "YES" : "NO")
+        return canAdd && movieFileOutput != nil
+    }
+    
+    // MARK: - Audio Sample Rate Conversion
+    private func getAACCompatibleSampleRate(inputRate: Double) -> Double {
+        // AAC supports these sample rates: 8000, 11025, 12000, 16000, 22050, 24000, 32000, 44100, 48000
+        let supportedRates: [Double] = [8000, 11025, 12000, 16000, 22050, 24000, 32000, 44100, 48000]
+        
+        // If input rate is already supported, use it
+        if supportedRates.contains(inputRate) {
+            return inputRate
+        }
+        
+        // Find the closest supported rate
+        var closestRate = supportedRates[0]
+        var smallestDifference = abs(inputRate - closestRate)
+        
+        for rate in supportedRates {
+            let difference = abs(inputRate - rate)
+            if difference < smallestDifference {
+                smallestDifference = difference
+                closestRate = rate
+            }
+        }
+        
+        // For high sample rates (like 96kHz), prefer 48kHz as it's the highest supported
+        if inputRate >= 88200 {
+            return 48000
+        }
+        
+        return closestRate
+    }
 }
+
 
 // MARK: - AVCaptureFileOutputRecordingDelegate
 extension QCCaptureManager: AVCaptureFileOutputRecordingDelegate {
