@@ -1,9 +1,10 @@
 # Release Notes
 
-#### Version 3.5 (169 - internal) - 11-22-25
+#### Version 3.5 (173 - internal) - 11-24-25
 
-1. Refactored all names and internal code prefixes from QC to CP.
-2. Further performance optimizations based on system capability. Auto mode can be overridden in Settings.
+1. New icon.
+2. Refactored all names and internal code prefixes from QC to CP.
+3. Further performance optimizations based on system capability. Auto mode can be overridden in Settings.
 
 #### Version 3.5 (160 - internal) - 11-21-25
 
