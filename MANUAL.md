@@ -117,7 +117,7 @@ CapturePlay enables you to:
 - **Fit to Actual Size** (⌃⌘A): Resizes window to match the video's native resolution
 - **Color Correction…**: Opens the Color Correction dialog for adjusting brightness, contrast, and hue
 - **Enter Full Screen** (⌃⌘F): Enters full-screen mode
-- **Display Sleep** (⌘D): Toggles display sleep prevention on/off
+- **Display Sleep Prevention** (⌘D): Toggles display sleep prevention on/off
 
 ### Audio Menu
 
@@ -243,9 +243,9 @@ The dialog can remain open while using the application and can be moved independ
 
 ### Display Sleep Prevention
 
-**Display Sleep** (⌘D) prevents your Mac's display from sleeping:
+**Display Sleep** Prevention (⌘D) prevents your Mac's display from sleeping:
 
-- Useful during long recording sessions
+- Useful during typical game play and long recording sessions
 - Can be enabled/disabled manually via menu
 - Automatically enabled in full-screen mode (if configured in preferences)
 
@@ -482,7 +482,7 @@ All settings are automatically saved when you close the application and automati
 | ⌘A | Fix Aspect Ratio | Video > Fix Aspect Ratio |
 | ⌃⌘A | Fit to Actual Size | Video > Fit to Actual Size |
 | ⌃⌘F/FnF | Enter Full Screen | Video > Enter Full Screen |
-| ⌘D | Display Sleep | Video > Display Sleep |
+| ⌘D | Display Sleep Prevention | Video > Display Sleep |
 
 ### Menu-Specific Shortcuts
 

@@ -369,7 +369,7 @@
                                 </connections>
                             </menuItem>
                             <menuItem isSeparatorItem="YES" id="Ide-4W-m6Q"/>
-                            <menuItem title="Display Sleep" keyEquivalent="d" id="otW-iO-Yct">
+                            <menuItem title="Display Sleep Prevention" keyEquivalent="d" id="otW-iO-Yct">
                                 <connections>
                                     <action selector="toggleDisplaySleep:" target="494" id="M1s-ZN-Jnr"/>
                                 </connections>

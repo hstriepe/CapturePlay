@@ -28,28 +28,7 @@ class CPAudioManager {
     
     // MARK: - Properties
     weak var delegate: CPAudioManagerDelegate?
-    var captureSession: AVCaptureSession? {
-        didSet {
-            // Clear audio inputs/outputs when session changes to force recreation
-            if captureSession !== oldValue {
-                // Remove from old session if it still exists
-                if let oldSession = oldValue {
-                    if let oldInput = audioCaptureInput, oldSession.inputs.contains(oldInput) {
-                        oldSession.beginConfiguration()
-                        oldSession.removeInput(oldInput)
-                        oldSession.commitConfiguration()
-                    }
-                    if let oldOutput = audioPreviewOutput, oldSession.outputs.contains(oldOutput) {
-                        oldSession.beginConfiguration()
-                        oldSession.removeOutput(oldOutput)
-                        oldSession.commitConfiguration()
-                    }
-                }
-                audioCaptureInput = nil
-                audioPreviewOutput = nil
-            }
-        }
-    }
+    private let audioSession = AVCaptureSession()
     
     private(set) var audioCaptureInput: AVCaptureDeviceInput?
     private(set) var audioPreviewOutput: AVCaptureAudioPreviewOutput?
@@ -57,24 +36,25 @@ class CPAudioManager {
     private(set) var audioOutputDevices: [AudioOutputDeviceInfo] = []
     private(set) var selectedAudioInputUID: String?
     private(set) var selectedAudioOutputUID: String?
+    private let sessionQueue = DispatchQueue(label: "org.captureplay.audio.session", qos: .userInitiated)
     
     // MARK: - Initialization
-    init(captureSession: AVCaptureSession?) {
-        self.captureSession = captureSession
-    }
+    init() {}
     
     // MARK: - Device Detection
     func detectAudioDevices() {
         refreshAudioDeviceLists()
         ensureAudioSelections()
-        delegate?.audioManager(self, didDetectInputDevices: audioInputDevices)
-        delegate?.audioManager(self, didDetectOutputDevices: audioOutputDevices)
-        delegate?.audioManager(self, needsMenuUpdateForInput: audioInputDevices, selectedUID: selectedAudioInputUID)
-        delegate?.audioManager(self, needsMenuUpdateForOutput: audioOutputDevices, selectedUID: selectedAudioOutputUID)
+        DispatchQueue.main.async { [weak self] in
+            guard let self = self else { return }
+            self.delegate?.audioManager(self, didDetectInputDevices: self.audioInputDevices)
+            self.delegate?.audioManager(self, didDetectOutputDevices: self.audioOutputDevices)
+            self.delegate?.audioManager(self, needsMenuUpdateForInput: self.audioInputDevices, selectedUID: self.selectedAudioInputUID)
+            self.delegate?.audioManager(self, needsMenuUpdateForOutput: self.audioOutputDevices, selectedUID: self.selectedAudioOutputUID)
+        }
         
-        // Apply configuration if session is available
-        if captureSession != nil {
-            applyAudioConfiguration()
+        sessionQueue.async { [weak self] in
+            self?._applyAudioConfiguration()
         }
     }
     
@@ -92,6 +72,7 @@ class CPAudioManager {
     
     private func ensureAudioSelections() {
         let settings = CPSettingsManager.shared
+        let hasUserSelection = !settings.audioInputUID.isEmpty
         
         // Determine preferred input UID
         var preferredInputUID = settings.audioInputUID
@@ -116,7 +97,9 @@ class CPAudioManager {
             preferredInputUID = preferredDevice?.uniqueID ?? ""
         }
         if preferredInputUID != settings.audioInputUID {
-            settings.setAudioInputUID(preferredInputUID)
+            if !hasUserSelection {
+                settings.setAudioInputUID(preferredInputUID)
+            }
         }
         if !preferredInputUID.isEmpty,
             !audioInputDevices.contains(where: { $0.uniqueID == preferredInputUID })
@@ -130,7 +113,9 @@ class CPAudioManager {
                 }
             } ?? audioInputDevices.first
             preferredInputUID = preferredDevice?.uniqueID ?? ""
-            settings.setAudioInputUID(preferredInputUID)
+            if !hasUserSelection || settings.audioInputUID.isEmpty {
+                settings.setAudioInputUID(preferredInputUID)
+            }
         }
         selectedAudioInputUID = preferredInputUID.isEmpty ? nil : preferredInputUID
         
@@ -157,50 +142,87 @@ class CPAudioManager {
     }
     
     // MARK: - Audio Configuration
-    func applyAudioConfiguration() {
-        guard let session = captureSession else { return }
+    private func _applyAudioConfiguration(force: Bool = false) {
+        let session = audioSession
+        
+        let desiredInputUID = selectedAudioInputUID
+        let currentInputUID = audioCaptureInput?.device.uniqueID
+        let needsInputUpdate: Bool = {
+            if force {
+                // Force update if requested
+                return true
+            }
+            if let desired = desiredInputUID {
+                return audioCaptureInput == nil || currentInputUID != desired
+            } else {
+                // If no selection but we have devices available and no input, we should add one
+                return audioCaptureInput == nil && !audioInputDevices.isEmpty
+            }
+        }()
+        
+        // Check if output needs update
+        let needsOutputUpdate = force || audioPreviewOutput == nil
+        
+        // Skip session reconfiguration if nothing needs to change, but still ensure session is running
+        if !force && !needsInputUpdate && !needsOutputUpdate {
+            // Just update routing and mute state without touching session
+            _updateAudioOutputRouting()
+            _applyAudioMute()
+            // Ensure session is running even if nothing changed
+            if !session.isRunning {
+                session.startRunning()
+            }
+            return
+        }
         
         session.beginConfiguration()
         
-        let desiredInputUID = selectedAudioInputUID
-        
-        // Remove existing audio input if it belongs to a different session or needs to be changed
-        if let existingAudioInput = audioCaptureInput {
-            // Check if the input is still in the current session
-            if !session.inputs.contains(existingAudioInput) {
-                audioCaptureInput = nil
-            } else if desiredInputUID == nil || existingAudioInput.device.uniqueID != desiredInputUID {
+        if needsInputUpdate {
+            if let existingAudioInput = audioCaptureInput,
+               session.inputs.contains(existingAudioInput) {
                 session.removeInput(existingAudioInput)
                 audioCaptureInput = nil
             }
-        }
-        
-        // Add new audio input if needed
-        if audioCaptureInput == nil,
-            let audioUID = desiredInputUID,
-            let device = audioInputDevices.first(where: { $0.uniqueID == audioUID })
-        {
-            do {
-                let newAudioInput = try AVCaptureDeviceInput(device: device)
-                if session.canAddInput(newAudioInput) {
-                    session.addInput(newAudioInput)
-                    audioCaptureInput = newAudioInput
-                    delegate?.audioManager(self, didChangeInput: device)
+            
+            // Try to add the desired input, or fall back to first available device
+            var deviceToAdd: AVCaptureDevice?
+            if let audioUID = desiredInputUID,
+               let device = audioInputDevices.first(where: { $0.uniqueID == audioUID }) {
+                deviceToAdd = device
+            } else if let firstDevice = audioInputDevices.first {
+                // Fall back to first available device if no selection
+                deviceToAdd = firstDevice
+                selectedAudioInputUID = firstDevice.uniqueID
+                NSLog("No audio input selected, using first available: %@", firstDevice.localizedName)
+            }
+            
+            if let device = deviceToAdd {
+                do {
+                    let newAudioInput = try AVCaptureDeviceInput(device: device)
+                    if session.canAddInput(newAudioInput) {
+                        session.addInput(newAudioInput)
+                        audioCaptureInput = newAudioInput
+                        NSLog("Added audio input: %@", device.localizedName)
+                        DispatchQueue.main.async { [weak self] in
+                            guard let self = self else { return }
+                            self.delegate?.audioManager(self, didChangeInput: device)
+                        }
+                    } else {
+                        NSLog("Cannot add audio input %@ to session", device.localizedName)
+                    }
+                } catch {
+                    NSLog("Unable to add audio input %@: %@", device.localizedName, error.localizedDescription)
                 }
-            } catch {
-                NSLog("Unable to add audio input %@: %@", device.localizedName, error.localizedDescription)
+            } else {
+                NSLog("No audio input device available to add")
             }
         }
         
-        // Remove existing audio preview output if it belongs to a different session
-        if let existingPreviewOutput = audioPreviewOutput {
-            // Check if the output is still in the current session
-            if !session.outputs.contains(existingPreviewOutput) {
-                audioPreviewOutput = nil
-            }
+        if let existingPreviewOutput = audioPreviewOutput,
+           !session.outputs.contains(existingPreviewOutput) {
+            audioPreviewOutput = nil
         }
         
-        // Add audio preview output if needed
         if audioPreviewOutput == nil {
             let previewOutput = AVCaptureAudioPreviewOutput()
             let volume = CPSettingsManager.shared.audioVolume
@@ -208,27 +230,52 @@ class CPAudioManager {
             if session.canAddOutput(previewOutput) {
                 session.addOutput(previewOutput)
                 audioPreviewOutput = previewOutput
+                NSLog("Added audio preview output, volume: %.2f, muted: %@", volume, CPSettingsManager.shared.isAudioMuted ? "yes" : "no")
+            } else {
+                NSLog("Cannot add audio preview output to session")
             }
         }
         
         session.commitConfiguration()
         
-        updateAudioOutputRouting()
+        // Log session state
+        NSLog("Audio session configured - input: %@, output: %@, running: %@", 
+              audioCaptureInput != nil ? audioCaptureInput!.device.localizedName : "none",
+              audioPreviewOutput != nil ? "yes" : "no",
+              session.isRunning ? "yes" : "no")
         
         if !session.isRunning {
             session.startRunning()
+            NSLog("Audio session started")
         }
-        applyAudioMute()
+        
+        _updateAudioOutputRouting()
+        _applyAudioMute()
+        
+        // Log final state
+        NSLog("Audio session final state - running: %@, has input: %@, has output: %@",
+              session.isRunning ? "yes" : "no",
+              audioCaptureInput != nil ? "yes" : "no",
+              audioPreviewOutput != nil ? "yes" : "no")
     }
     
-    private func updateAudioOutputRouting() {
-        guard let preview = audioPreviewOutput else { return }
+    private func _updateAudioOutputRouting() {
+        guard let preview = audioPreviewOutput else {
+            NSLog("Cannot update audio output routing: no preview output")
+            return
+        }
         let targetUID = selectedAudioOutputUID
         if preview.outputDeviceUniqueID != targetUID {
             preview.outputDeviceUniqueID = targetUID
-            delegate?.audioManager(self, didChangeOutput: targetUID)
+            NSLog("Set audio output routing to: %@", targetUID ?? "default")
+            DispatchQueue.main.async { [weak self] in
+                guard let strongSelf = self else { return }
+                strongSelf.delegate?.audioManager(strongSelf, didChangeOutput: targetUID)
+            }
+        } else {
+            NSLog("Audio output routing already set to: %@", targetUID ?? "default")
         }
-        applyAudioMute()
+        _applyAudioMute()
     }
     
     // MARK: - Input/Output Selection
@@ -236,14 +283,41 @@ class CPAudioManager {
         selectedAudioInputUID = uid
         CPSettingsManager.shared.setAudioInputUID(uid)
         delegate?.audioManager(self, needsMenuUpdateForInput: audioInputDevices, selectedUID: selectedAudioInputUID)
-        applyAudioConfiguration()
+        sessionQueue.async { [weak self] in
+            self?._applyAudioConfiguration()
+        }
     }
     
     func setAudioOutput(uid: String) {
         selectedAudioOutputUID = uid
         CPSettingsManager.shared.setAudioOutputUID(uid)
         delegate?.audioManager(self, needsMenuUpdateForOutput: audioOutputDevices, selectedUID: selectedAudioOutputUID)
-        updateAudioOutputRouting()
+        sessionQueue.async { [weak self] in
+            self?._updateAudioOutputRouting()
+        }
+    }
+    
+    func ensureAudioSessionConfigured() {
+        // Ensure audio devices are detected if not already done
+        if audioInputDevices.isEmpty {
+            refreshAudioDeviceLists()
+            ensureAudioSelections()
+            // Update menus if devices were just detected
+            DispatchQueue.main.async { [weak self] in
+                guard let self = self else { return }
+                self.delegate?.audioManager(self, didDetectInputDevices: self.audioInputDevices)
+                self.delegate?.audioManager(self, didDetectOutputDevices: self.audioOutputDevices)
+                self.delegate?.audioManager(self, needsMenuUpdateForInput: self.audioInputDevices, selectedUID: self.selectedAudioInputUID)
+                self.delegate?.audioManager(self, needsMenuUpdateForOutput: self.audioOutputDevices, selectedUID: self.selectedAudioOutputUID)
+            }
+        } else {
+            // Refresh selections even if devices are already detected
+            ensureAudioSelections()
+        }
+        // Force audio session configuration (even if it thinks nothing changed)
+        sessionQueue.async { [weak self] in
+            self?._applyAudioConfiguration(force: true)
+        }
     }
     
     func updatePreferredInputFromVideo(videoDevice: AVCaptureDevice) {
@@ -263,26 +337,47 @@ class CPAudioManager {
             settings.setAudioInputUID(linkedAudio.uniqueID)
             selectedAudioInputUID = linkedAudio.uniqueID
             delegate?.audioManager(self, needsMenuUpdateForInput: audioInputDevices, selectedUID: selectedAudioInputUID)
+            sessionQueue.async { [weak self] in
+                self?._applyAudioConfiguration()
+            }
         }
     }
     
     // MARK: - Volume and Mute Management
     func applyAudioMute() {
+        sessionQueue.async { [weak self] in
+            self?._applyAudioMute()
+        }
+    }
+    
+    private func _applyAudioMute() {
         let muted = CPSettingsManager.shared.isAudioMuted
         let volume = CPSettingsManager.shared.audioVolume
         if let preview = audioPreviewOutput {
             preview.volume = muted ? 0.0 : Float(volume)
         }
-        delegate?.audioManager(self, didChangeMuteState: muted)
+        DispatchQueue.main.async { [weak self] in
+            guard let strongSelf = self else { return }
+            strongSelf.delegate?.audioManager(strongSelf, didChangeMuteState: muted)
+        }
     }
     
     func applyAudioVolume() {
+        sessionQueue.async { [weak self] in
+            self?._applyAudioVolume()
+        }
+    }
+    
+    private func _applyAudioVolume() {
         let muted = CPSettingsManager.shared.isAudioMuted
         let volume = CPSettingsManager.shared.audioVolume
         if let preview = audioPreviewOutput {
             preview.volume = muted ? 0.0 : Float(volume)
         }
-        delegate?.audioManager(self, didChangeVolume: volume)
+        DispatchQueue.main.async { [weak self] in
+            guard let strongSelf = self else { return }
+            strongSelf.delegate?.audioManager(strongSelf, didChangeVolume: volume)
+        }
     }
     
     func toggleMute() {
@@ -463,6 +558,30 @@ class CPAudioManager {
     
     func getAudioPreviewOutput() -> AVCaptureAudioPreviewOutput? {
         return audioPreviewOutput
+    }
+    
+    func makeRecordingInput() -> AVCaptureDeviceInput? {
+        guard let audioUID = selectedAudioInputUID else {
+            return nil
+        }
+        
+        let device: AVCaptureDevice?
+        if let cached = audioInputDevices.first(where: { $0.uniqueID == audioUID }) {
+            device = cached
+        } else {
+            device = AVCaptureDevice.devices(for: .audio).first(where: { $0.uniqueID == audioUID })
+        }
+        
+        guard let targetDevice = device else {
+            NSLog("Unable to locate audio device with UID %@", audioUID)
+            return nil
+        }
+        do {
+            return try AVCaptureDeviceInput(device: targetDevice)
+        } catch {
+            NSLog("Unable to build recording audio input for %@: %@", targetDevice.localizedName, error.localizedDescription)
+            return nil
+        }
     }
 }
 

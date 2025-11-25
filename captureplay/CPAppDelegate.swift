@@ -24,7 +24,6 @@ class CPAppDelegate: NSObject, NSApplicationDelegate, NSMenuDelegate, CPUsbWatch
     let usb: CPUsbWatcher = CPUsbWatcher()
     func deviceCountChanged() {
         captureManager.detectVideoDevices()
-        captureManager.startCaptureWithVideoDevice(deviceIndex: captureManager.selectedDeviceIndex)
         audioManager.detectAudioDevices()
     }
 
@@ -97,10 +96,6 @@ class CPAppDelegate: NSObject, NSApplicationDelegate, NSMenuDelegate, CPUsbWatch
     }
     var input: AVCaptureDeviceInput? {
         captureManager?.getInput()
-    }
-    // Computed properties for backward compatibility
-    private var audioCaptureInput: AVCaptureDeviceInput? {
-        audioManager?.getAudioCaptureInput()
     }
     private var audioPreviewOutput: AVCaptureAudioPreviewOutput? {
         audioManager?.getAudioPreviewOutput()
@@ -302,9 +297,10 @@ class CPAppDelegate: NSObject, NSApplicationDelegate, NSMenuDelegate, CPUsbWatch
         captureManager.delegate = self
         captureManager.previewView = playerView
         
-        // Initialize audio manager (will be connected to session after capture starts)
-        audioManager = CPAudioManager(captureSession: nil)
+        // Initialize audio manager
+        audioManager = CPAudioManager()
         audioManager.delegate = self
+        captureManager.audioManager = audioManager
         
         // Initialize file manager
         fileManager = CPCaptureFileManager()
@@ -518,14 +514,14 @@ class CPAppDelegate: NSObject, NSApplicationDelegate, NSMenuDelegate, CPUsbWatch
     private func requestAudioAccessIfNeeded() {
         let status = AVCaptureDevice.authorizationStatus(for: .audio)
         switch status {
-        case .authorized, .restricted, .denied:
-            // Don't detect devices here - wait for capture session to be set
-            // Devices will be detected in didChangeDevice delegate method
+        case .authorized:
+            detectAudioDevices()
+        case .restricted, .denied:
             break
         case .notDetermined:
             AVCaptureDevice.requestAccess(for: .audio) { _ in
                 DispatchQueue.main.async {
-                    // Devices will be detected when session is set
+                    self.detectAudioDevices()
                 }
             }
         @unknown default:
@@ -680,6 +676,12 @@ extension CPAppDelegate {
         if captureSession == nil {
             NSLog("Starting capture with preferred device at index %d", currentDeviceIndex)
             manager.startCaptureWithVideoDevice(deviceIndex: currentDeviceIndex)
+            // Ensure audio is initialized when video capture starts
+            audioManager.detectAudioDevices()
+            // Force audio session configuration on startup to ensure it's properly initialized
+            DispatchQueue.main.asyncAfter(deadline: .now() + 0.2) { [weak self] in
+                self?.audioManager.ensureAudioSessionConfigured()
+            }
         } else {
             NSLog("Capture session already exists, not starting new device")
         }
@@ -692,12 +694,10 @@ extension CPAppDelegate {
                 item.state = (index == deviceIndex) ? .on : .off
             }
         }
-        // Connect audio manager to capture session and detect devices
-        if let session = captureManager.captureSession {
-            audioManager.captureSession = session
-            // Detect audio devices now that we have a session
-            audioManager.detectAudioDevices()
-        }
+        // Update audio preferences for the new video device
+        audioManager.updatePreferredInputFromVideo(videoDevice: device)
+        // Force audio session configuration to ensure it's properly set up after video device change
+        audioManager.ensureAudioSessionConfigured()
         // Connect window manager to capture layer and input
         windowManager.captureLayer = captureManager.getPreviewLayer()
         windowManager.videoInput = captureManager.getInput()
@@ -752,12 +752,10 @@ extension CPAppDelegate {
     }
     
     func captureManager(_ manager: CPCaptureManager, needsAudioDeviceUpdateFor videoDevice: AVCaptureDevice) {
+        // updatePreferredInputFromVideo handles audio configuration internally
         audioManager.updatePreferredInputFromVideo(videoDevice: videoDevice)
-        // detectAudioDevices will be called in didChangeDevice, but we can also call it here
-        // to ensure devices are refreshed after video device change
-        if audioManager.captureSession != nil {
-            audioManager.detectAudioDevices()
-        }
+        // Ensure audio is fully initialized
+        audioManager.detectAudioDevices()
     }
     
     func captureManager(_ manager: CPCaptureManager, needsSettingsApplication: Void) {
@@ -793,8 +791,7 @@ extension CPAppDelegate {
     }
     
     func audioManager(_ manager: CPAudioManager, didChangeInput device: AVCaptureDevice?) {
-        // Input changed, update capture manager reference
-        captureManager.audioCaptureInput = manager.getAudioCaptureInput()
+        // Input changes are handled within CPAudioManager; nothing additional needed here.
     }
     
     func audioManager(_ manager: CPAudioManager, didChangeOutput deviceUID: String?) {
@@ -970,7 +967,7 @@ extension CPAppDelegate {
     }
     
     func displaySleepManager(_ manager: CPDisplaySleepManager, needsMenuItemUpdate isPreventing: Bool) {
-        displaySleepMenuItem?.state = isPreventing ? .off : .on
+        displaySleepMenuItem?.state = isPreventing ? .on : .off
     }
     
     func displaySleepManager(_ manager: CPDisplaySleepManager, needsMenuItemEnabled enabled: Bool) {

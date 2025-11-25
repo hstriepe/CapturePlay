@@ -1,17 +1,16 @@
 # Release Notes
 
-#### Version 3.5 (173 - internal) - 11-24-25
+#### Version 3.5 (178 - internal) - 11-25-25
 
 1. New icon.
-2. Refactored all names and internal code prefixes from QC to CP.
-3. Further performance optimizations based on system capability. Auto mode can be overridden in Settings.
-
-#### Version 3.5 (160 - internal) - 11-21-25
-
-1. Some generic capture devices have an odd audio sample rate. We now convert to 48Khz in those cases for video-audio recording using AAC.
-2. Continuity Camera audio is never selected by default at launch; it can cause long pauses at startup. Video is only a last resort.
-3. Settings item cleanup.
-4. Align entitlements with App Store requirements.
+2. Display Sleep Prevention - menu change and internal state fixes
+3. Refactored all names and internal code prefixes from QC to CP.
+4. Further performance optimizations based on system capability. Auto mode can be overridden in Settings.
+5. Some generic capture devices have an odd audio sample rate. We now convert to 48Khz in those cases for video-audio recording using AAC.
+6. Continuity Camera audio is never selected by default at launch; it can cause long pauses at startup. Video is only a last resort.
+7. Settings item cleanup.
+8. Align entitlements with App Store requirements.
+9. Bug fixes, including random display blanking.
 
 
 

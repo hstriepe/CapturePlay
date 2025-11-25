@@ -43,7 +43,8 @@ class CPCaptureManager: NSObject {
     
     
     // Dependencies (will be injected)
-    var audioCaptureInput: AVCaptureDeviceInput? // Reference from audio manager (set by app delegate)
+    weak var audioManager: CPAudioManager?
+    private var recordingAudioInput: AVCaptureDeviceInput?
     var previewView: NSView? // Preview view for capture layer
     
     let defaultDeviceIndex: Int = 0
@@ -77,7 +78,6 @@ class CPCaptureManager: NSObject {
         NSLog("Detecting video devices...")
         var deviceTypes: [AVCaptureDevice.DeviceType] = [.builtInWideAngleCamera, .externalUnknown]
         
-        // Include Continuity Camera support for macOS 13+
         if #available(macOS 13.0, *) {
             deviceTypes.append(.continuityCamera)
         }
@@ -86,22 +86,36 @@ class CPCaptureManager: NSObject {
             deviceTypes: deviceTypes,
             mediaType: .video,
             position: .unspecified)
-        self.devices = discoverySession.devices
+        let discoveredDevices = discoverySession.devices.sorted {
+            $0.localizedName.localizedCaseInsensitiveCompare($1.localizedName) == .orderedAscending
+        }
         
-        if devices.isEmpty {
+        if discoveredDevices.isEmpty {
             // Notify that no video content is available
             let message = "Unfortunately, you don't appear to have any cameras connected. Goodbye for now!"
             let error = NSError(domain: "CPCaptureManager", code: -1, userInfo: [NSLocalizedDescriptionKey: message])
             delegate?.captureManager(self, didEncounterError: error, message: message)
             NSApp.terminate(nil)
         } else {
-            NSLog("%d devices found", devices.count)
+            NSLog("%d devices found", discoveredDevices.count)
             // Log all detected devices
-            for (index, device) in devices.enumerated() {
+            for (index, device) in discoveredDevices.enumerated() {
                 NSLog("Device %d: %@ (type: %@)", index, device.localizedName, device.deviceType.rawValue)
             }
-            NSLog("Calling delegate with %d devices", devices.count)
-            delegate?.captureManager(self, didDetectDevices: devices)
+            
+            let previousIDs = devices.map { $0.uniqueID }
+            let newIDs = discoveredDevices.map { $0.uniqueID }
+            let devicesChanged = previousIDs != newIDs
+            
+            // Update stored devices regardless so our list remains sorted/deterministic
+            self.devices = discoveredDevices
+            
+            if devicesChanged || captureSession == nil {
+                NSLog("Calling delegate with %d devices", devices.count)
+                delegate?.captureManager(self, didDetectDevices: devices)
+            } else {
+                NSLog("No changes in video device list detected; skipping delegate update")
+            }
         }
     }
     
@@ -311,6 +325,16 @@ class CPCaptureManager: NSObject {
             return
         }
         
+        guard ensureRecordingAudioInput() else {
+            let error = NSError(
+                domain: "CPCaptureManager",
+                code: -8,
+                userInfo: [NSLocalizedDescriptionKey: "Unable to add the selected audio source to the recording session."]
+            )
+            delegate?.captureManager(self, didEncounterError: error, message: error.localizedDescription)
+            return
+        }
+        
         NSLog("Starting video recording - session running: %@", 
               session.isRunning ? "YES" : "NO")
         
@@ -359,6 +383,43 @@ class CPCaptureManager: NSObject {
         delegate?.captureManager(self, didStartRecordingTo: fileURL)
     }
     
+    private func ensureRecordingAudioInput() -> Bool {
+        guard let session = captureSession else { return false }
+        if let existingAudioInput = recordingAudioInput,
+           session.inputs.contains(existingAudioInput) {
+            return true
+        }
+        guard let provider = audioManager,
+              let newAudioInput = provider.makeRecordingInput() else {
+            NSLog("Unable to build recording audio input from provider")
+            return false
+        }
+        
+        session.beginConfiguration()
+        var added = false
+        if session.canAddInput(newAudioInput) {
+            session.addInput(newAudioInput)
+            recordingAudioInput = newAudioInput
+            added = true
+        }
+        session.commitConfiguration()
+        
+        if !added {
+            recordingAudioInput = nil
+            NSLog("Recording audio input could not be added to session")
+        }
+        return added
+    }
+    
+    private func detachRecordingAudioInput() {
+        guard let session = captureSession,
+              let audioInput = recordingAudioInput else { return }
+        session.beginConfiguration()
+        session.removeInput(audioInput)
+        session.commitConfiguration()
+        recordingAudioInput = nil
+    }
+    
     private func configureRecordingSettings(movieOutput: AVCaptureMovieFileOutput) {
         // Configure audio settings for QuickTime compatibility (AAC, 256Kbps)
         if let audioConnection = movieOutput.connection(with: .audio) {
@@ -366,7 +427,7 @@ class CPCaptureManager: NSObject {
             var inputSampleRate: Double = 44100.0
             var channels: Int = 2
             
-            if let audioInput = audioCaptureInput {
+            if let audioInput = recordingAudioInput {
                 let formatDesc = audioInput.device.activeFormat.formatDescription
                 let asbd = CMAudioFormatDescriptionGetStreamBasicDescription(formatDesc)
                 if let asbd = asbd?.pointee {
@@ -711,6 +772,7 @@ extension CPCaptureManager: AVCaptureFileOutputRecordingDelegate {
         DispatchQueue.main.async { [weak self] in
             guard let self = self else { return }
             self.isRecording = false
+            self.detachRecordingAudioInput()
             // Record stop time for cooldown
             self.lastStopTime = Date()
             

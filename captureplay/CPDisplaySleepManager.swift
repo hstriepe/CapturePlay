@@ -42,6 +42,12 @@ class CPDisplaySleepManager {
     }
     
     // MARK: - Display Sleep Prevention
+    private func persistPreventDisplaySleepIfNeeded(_ value: Bool, persist: Bool) {
+        guard persist else { return }
+        CPSettingsManager.shared.setPreventDisplaySleep(value)
+        CPSettingsManager.shared.saveSettings()
+    }
+    
     func setDisplaySleepPrevention(
         enabled: Bool,
         persist: Bool,
@@ -49,9 +55,9 @@ class CPDisplaySleepManager {
     ) {
         if enabled {
             if isPreventingDisplaySleep {
-                if persist {
-                    CPSettingsManager.shared.setPreventDisplaySleep(true)
-                }
+                persistPreventDisplaySleepIfNeeded(true, persist: persist)
+                // Ensure menu item state is updated even if already preventing
+                delegate?.displaySleepManager(self, needsMenuItemUpdate: true)
                 return
             }
             
@@ -67,9 +73,7 @@ class CPDisplaySleepManager {
             if result == kIOReturnSuccess {
                 displaySleepAssertionID = assertionID
                 isPreventingDisplaySleep = true
-                if persist {
-                    CPSettingsManager.shared.setPreventDisplaySleep(true)
-                }
+                persistPreventDisplaySleepIfNeeded(true, persist: persist)
                 delegate?.displaySleepManager(self, needsNotification: "Display Sleep", body: "Display sleep prevention enabled", sound: false)
                 return
             }
@@ -87,9 +91,7 @@ class CPDisplaySleepManager {
         }
         let wasPreventing = isPreventingDisplaySleep
         isPreventingDisplaySleep = false
-        if persist {
-            CPSettingsManager.shared.setPreventDisplaySleep(false)
-        }
+        persistPreventDisplaySleepIfNeeded(false, persist: persist)
         if wasPreventing {
             delegate?.displaySleepManager(self, needsNotification: "Display Sleep", body: "Display sleep prevention disabled", sound: false)
         }
@@ -106,6 +108,8 @@ class CPDisplaySleepManager {
             persist: false,
             notifyOnFailure: false
         )
+        // Always update menu item state to ensure it reflects current state
+        delegate?.displaySleepManager(self, needsMenuItemUpdate: isPreventingDisplaySleep)
     }
     
     func toggleDisplaySleep() {
