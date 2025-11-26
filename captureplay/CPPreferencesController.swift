@@ -35,17 +35,17 @@ class CPPreferencesController {
         alert.addButton(withTitle: "OK")
         alert.addButton(withTitle: "Cancel")
         
-        // Create a custom view for preferences (increased height for performance mode)
-        let view = NSView(frame: NSRect(x: 0, y: 0, width: 500, height: 200))
+        // Create a custom view for preferences (increased height for notification sounds toggle)
+        let view = NSView(frame: NSRect(x: 0, y: 0, width: 500, height: 230))
         
         // Performance Mode selector
         let performanceLabel = NSTextField(labelWithString: "Performance Mode:")
-        performanceLabel.frame = NSRect(x: 20, y: 180, width: 150, height: 17)
+        performanceLabel.frame = NSRect(x: 20, y: 210, width: 150, height: 17)
         view.addSubview(performanceLabel)
         
         // Right-align popup with directory text field (which is 380 wide starting at x: 20, so right edge at x: 400)
         // Popup is 200 wide, so position at x: 200 to right-align at x: 400
-        let performancePopup = NSPopUpButton(frame: NSRect(x: 200, y: 177, width: 200, height: 22))
+        let performancePopup = NSPopUpButton(frame: NSRect(x: 200, y: 207, width: 200, height: 22))
         performancePopup.addItems(withTitles: ["Auto", "High", "Medium", "Low"])
         let currentMode = CPSettingsManager.shared.performanceMode.capitalized
         if let index = performancePopup.itemTitles.firstIndex(of: currentMode) {
@@ -57,23 +57,33 @@ class CPPreferencesController {
         
         // Toggle: Always show Video > Image submenu
         let imageMenuLabel = NSTextField(labelWithString: "Always show the Image submenu under Video")
-        imageMenuLabel.frame = NSRect(x: 20, y: 150, width: 400, height: 17)
+        imageMenuLabel.frame = NSRect(x: 20, y: 180, width: 400, height: 17)
         view.addSubview(imageMenuLabel)
         
-        let imageMenuToggle = NSSwitch(frame: NSRect(x: 429, y: 148, width: 51, height: 31))
+        let imageMenuToggle = NSSwitch(frame: NSRect(x: 429, y: 178, width: 51, height: 31))
         imageMenuToggle.state = CPSettingsManager.shared.alwaysShowImageMenu ? .on : .off
         imageMenuToggle.isEnabled = true
         view.addSubview(imageMenuToggle)
         
         // Toggle for auto display sleep in full screen
         let displaySleepLabel = NSTextField(labelWithString: "Automatically prevent display sleep during full screen")
-        displaySleepLabel.frame = NSRect(x: 20, y: 120, width: 400, height: 17)
+        displaySleepLabel.frame = NSRect(x: 20, y: 150, width: 400, height: 17)
         view.addSubview(displaySleepLabel)
         
-        let displaySleepToggle = NSSwitch(frame: NSRect(x: 429, y: 118, width: 51, height: 31))
+        let displaySleepToggle = NSSwitch(frame: NSRect(x: 429, y: 148, width: 51, height: 31))
         displaySleepToggle.state = CPSettingsManager.shared.autoDisplaySleepInFullScreen ? .on : .off
         displaySleepToggle.isEnabled = true
         view.addSubview(displaySleepToggle)
+        
+        // Toggle for enabling notification sounds
+        let notificationSoundsLabel = NSTextField(labelWithString: "Play sound for capture notification")
+        notificationSoundsLabel.frame = NSRect(x: 20, y: 120, width: 400, height: 17)
+        view.addSubview(notificationSoundsLabel)
+        
+        let notificationSoundsToggle = NSSwitch(frame: NSRect(x: 429, y: 118, width: 51, height: 31))
+        notificationSoundsToggle.state = CPSettingsManager.shared.enableNotificationSounds ? .on : .off
+        notificationSoundsToggle.isEnabled = true
+        view.addSubview(notificationSoundsToggle)
         
         // Toggle for showing video capture controls
         let captureControlsLabel = NSTextField(labelWithString: "Show video capture controls")
@@ -112,6 +122,7 @@ class CPPreferencesController {
         weak var weakDisplaySleepToggle = displaySleepToggle
         weak var weakImageMenuToggle = imageMenuToggle
         weak var weakCaptureControlsToggle = captureControlsToggle
+        weak var weakNotificationSoundsToggle = notificationSoundsToggle
         weak var weakPerformancePopup = performancePopup
         weak var weakSelf = self
         
@@ -142,6 +153,9 @@ class CPPreferencesController {
                 }
                 if let toggle = weakCaptureControlsToggle {
                     CPSettingsManager.shared.setShowVideoCaptureControls(toggle.state == .on)
+                }
+                if let toggle = weakNotificationSoundsToggle {
+                    CPSettingsManager.shared.setEnableNotificationSounds(toggle.state == .on)
                 }
                 if let popup = weakPerformancePopup {
                     let selectedTitle = popup.selectedItem?.title ?? "Auto"

@@ -4,6 +4,7 @@
 import AVFoundation
 import Cocoa
 import CoreVideo
+import QuartzCore
 
 // MARK: - CPCaptureManagerDelegate Protocol
 protocol CPCaptureManagerDelegate: AnyObject {
@@ -169,13 +170,30 @@ class CPCaptureManager: NSObject {
                 NSLog("WARNING: Cannot add movie file output for device: %@ - recording may not work", device.localizedName)
             }
             
-            
             session.commitConfiguration()
+            
+            // Add recording audio input AFTER commit to avoid session reconfiguration during recording
+            // This prevents screen blanking when starting/stopping recording
+            // We'll attach it now if audioManager is ready, otherwise it will be attached when ensureRecordingAudioInput is called
+            if let provider = audioManager,
+               let audioInput = provider.makeRecordingInput() {
+                session.beginConfiguration()
+                if session.canAddInput(audioInput) {
+                    session.addInput(audioInput)
+                    self.recordingAudioInput = audioInput
+                    NSLog("Recording audio input added to session for device: %@", device.localizedName)
+                } else {
+                    NSLog("WARNING: Cannot add recording audio input to session")
+                }
+                session.commitConfiguration()
+            }
             
             // Setup preview layer with performance optimizations
             let previewLayer = AVCaptureVideoPreviewLayer(session: session)
             previewLayer.connection?.automaticallyAdjustsVideoMirroring = false
             previewLayer.connection?.isVideoMirrored = false
+            // Explicitly set default orientation to portrait (position 0) to prevent unwanted rotation
+            previewLayer.connection?.videoOrientation = .portrait
             // Use resizeAspectFill for better performance (less scaling work)
             previewLayer.videoGravity = .resizeAspectFill
             
@@ -293,6 +311,10 @@ class CPCaptureManager: NSObject {
     
     func stopRecording() {
         guard let movieOutput = movieFileOutput else { return }
+        
+        // Ensure preview connection stays enabled
+        captureLayer?.connection?.isEnabled = true
+        
         movieOutput.stopRecording()
         NSLog("Stopping video recording...")
     }
@@ -375,32 +397,76 @@ class CPCaptureManager: NSObject {
             return
         }
         
+        // Ensure preview connection stays enabled
+        captureLayer?.connection?.isEnabled = true
+        
         // Start recording
         NSLog("Attempting to start recording to: %@", fileURL.path)
         movieOutput.startRecording(to: fileURL, recordingDelegate: self)
         isRecording = true
         NSLog("Recording started successfully to: %@", fileURL.path)
+        
         delegate?.captureManager(self, didStartRecordingTo: fileURL)
+    }
+    
+    // Public method to ensure audio input is attached when audio manager becomes ready
+    // This should be called after audio devices are detected to prevent blanking on first recording
+    func ensureRecordingAudioInputAttached() {
+        guard let session = captureSession else { return }
+        // Check if audio input is already attached
+        if let existingAudioInput = recordingAudioInput,
+           session.inputs.contains(existingAudioInput) {
+            return // Already attached
+        }
+        // Try to add audio input if audioManager is ready
+        guard let provider = audioManager,
+              let newAudioInput = provider.makeRecordingInput() else {
+            // Audio manager not ready yet - will be added later
+            return
+        }
+        
+        // If session is not running, we can add the input without visible blanking
+        // If session is running, we still add it (better to blank now than during first recording)
+        // But we'll batch the configuration to minimize the impact
+        let wasRunning = session.isRunning
+        session.beginConfiguration()
+        if session.canAddInput(newAudioInput) {
+            session.addInput(newAudioInput)
+            recordingAudioInput = newAudioInput
+            if wasRunning {
+                NSLog("Recording audio input attached to session (post-setup, session was running)")
+            } else {
+                NSLog("Recording audio input attached to session (post-setup, session not running)")
+            }
+        } else {
+            NSLog("WARNING: Cannot add recording audio input to session")
+        }
+        session.commitConfiguration()
     }
     
     private func ensureRecordingAudioInput() -> Bool {
         guard let session = captureSession else { return false }
+        // Check if audio input is already attached (should be added during session setup or via ensureRecordingAudioInputAttached)
         if let existingAudioInput = recordingAudioInput,
            session.inputs.contains(existingAudioInput) {
             return true
         }
+        // Audio input should already be attached - if not, try to add it now
+        // This should rarely happen, but handle it gracefully
         guard let provider = audioManager,
               let newAudioInput = provider.makeRecordingInput() else {
             NSLog("Unable to build recording audio input from provider")
             return false
         }
         
+        // Only add if not already present (shouldn't need session reconfiguration)
         session.beginConfiguration()
         var added = false
         if session.canAddInput(newAudioInput) {
             session.addInput(newAudioInput)
             recordingAudioInput = newAudioInput
             added = true
+            NSLog("Recording audio input added to session (late addition)")
         }
         session.commitConfiguration()
         
@@ -412,12 +478,11 @@ class CPCaptureManager: NSObject {
     }
     
     private func detachRecordingAudioInput() {
-        guard let session = captureSession,
-              let audioInput = recordingAudioInput else { return }
-        session.beginConfiguration()
-        session.removeInput(audioInput)
-        session.commitConfiguration()
-        recordingAudioInput = nil
+        // Don't remove the audio input - keep it attached to avoid session reconfiguration
+        // This prevents screen blanking. The audio input being present doesn't affect
+        // recording - it's only used when recording starts via the movie output.
+        // We keep it attached so we never need to reconfigure the session.
+        return
     }
     
     private func configureRecordingSettings(movieOutput: AVCaptureMovieFileOutput) {

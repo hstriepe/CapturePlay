@@ -292,6 +292,9 @@ class CPAppDelegate: NSObject, NSApplicationDelegate, NSMenuDelegate, CPUsbWatch
         // Configure translucent title bar (QuickTime Player style)
         windowManager.configureTranslucentTitleBar()
         
+        // Pre-create recording control overlay to prevent flash on first use
+        windowManager.prepareRecordingControl()
+        
         // Initialize capture manager
         captureManager = CPCaptureManager()
         captureManager.delegate = self
@@ -702,6 +705,12 @@ extension CPAppDelegate {
         windowManager.captureLayer = captureManager.getPreviewLayer()
         windowManager.videoInput = captureManager.getInput()
         
+        // Apply rotation NOW that capture layer is available
+        // This ensures rotation is applied correctly on startup (default position is 0 = portrait)
+        windowManager.setRotation(windowManager.position)
+        windowManager.applyMirroring()
+        windowManager.fixAspectRatio()
+        
         // Connect file manager to capture session and layer
         fileManager.captureSession = captureManager.captureSession
         fileManager.captureLayer = captureManager.getPreviewLayer()
@@ -784,6 +793,9 @@ extension CPAppDelegate {
 extension CPAppDelegate {
     func audioManager(_ manager: CPAudioManager, didDetectInputDevices devices: [AVCaptureDevice]) {
         // Devices detected, menus will be updated via needsMenuUpdateForInput
+        // Ensure recording audio input is attached now that audio manager is ready
+        // This prevents screen blanking on first video capture
+        captureManager.ensureRecordingAudioInputAttached()
     }
     
     func audioManager(_ manager: CPAudioManager, didDetectOutputDevices devices: [AudioOutputDeviceInfo]) {

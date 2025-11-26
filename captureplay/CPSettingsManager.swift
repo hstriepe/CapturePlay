@@ -23,6 +23,7 @@ class CPSettingsManager {
     private(set) var alwaysShowImageMenu: Bool = true
     private(set) var showVideoCaptureControls: Bool = true
     private(set) var performanceMode: String = "auto" // "auto", "high", "medium", "low"
+    private(set) var enableNotificationSounds: Bool = false // Default OFF
     
     
     // MARK: - Color Correction Properties
@@ -115,6 +116,10 @@ class CPSettingsManager {
         performanceMode = value
     }
     
+    func setEnableNotificationSounds(_ value: Bool) {
+        enableNotificationSounds = value
+    }
+    
     func setBrightness(_ value: Float) {
         brightness = value
     }
@@ -189,6 +194,8 @@ class CPSettingsManager {
             UserDefaults.standard.object(forKey: "showVideoCaptureControls") as? Bool ?? true
         performanceMode =
             UserDefaults.standard.object(forKey: "performanceMode") as? String ?? "auto"
+        enableNotificationSounds =
+            UserDefaults.standard.object(forKey: "enableNotificationSounds") as? Bool ?? false
         
         // Load device-specific color corrections
         if let deviceCorrectionsDict = UserDefaults.standard.dictionary(forKey: "deviceColorCorrections") as? [String: [String: Float]] {
@@ -238,6 +245,7 @@ class CPSettingsManager {
         UserDefaults.standard.set(alwaysShowImageMenu, forKey: "alwaysShowImageMenu")
         UserDefaults.standard.set(showVideoCaptureControls, forKey: "showVideoCaptureControls")
         UserDefaults.standard.set(performanceMode, forKey: "performanceMode")
+        UserDefaults.standard.set(enableNotificationSounds, forKey: "enableNotificationSounds")
         
         // Save device-specific color corrections
         var deviceCorrectionsDict: [String: [String: Float]] = [:]

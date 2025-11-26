@@ -113,8 +113,8 @@ CapturePlay enables you to:
     - **Rotate Left** (⌘L): Rotates video 90° counter-clockwise
     - **Rotate Right** (⌘R): Rotates video 90° clockwise
 - **Borderless Mode** (⌘B): Toggles window border on/off
-- **Fix Aspect Ratio** (⌘A): Locks/unlocks the window aspect ratio to match video
-- **Fit to Actual Size** (⌃⌘A): Resizes window to match the video's native resolution
+- **Fix Aspect Ratio** (⌘A): Locks/unlocks the window aspect ratio to match the video
+- **Fit to Actual Size** (⌃⌘A): Resizes the window to match the video's native resolution
 - **Color Correction…**: Opens the Color Correction dialog for adjusting brightness, contrast, and hue
 - **Enter Full Screen** (⌃⌘F): Enters full-screen mode
 - **Display Sleep Prevention** (⌘D): Toggles display sleep prevention on/off
@@ -179,6 +179,7 @@ CapturePlay supports iPhone Continuity Camera, which lets you use your iPhone as
 ### Image Transformations
 
 Image transformation options (Mirror and Rotate) are accessed through **Video > Image**.
+This menu item is hidden by default. It can be made visible by selecting the Video menu while holding down the Option key. There is a Settings option to make it permanently visible.
 
 ### Mirroring
 
@@ -355,7 +356,7 @@ Three methods for capturing images:
   - **Red Square**: Recording state (slowly blinks, click to stop recording)
   - The control is positioned in the bottom-right corner of the video window
   - The control is excluded from screen recordings and saved videos
-  - **Visibility**: Controls follow the translucent title bar behavior - they appear when you hover over the window and disappear when the mouse moves away, except while recording when they remain always visible
+  - **Visibility**: Controls follow the translucent title bar behavior - they appear when you hover over the window and disappear when the mouse moves away, except while recording, when they remain always visible
   - These controls can be disabled in Settings.
 
 **Note**: Ensure you have sufficient disk space. Video files can be large, especially at high resolutions and frame rates.
@@ -385,6 +386,12 @@ Open **CapturePlay > Settings…** (⌘,)
 - **Toggle**: "Automatically prevent display sleep during full screen"
 - When enabled, display sleep prevention is automatically activated when entering full-screen mode
 - When disabled, you must manually toggle display sleep prevention
+
+#### Capture Notification Sounds
+
+- **Toggle**: "Play sound for capture notification"
+- When enabled, notifications for video recording start/stop will play a sound
+- When disabled (default), notifications will appear silently without sound
 
 #### Image Menu Visibility
 
@@ -432,7 +439,10 @@ Open **CapturePlay > Settings…** (⌘,)
 - When enabled, an on-screen recording control button appears when recording starts
 - When disabled, the on-screen control button is hidden
 - The button appears in the bottom-right corner of the video window
-- **Behavior**: The control follows the translucent title bar visibility - it appears on mouse hover and hides when the mouse moves away, except during recording, when it remains always visible
+- **Behavior**: 
+  - The control follows the translucent title bar visibility - it appears on mouse hover and hides when the mouse moves away, except during recording, when it remains always visible
+  - After recording stops, the control remains visible for 30 seconds before automatically hiding
+  - The control only appears after it has been used at least once (on first recording)
 - Click the button to start or stop recording
 
 #### Saving Settings
@@ -449,7 +459,7 @@ CapturePlay automatically saves and restores your settings:
 - **Video settings**: Rotation, mirroring, borderless mode, and aspect ratio preferences
 - **Audio settings**: Input/output device selections and volume
 - **Color correction settings**: Brightness, contrast, and hue values (saved per device by name)
-- **Settings**: Capture directory, display sleep preferences, Image menu visibility, video capture controls visibility, and performance mode
+- **Settings**: Capture directory, display sleep preferences, notification sounds, Image menu visibility, video capture controls visibility, and performance mode
 
 All settings are automatically loaded when you launch CapturePlay.
 

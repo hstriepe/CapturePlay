@@ -55,7 +55,9 @@ class CPNotificationManager: NSObject {
                 let content = UNMutableNotificationContent()
                 content.title = title
                 content.body = body
-                if sound {
+                // Check user setting - if notification sounds are disabled, override the sound parameter
+                let shouldPlaySound = sound && CPSettingsManager.shared.enableNotificationSounds
+                if shouldPlaySound {
                     content.sound = .default
                 }
                 
@@ -82,11 +84,20 @@ class CPNotificationManager: NSObject {
 extension CPNotificationManager: UNUserNotificationCenterDelegate {
     func userNotificationCenter(_ center: UNUserNotificationCenter, willPresent notification: UNNotification, withCompletionHandler completionHandler: @escaping (UNNotificationPresentationOptions) -> Void) {
         // Show notification even when app is in foreground
+        // Respect the notification sounds setting
+        let enableSound = CPSettingsManager.shared.enableNotificationSounds
         if #available(macOS 11.0, *) {
-            completionHandler([.banner, .sound, .badge])
+            var options: UNNotificationPresentationOptions = [.banner, .badge]
+            if enableSound {
+                options.insert(.sound)
+            }
+            completionHandler(options)
         } else {
-            completionHandler([.alert, .sound, .badge])
+            var options: UNNotificationPresentationOptions = [.alert, .badge]
+            if enableSound {
+                options.insert(.sound)
+            }
+            completionHandler(options)
         }
     }
 }
-

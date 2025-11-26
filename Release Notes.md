@@ -1,6 +1,6 @@
 # Release Notes
 
-#### Version 3.5 (178 - internal) - 11-25-25
+#### Version 3.5 (181 - internal) - 11-26-25
 
 1. New icon.
 2. Display Sleep Prevention - menu change and internal state fixes
@@ -10,7 +10,7 @@
 6. Continuity Camera audio is never selected by default at launch; it can cause long pauses at startup. Video is only a last resort.
 7. Settings item cleanup.
 8. Align entitlements with App Store requirements.
-9. Bug fixes, including random display blanking.
+9. Bug fixes, including random display blanking on recording and Notification delays.
 
 
 

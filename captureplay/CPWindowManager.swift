@@ -41,10 +41,13 @@ class CPWindowManager: NSObject {
     private var recordingControlButton: NSButton?
     private var recordingControlOverlay: NSWindow?
     private var blinkingTimer: Timer?
+    private var hideTimer: Timer?
     private var isObservingWindowChanges = false
     private var isBlinkingVisible = true
     private var isShowingControl = false
     private var isCurrentlyRecording = false
+    private var hasEverShownControl = false // Track if overlay has ever been shown
+    private var isInPostRecordingPeriod = false // Track if we're in the 30-second post-recording period
     
     // Settings access (via delegate or direct)
     var isBorderless: Bool {
@@ -94,6 +97,69 @@ class CPWindowManager: NSObject {
     // MARK: - Initialization
     override init() {
         super.init()
+    }
+    
+    // Pre-create the overlay window to prevent flash on first use
+    func prepareRecordingControl() {
+        guard let window = window else { return }
+        guard recordingControlOverlay == nil else { return } // Already created
+        
+        // Create overlay window off-screen
+        let buttonSize: CGFloat = 30
+        let overlayWindow = NSWindow(
+            contentRect: NSRect(x: -10000, y: -10000, width: buttonSize, height: buttonSize),
+            styleMask: [.borderless],
+            backing: .buffered,
+            defer: false
+        )
+        overlayWindow.backgroundColor = .clear
+        overlayWindow.isOpaque = false
+        overlayWindow.hasShadow = false
+        overlayWindow.ignoresMouseEvents = false
+        overlayWindow.collectionBehavior = [.canJoinAllSpaces, .stationary]
+        overlayWindow.isExcludedFromWindowsMenu = true
+        if #available(macOS 10.15, *) {
+            overlayWindow.sharingType = .none
+        }
+        overlayWindow.level = .floating
+        
+        // Create button
+        let button = NSButton()
+        button.frame = NSRect(x: 0, y: 0, width: buttonSize, height: buttonSize)
+        button.isBordered = false
+        button.title = ""
+        button.target = self
+        button.action = #selector(recordingControlClicked(_:))
+        updateRecordingControlAppearance(button: button, isRecording: false)
+        
+        let contentView = NSView(frame: NSRect(x: 0, y: 0, width: buttonSize, height: buttonSize))
+        contentView.addSubview(button)
+        overlayWindow.contentView = contentView
+        
+        // Store references
+        recordingControlOverlay = overlayWindow
+        recordingControlButton = button
+        
+        // Keep it hidden and off-screen until needed
+        // Don't warm it up - that can cause flashing
+        overlayWindow.orderOut(nil)
+        
+        // Make overlay a child window so it moves smoothly with the main window
+        // Defer this until window is ready to avoid crashes
+        DispatchQueue.main.async { [weak self, weak overlayWindow] in
+            guard let self = self,
+                  let overlay = overlayWindow,
+                  let parentWindow = self.window,
+                  parentWindow.isVisible || parentWindow.isOnActiveSpace else {
+                return
+            }
+            // Only add as child window if parent is ready
+            if let childWindows = parentWindow.childWindows, !childWindows.contains(overlay) {
+                parentWindow.addChildWindow(overlay, ordered: .above)
+            } else if parentWindow.childWindows == nil {
+                parentWindow.addChildWindow(overlay, ordered: .above)
+            }
+        }
     }
     
     // MARK: - Window Appearance Configuration
@@ -174,7 +240,11 @@ class CPWindowManager: NSObject {
     
     // MARK: - Rotation and Mirroring
     func setRotation(_ position: Int) {
-        guard let captureLayer = captureLayer else { return }
+        guard let captureLayer = captureLayer else {
+            // Layer not ready yet - will be applied when layer is set
+            NSLog("setRotation called but captureLayer is nil (position: %d)", position)
+            return
+        }
         switch position {
         case 1:
             if !isUpsideDown {
@@ -296,73 +366,16 @@ class CPWindowManager: NSObject {
         // Prevent re-entrant calls
         guard !isShowingControl else { return }
         
+        // Ensure overlay is pre-created (should already be done, but be safe)
+        if recordingControlOverlay == nil {
+            prepareRecordingControl()
+        }
+        
         // If control already exists, just ensure it's visible (if appropriate)
         if recordingControlOverlay != nil && recordingControlButton != nil {
             updateRecordingControlVisibility()
             return
         }
-        
-        isShowingControl = true
-        defer { isShowingControl = false }
-        
-        // Remove existing overlay if any (shouldn't be necessary but safe)
-        hideRecordingControl()
-        
-        // Create overlay window
-        let buttonSize: CGFloat = 30
-        let margin: CGFloat = 20
-        let overlayWindow = NSWindow(
-            contentRect: NSRect(x: 0, y: 0, width: buttonSize, height: buttonSize),
-            styleMask: [.borderless],
-            backing: .buffered,
-            defer: false
-        )
-        overlayWindow.backgroundColor = .clear
-        overlayWindow.isOpaque = false
-        overlayWindow.hasShadow = false
-        overlayWindow.ignoresMouseEvents = false
-        overlayWindow.collectionBehavior = [.canJoinAllSpaces, .stationary]
-        overlayWindow.isExcludedFromWindowsMenu = true
-        // Exclude from screen recording by setting sharing type (macOS 10.15+)
-        if #available(macOS 10.15, *) {
-            overlayWindow.sharingType = .none
-        }
-        // Set window level relative to main window (floating above it when visible)
-        // This ensures it doesn't float above other apps when the window is obscured
-        overlayWindow.level = .floating
-        
-        // Create button
-        let button = NSButton()
-        button.frame = NSRect(x: 0, y: 0, width: buttonSize, height: buttonSize)
-        button.isBordered = false
-        button.title = ""
-        button.target = self
-        button.action = #selector(recordingControlClicked(_:))
-        updateRecordingControlAppearance(button: button, isRecording: false)
-        
-        let contentView = NSView(frame: NSRect(x: 0, y: 0, width: buttonSize, height: buttonSize))
-        contentView.addSubview(button)
-        overlayWindow.contentView = contentView
-        
-        // Store references before positioning
-        recordingControlOverlay = overlayWindow
-        recordingControlButton = button
-        
-        // Position at bottom right of main window (defer if window not ready)
-        if window.isVisible || window.isKeyWindow {
-            updateRecordingControlPosition()
-        } else {
-            // Delay positioning until window is ready
-            DispatchQueue.main.async { [weak self] in
-                self?.updateRecordingControlPosition()
-            }
-        }
-        
-        // Order overlay relative to main window
-        overlayWindow.order(.above, relativeTo: window.windowNumber)
-        
-        // Update visibility based on app/window state
-        updateRecordingControlVisibility()
         
         // Observe window frame changes and app/window state (only add once)
         if !isObservingWindowChanges {
@@ -430,18 +443,31 @@ class CPWindowManager: NSObject {
         // Prevent hide while showing
         guard !isShowingControl else { return }
         
-        // Stop blinking and clean up timer first (safely)
+        // Batch window updates to prevent screen flash
+        NSAnimationContext.beginGrouping()
+        NSAnimationContext.current.duration = 0
+        if let mainWindow = window {
+            mainWindow.disableScreenUpdatesUntilFlush()
+        }
+        
+        // Stop blinking and clean up timers first (safely)
         stopBlinking()
         if blinkingTimer != nil {
             blinkingTimer?.invalidate()
             blinkingTimer = nil
         }
+        // Cancel hide timer
+        hideTimer?.invalidate()
+        hideTimer = nil
         
         // Get references before clearing
         let overlay = recordingControlOverlay
         let button = recordingControlButton
         let observing = isObservingWindowChanges
         let mainWindow = window
+        
+        // Hide overlay before closing to prevent flash
+        overlay?.orderOut(nil)
         
         // Clear button target/action first to prevent any further callbacks
         if let button = button {
@@ -468,10 +494,19 @@ class CPWindowManager: NSObject {
             isObservingWindowChanges = false
         }
         
+        // Remove child window relationship before closing
+        if let overlay = overlay, let mainWindow = mainWindow {
+            mainWindow.removeChildWindow(overlay)
+        }
+        
         // Close overlay window last - do it safely
         if let overlay = overlay {
             overlay.close()
         }
+        
+        // Flush all window updates at once to prevent flash
+        NSAnimationContext.endGrouping()
+        mainWindow?.flush()
     }
     
     func updateRecordingControlState(isRecording: Bool) {
@@ -482,19 +517,61 @@ class CPWindowManager: NSObject {
         DispatchQueue.main.async { [weak self] in
             guard let self = self,
                   let button = self.recordingControlButton,
-                  let overlay = self.recordingControlOverlay else { return }
+                  self.recordingControlOverlay != nil else { return }
+            
+            // Batch window updates to prevent screen flash
+            NSAnimationContext.beginGrouping()
+            NSAnimationContext.current.duration = 0
+            if let mainWindow = self.window {
+                mainWindow.disableScreenUpdatesUntilFlush()
+            }
             
             self.updateRecordingControlAppearance(button: button, isRecording: isRecording)
             
             if isRecording {
+                // Mark that control has been used (first recording)
+                self.hasEverShownControl = true
+                // Cancel any pending hide timer and end post-recording period
+                self.hideTimer?.invalidate()
+                self.hideTimer = nil
+                self.isInPostRecordingPeriod = false
                 self.startBlinking()
             } else {
                 self.stopBlinking()
+                // Schedule hide after 30 seconds when recording stops
+                self.scheduleHideAfterDelay()
             }
             
             // Update visibility when recording state changes
             self.updateRecordingControlVisibility()
+            
+            // Flush all window updates at once to prevent flash
+            NSAnimationContext.endGrouping()
+            self.window?.flush()
         }
+    }
+    
+    private func scheduleHideAfterDelay() {
+        // Cancel any existing hide timer
+        hideTimer?.invalidate()
+        
+        // Mark that we're in the post-recording period
+        isInPostRecordingPeriod = true
+        
+        // Schedule hide after 30 seconds
+        hideTimer = Timer.scheduledTimer(withTimeInterval: 30.0, repeats: false) { [weak self] _ in
+            guard let self = self else { return }
+            // Only hide if not currently recording
+            if !self.isCurrentlyRecording {
+                // End the post-recording period
+                self.isInPostRecordingPeriod = false
+                // Update visibility (will hide if title bar is not visible)
+                self.updateRecordingControlVisibility()
+            }
+        }
+        
+        // Ensure control is visible during post-recording period
+        updateRecordingControlVisibility()
     }
     
     private func updateRecordingControlAppearance(button: NSButton, isRecording: Bool) {
@@ -543,17 +620,12 @@ class CPWindowManager: NSObject {
         let margin: CGFloat = 20
         let windowFrame = window.frame
         
-        // Safely get content layout rect, fallback to frame if not available
-        let contentRect: NSRect
-        if windowFrame.width > 0 && windowFrame.height > 0 {
-            contentRect = window.contentLayoutRect
-            // Validate content rect is reasonable
-            guard contentRect.width > 0 && contentRect.height > 0 else { return }
-        } else {
-            return
-        }
+        // Safely get content layout rect
+        let contentRect = window.contentLayoutRect
+        guard contentRect.width > 0 && contentRect.height > 0 else { return }
         
-        // Calculate position at bottom right of content area
+        // Calculate position at bottom right of content area in screen coordinates
+        // Child windows use screen coordinates but move automatically with parent
         let overlayX = windowFrame.minX + contentRect.maxX - buttonSize - margin
         let overlayY = windowFrame.minY + contentRect.minY + margin
         
@@ -594,6 +666,12 @@ class CPWindowManager: NSObject {
         guard let overlay = recordingControlOverlay,
               let mainWindow = window else { return }
         
+        // Never show control until it has been used at least once (first recording)
+        guard hasEverShownControl else {
+            overlay.orderOut(nil)
+            return
+        }
+        
         // Check if app is active and window is key/main
         let appIsActive = NSApplication.shared.isActive
         let windowIsKey = mainWindow.isKeyWindow
@@ -603,13 +681,30 @@ class CPWindowManager: NSObject {
         // Check if title bar is currently visible
         let titleBarIsVisible = mainWindow.titleVisibility == .visible
         
-        // Always show controls while recording, otherwise follow title bar visibility
-        let shouldBeVisible = appIsActive && windowIsVisible && (windowIsKey || windowIsMain) && (isCurrentlyRecording || titleBarIsVisible)
+        // Always show controls while recording, during post-recording period, or when title bar is visible
+        let shouldBeVisible = appIsActive && windowIsVisible && (windowIsKey || windowIsMain) && (isCurrentlyRecording || isInPostRecordingPeriod || titleBarIsVisible)
         
         if shouldBeVisible {
-            overlay.orderFront(nil)
-            // Ensure it's above the main window
+            // Ensure overlay is a child window for smooth movement
+            if let childWindows = mainWindow.childWindows, !childWindows.contains(overlay) {
+                mainWindow.addChildWindow(overlay, ordered: .above)
+            } else if mainWindow.childWindows == nil {
+                mainWindow.addChildWindow(overlay, ordered: .above)
+            }
+            
+            // Batch window ordering operations to prevent flash
+            NSAnimationContext.beginGrouping()
+            NSAnimationContext.current.duration = 0
+            mainWindow.disableScreenUpdatesUntilFlush()
+            
+            // Position FIRST, then set level, then show - all in one batch
+            updateRecordingControlPosition()
             overlay.order(.above, relativeTo: mainWindow.windowNumber)
+            overlay.orderFront(nil)
+            
+            // Flush all window updates at once to prevent flash
+            NSAnimationContext.endGrouping()
+            mainWindow.flush()
         } else {
             overlay.orderOut(nil)
         }
