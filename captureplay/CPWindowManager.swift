@@ -778,6 +778,7 @@ class CPWindowManager: NSObject {
     // MARK: - Aspect Ratio Management
     func fixAspectRatio() {
         guard let window = window, let input = videoInput else { return }
+        
         if isAspectRatioFixed, #available(OSX 10.15, *) {
             let height: Int32 = input.device.activeFormat.formatDescription.dimensions.height
             let width: Int32 = input.device.activeFormat.formatDescription.dimensions.width
@@ -787,6 +788,13 @@ class CPWindowManager: NSObject {
                 : NSMakeSize(CGFloat(height), CGFloat(width))
             window.contentAspectRatio = size
             
+            // In full screen mode, video gravity is set in handleWillEnterFullScreen
+            // Just maintain the aspect ratio constraint
+            if window.styleMask.contains(.fullScreen) {
+                return
+            }
+            
+            // In windowed mode, resize window to match aspect ratio
             let ratio: CGFloat = CGFloat(Float(width) / Float(height))
             var currentSize: CGSize = window.contentLayoutRect.size
             if isLandscape() {
@@ -798,8 +806,17 @@ class CPWindowManager: NSObject {
                 "fixAspectRatio : %f - %d,%d - %f,%f - %f,%f", ratio, width, height, size.width,
                 size.height, currentSize.width, currentSize.height)
             window.setContentSize(currentSize)
+            
+            // In windowed mode, use fill mode for better performance
+            if let layer = captureLayer {
+                layer.videoGravity = .resizeAspectFill
+            }
         } else {
             window.contentResizeIncrements = NSMakeSize(1.0, 1.0)
+            // When aspect ratio is not fixed, use fill mode
+            if let layer = captureLayer {
+                layer.videoGravity = .resizeAspectFill
+            }
         }
     }
     
@@ -848,6 +865,15 @@ class CPWindowManager: NSObject {
     private func handleWillEnterFullScreen() {
         guard !isFullScreenActive else { return }
         isFullScreenActive = true
+        
+        // Apply aspect ratio fix BEFORE entering full screen to prevent zoom-then-correct effect
+        // Set video layer gravity to letterbox mode if aspect ratio is fixed
+        // This ensures video fills vertical space and letterboxes horizontally on wide screens
+        if isAspectRatioFixed, let layer = captureLayer {
+            layer.videoGravity = .resizeAspect
+            NSLog("Set video gravity to resizeAspect for full screen (aspect ratio fixed)")
+        }
+        
         delegate?.windowManager(self, willEnterFullScreen: true)
         enableGameMode()
     }
@@ -856,6 +882,22 @@ class CPWindowManager: NSObject {
         if !cursorHiddenForFullScreen {
             NSCursor.hide()
             cursorHiddenForFullScreen = true
+        }
+        // Video gravity was already set in handleWillEnterFullScreen
+        // Just ensure aspect ratio constraints are maintained
+        if let window = window, isAspectRatioFixed, #available(OSX 10.15, *), let input = videoInput {
+            let height: Int32 = input.device.activeFormat.formatDescription.dimensions.height
+            let width: Int32 = input.device.activeFormat.formatDescription.dimensions.width
+            let size: NSSize =
+                isLandscape()
+                ? NSMakeSize(CGFloat(width), CGFloat(height))
+                : NSMakeSize(CGFloat(height), CGFloat(width))
+            window.contentAspectRatio = size
+        }
+        // Ensure window can receive keyboard events in full screen
+        if let window = window {
+            window.makeKeyAndOrderFront(nil)
+            NSLog("Made window key in full screen mode (windowNumber=%lu)", window.windowNumber)
         }
         delegate?.windowManager(self, didEnterFullScreen: true)
     }
@@ -871,6 +913,13 @@ class CPWindowManager: NSObject {
             cursorHiddenForFullScreen = false
         }
         disableGameMode()
+        // Restore video gravity to fill mode for windowed mode
+        if let layer = captureLayer {
+            layer.videoGravity = .resizeAspectFill
+            NSLog("Restored video gravity to resizeAspectFill for windowed mode")
+        }
+        // Restore aspect ratio constraint if it was enabled before entering full screen
+        fixAspectRatio()
         delegate?.windowManager(self, didExitFullScreen: true)
     }
     

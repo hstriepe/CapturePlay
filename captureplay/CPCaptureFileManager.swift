@@ -21,8 +21,29 @@ class CPCaptureFileManager {
     weak var captureSession: AVCaptureSession?
     weak var captureLayer: AVCaptureVideoPreviewLayer?
     
+    // Track security-scoped resource access for cleanup
+    private var currentSecurityScopedURL: URL?
+    
     // MARK: - Initialization
     init() {
+    }
+    
+    // MARK: - Cleanup
+    deinit {
+        // Ensure we stop accessing any security-scoped resource on deallocation
+        if let securityScopedURL = currentSecurityScopedURL {
+            securityScopedURL.stopAccessingSecurityScopedResource()
+            currentSecurityScopedURL = nil
+        }
+    }
+    
+    /// Stop accessing the current security-scoped resource if one is active.
+    /// This should be called after file operations complete, especially for video recording.
+    func stopAccessingSecurityScopedResource() {
+        if let securityScopedURL = currentSecurityScopedURL {
+            securityScopedURL.stopAccessingSecurityScopedResource()
+            currentSecurityScopedURL = nil
+        }
     }
     
     // MARK: - Capture Directory Management
@@ -39,11 +60,20 @@ class CPCaptureFileManager {
                     NSLog("WARNING: Security-scoped bookmark is stale, will need to be refreshed")
                 }
                 
+                // Stop accessing any previously accessed security-scoped resource
+                if let previousURL = currentSecurityScopedURL {
+                    previousURL.stopAccessingSecurityScopedResource()
+                    currentSecurityScopedURL = nil
+                }
+                
                 // Start accessing the security-scoped resource
                 guard bookmarkURL.startAccessingSecurityScopedResource() else {
                     NSLog("ERROR: Failed to start accessing security-scoped resource: %@", bookmarkURL.path)
                     return nil
                 }
+                
+                // Track this URL for cleanup
+                currentSecurityScopedURL = bookmarkURL
                 
                 // Ensure directory exists and is writable
                 var isDirectory: ObjCBool = false
@@ -54,11 +84,13 @@ class CPCaptureFileManager {
                             return bookmarkURL
                         } else {
                             bookmarkURL.stopAccessingSecurityScopedResource()
+                            currentSecurityScopedURL = nil
                             NSLog("ERROR: Security-scoped directory is not writable: %@", bookmarkURL.path)
                             return nil
                         }
                     } else {
                         bookmarkURL.stopAccessingSecurityScopedResource()
+                        currentSecurityScopedURL = nil
                         NSLog("ERROR: Security-scoped path exists but is not a directory: %@", bookmarkURL.path)
                         return nil
                     }
@@ -72,16 +104,19 @@ class CPCaptureFileManager {
                                 return bookmarkURL
                             } else {
                                 bookmarkURL.stopAccessingSecurityScopedResource()
+                                currentSecurityScopedURL = nil
                                 NSLog("ERROR: Created directory but it is not writable: %@", bookmarkURL.path)
                                 return nil
                             }
                         } else {
                             bookmarkURL.stopAccessingSecurityScopedResource()
+                            currentSecurityScopedURL = nil
                             NSLog("ERROR: Directory creation reported success but directory does not exist: %@", bookmarkURL.path)
                             return nil
                         }
                     } catch {
                         bookmarkURL.stopAccessingSecurityScopedResource()
+                        currentSecurityScopedURL = nil
                         NSLog("ERROR: Failed to create security-scoped directory: %@ - %@", bookmarkURL.path, error.localizedDescription)
                         return nil
                     }
@@ -170,15 +205,13 @@ class CPCaptureFileManager {
     
     // MARK: - Image Capture
     func captureImage() {
-        guard let window = window else {
+        NSLog("captureImage() called - window: %@, fullScreen: %@", 
+              window != nil ? "available" : "nil",
+              window?.styleMask.contains(.fullScreen) == true ? "YES" : "NO")
+        
+        guard window != nil else {
             let error = NSError(domain: "CPCaptureFileManager", code: -1, userInfo: [NSLocalizedDescriptionKey: "Window is not available"])
             delegate?.captureFileManager(self, didEncounterError: error, message: "Window is not available")
-            return
-        }
-        
-        if window.styleMask.contains(.fullScreen) {
-            let error = NSError(domain: "CPCaptureFileManager", code: -2, userInfo: [NSLocalizedDescriptionKey: "Capture is not supported as window is full screen"])
-            delegate?.captureFileManager(self, didEncounterError: error, message: "Capture is not supported as window is full screen")
             return
         }
         
@@ -206,15 +239,9 @@ class CPCaptureFileManager {
     }
     
     func saveImage() {
-        guard let window = window else {
+        guard window != nil else {
             let error = NSError(domain: "CPCaptureFileManager", code: -1, userInfo: [NSLocalizedDescriptionKey: "Window is not available"])
             delegate?.captureFileManager(self, didEncounterError: error, message: "Window is not available")
-            return
-        }
-        
-        if window.styleMask.contains(.fullScreen) {
-            let error = NSError(domain: "CPCaptureFileManager", code: -2, userInfo: [NSLocalizedDescriptionKey: "Save is not supported as window is full screen"])
-            delegate?.captureFileManager(self, didEncounterError: error, message: "Save is not supported as window is full screen")
             return
         }
         
@@ -233,73 +260,105 @@ class CPCaptureFileManager {
     }
     
     private func captureImageToDirectory(_ captureDir: URL) {
-        guard let cgImage = captureWindowImage() else {
-            let error = NSError(domain: "CPCaptureFileManager", code: -8, userInfo: [NSLocalizedDescriptionKey: "Failed to capture window image"])
-            delegate?.captureFileManager(self, didEncounterError: error, message: "Failed to capture window image")
-            return
-        }
-        
-        DispatchQueue.main.async { [weak self] in
+        captureWindowImage { [weak self] cgImage in
             guard let self = self else { return }
-            let now: Date = Date()
-            let dateFormatter: DateFormatter = DateFormatter()
-            dateFormatter.dateFormat = "yyyy-MM-dd"
-            let date: String = dateFormatter.string(from: now)
-            dateFormatter.dateFormat = "HH.mm.ss"
-            let time: String = dateFormatter.string(from: now)
+            guard let cgImage = cgImage else {
+                let error = NSError(domain: "CPCaptureFileManager", code: -8, userInfo: [NSLocalizedDescriptionKey: "Failed to capture window image"])
+                DispatchQueue.main.async {
+                    self.delegate?.captureFileManager(self, didEncounterError: error, message: "Failed to capture window image")
+                }
+                return
+            }
             
-            let filename = String(format: "CapturePlay Image %@ at %@.png", date, time)
-            let fileURL = captureDir.appendingPathComponent(filename)
-            
-            let destination: CGImageDestination? = CGImageDestinationCreateWithURL(
-                fileURL as CFURL, UTType.png.identifier as CFString, 1, nil)
-            if destination == nil {
-                NSLog("Could not write file - destination returned from CGImageDestinationCreateWithURL was nil")
-                let error = NSError(domain: "CPCaptureFileManager", code: -6, userInfo: [NSLocalizedDescriptionKey: "Unfortunately, the image could not be saved to this location."])
-                self.delegate?.captureFileManager(self, didEncounterError: error, message: error.localizedDescription)
-            } else {
-                CGImageDestinationAddImage(destination!, cgImage, nil)
-                CGImageDestinationFinalize(destination!)
+            // Move image encoding to background queue to avoid blocking UI
+            DispatchQueue.global(qos: .userInitiated).async { [weak self] in
+                guard let self = self else { return }
+                
+                let now: Date = Date()
+                let dateFormatter: DateFormatter = DateFormatter()
+                dateFormatter.dateFormat = "yyyy-MM-dd"
+                let date: String = dateFormatter.string(from: now)
+                dateFormatter.dateFormat = "HH.mm.ss"
+                let time: String = dateFormatter.string(from: now)
+                
+                let filename = String(format: "CapturePlay Image %@ at %@.png", date, time)
+                let fileURL = captureDir.appendingPathComponent(filename)
+                
+                guard let destination = CGImageDestinationCreateWithURL(
+                    fileURL as CFURL, UTType.png.identifier as CFString, 1, nil) else {
+                    NSLog("Could not write file - destination returned from CGImageDestinationCreateWithURL was nil")
+                    let error = NSError(domain: "CPCaptureFileManager", code: -6, userInfo: [NSLocalizedDescriptionKey: "Unfortunately, the image could not be saved to this location."])
+                    DispatchQueue.main.async {
+                        self.delegate?.captureFileManager(self, didEncounterError: error, message: error.localizedDescription)
+                    }
+                    return
+                }
+                
+                CGImageDestinationAddImage(destination, cgImage, nil)
+                CGImageDestinationFinalize(destination)
                 NSLog("Image saved to: %@", fileURL.path)
-                self.delegate?.captureFileManager(self, didSaveImageTo: fileURL, filename: filename)
-                self.delegate?.captureFileManager(self, needsNotification: "Image Captured", body: "Saved: \(filename)", sound: true)
+                
+                // Stop accessing security-scoped resource after file operation completes
+                if let securityScopedURL = self.currentSecurityScopedURL, securityScopedURL == captureDir {
+                    securityScopedURL.stopAccessingSecurityScopedResource()
+                    self.currentSecurityScopedURL = nil
+                }
+                
+                // Update UI on main thread
+                DispatchQueue.main.async {
+                    self.delegate?.captureFileManager(self, didSaveImageTo: fileURL, filename: filename)
+                    self.delegate?.captureFileManager(self, needsNotification: "Image Captured", body: "Saved: \(filename)", sound: true)
+                }
             }
         }
     }
     
     private func saveImageWithSavePanel() {
-        guard let window = window else { return }
-        guard let cgImage = captureWindowImage() else {
-            let error = NSError(domain: "CPCaptureFileManager", code: -8, userInfo: [NSLocalizedDescriptionKey: "Failed to capture window image"])
-            delegate?.captureFileManager(self, didEncounterError: error, message: "Failed to capture window image")
-            return
-        }
+        guard window != nil else { return }
         
-        DispatchQueue.main.async { [weak self] in
+        captureWindowImage { [weak self] cgImage in
             guard let self = self else { return }
-            let now: Date = Date()
-            let dateFormatter: DateFormatter = DateFormatter()
-            dateFormatter.dateFormat = "yyyy-MM-dd"
-            let date: String = dateFormatter.string(from: now)
-            dateFormatter.dateFormat = "h.mm.ss a"
-            let time: String = dateFormatter.string(from: now)
+            guard let cgImage = cgImage else {
+                let error = NSError(domain: "CPCaptureFileManager", code: -8, userInfo: [NSLocalizedDescriptionKey: "Failed to capture window image"])
+                DispatchQueue.main.async {
+                    self.delegate?.captureFileManager(self, didEncounterError: error, message: "Failed to capture window image")
+                }
+                return
+            }
             
-            let panel: NSSavePanel = NSSavePanel()
-            panel.nameFieldStringValue = String(
-                format: "CapturePlay Image %@ at %@.png", date, time)
-            panel.beginSheetModal(for: window) {
-                (result: NSApplication.ModalResponse) in
-                if result == NSApplication.ModalResponse.OK {
-                    NSLog(panel.url!.absoluteString)
-                    let destination: CGImageDestination? = CGImageDestinationCreateWithURL(
-                        panel.url! as CFURL, UTType.png.identifier as CFString, 1, nil)
-                    if destination == nil {
-                        NSLog("Could not write file - destination returned from CGImageDestinationCreateWithURL was nil")
-                        let error = NSError(domain: "CPCaptureFileManager", code: -6, userInfo: [NSLocalizedDescriptionKey: "Unfortunately, the image could not be saved to this location."])
-                        self.delegate?.captureFileManager(self, didEncounterError: error, message: error.localizedDescription)
-                    } else {
-                        CGImageDestinationAddImage(destination!, cgImage, nil)
-                        CGImageDestinationFinalize(destination!)
+            DispatchQueue.main.async { [weak self] in
+                guard let self = self, let window = self.window else { return }
+                let now: Date = Date()
+                let dateFormatter: DateFormatter = DateFormatter()
+                dateFormatter.dateFormat = "yyyy-MM-dd"
+                let date: String = dateFormatter.string(from: now)
+                dateFormatter.dateFormat = "h.mm.ss a"
+                let time: String = dateFormatter.string(from: now)
+                
+                let panel: NSSavePanel = NSSavePanel()
+                panel.nameFieldStringValue = String(
+                    format: "CapturePlay Image %@ at %@.png", date, time)
+                panel.beginSheetModal(for: window) {
+                    (result: NSApplication.ModalResponse) in
+                    if result == NSApplication.ModalResponse.OK {
+                        guard let saveURL = panel.url else { return }
+                        NSLog(saveURL.absoluteString)
+                        
+                        // Move file writing to background queue
+                        DispatchQueue.global(qos: .userInitiated).async {
+                            guard let destination = CGImageDestinationCreateWithURL(
+                                saveURL as CFURL, UTType.png.identifier as CFString, 1, nil) else {
+                                NSLog("Could not write file - destination returned from CGImageDestinationCreateWithURL was nil")
+                                let error = NSError(domain: "CPCaptureFileManager", code: -6, userInfo: [NSLocalizedDescriptionKey: "Unfortunately, the image could not be saved to this location."])
+                                DispatchQueue.main.async {
+                                    self.delegate?.captureFileManager(self, didEncounterError: error, message: error.localizedDescription)
+                                }
+                                return
+                            }
+                            
+                            CGImageDestinationAddImage(destination, cgImage, nil)
+                            CGImageDestinationFinalize(destination)
+                        }
                     }
                 }
             }
@@ -307,41 +366,158 @@ class CPCaptureFileManager {
     }
     
     // MARK: - Window Image Capture
-    private func captureWindowImage() -> CGImage? {
-        guard let window = window, let windowManager = windowManager else { return nil }
+    private func captureWindowImage(completion: @escaping (CGImage?) -> Void) {
+        guard let window = window, let windowManager = windowManager else {
+            NSLog("captureWindowImage: window or windowManager is nil")
+            completion(nil)
+            return
+        }
         
-        // turn borderless on, capture image, return border to previous state
+        let isFullScreen = window.styleMask.contains(.fullScreen)
+        NSLog("captureWindowImage: windowNumber=%lu, fullScreen=%@", window.windowNumber, isFullScreen ? "YES" : "NO")
+        
+        // In full screen, don't modify border state
         let borderlessState: Bool = windowManager.isBorderless
-        if borderlessState == false {
+        if !isFullScreen && borderlessState == false {
             NSLog("Removing border for capture")
             windowManager.removeBorder()
         }
         
-        /* Pause the RunLoop for 0.1 sec to let the window repaint after removing the border */
-        RunLoop.current.run(mode: .default, before: Date(timeIntervalSinceNow: 0.1))
-        
-        let cgImage: CGImage? = CGWindowListCreateImage(
-            CGRect.null, .optionIncludingWindow, CGWindowID(window.windowNumber),
-            .boundsIgnoreFraming)
-        
-        if borderlessState == false {
-            windowManager.addBorder()
+        // Use async dispatch instead of blocking RunLoop
+        // Give the window a moment to repaint after removing the border (if needed)
+        let delay = isFullScreen ? 0.0 : 0.1
+        DispatchQueue.main.asyncAfter(deadline: .now() + delay) {
+            NSLog("Capturing window image (windowNumber=%lu)", window.windowNumber)
+            let cgImage: CGImage? = CGWindowListCreateImage(
+                CGRect.null, .optionIncludingWindow, CGWindowID(window.windowNumber),
+                .boundsIgnoreFraming)
+            
+            if !isFullScreen && borderlessState == false {
+                windowManager.addBorder()
+            }
+            
+            if cgImage == nil {
+                NSLog("ERROR: CGWindowListCreateImage returned nil")
+            } else {
+                NSLog("Successfully captured window image: %dx%d pixels", cgImage!.width, cgImage!.height)
+            }
+            
+            // Crop to video content if aspect ratio is fixed and video is letterboxed
+            let croppedImage = self.cropToVideoContentIfNeeded(cgImage, window: window)
+            completion(croppedImage)
+        }
+    }
+    
+    // MARK: - Image Cropping
+    /// Crops the captured image to remove black letterboxing when aspect ratio is fixed.
+    /// Returns the original image if cropping is not needed or not possible.
+    private func cropToVideoContentIfNeeded(_ image: CGImage?, window: NSWindow) -> CGImage? {
+        guard let image = image,
+              let windowManager = windowManager,
+              let videoInput = windowManager.videoInput,
+              windowManager.isAspectRatioFixed else {
+            // No cropping needed if aspect ratio is not fixed
+            return image
         }
         
-        return cgImage
+        // Check if video layer is using letterbox mode (resizeAspect)
+        // If using fill mode (resizeAspectFill), no cropping needed
+        guard let captureLayer = captureLayer,
+              captureLayer.videoGravity == .resizeAspect else {
+            return image
+        }
+        
+        // Get video source dimensions
+        let videoDimensions = videoInput.device.activeFormat.formatDescription.dimensions
+        let videoWidth = CGFloat(videoDimensions.width)
+        let videoHeight = CGFloat(videoDimensions.height)
+        
+        // Account for rotation
+        let isLandscape = windowManager.isLandscape()
+        let sourceAspectRatio: CGFloat
+        if isLandscape {
+            sourceAspectRatio = videoWidth / videoHeight
+        } else {
+            sourceAspectRatio = videoHeight / videoWidth
+        }
+        
+        // Get window content dimensions (in points)
+        let windowContentSize = window.contentLayoutRect.size
+        let windowAspectRatio = windowContentSize.width / windowContentSize.height
+        
+        // Calculate the actual video content rectangle within the window
+        let videoContentRect: CGRect
+        if sourceAspectRatio > windowAspectRatio {
+            // Video is wider than window - letterboxing on top/bottom
+            // Video fills width, calculate height
+            let videoContentHeight = windowContentSize.width / sourceAspectRatio
+            let letterboxHeight = (windowContentSize.height - videoContentHeight) / 2.0
+            videoContentRect = CGRect(
+                x: 0,
+                y: letterboxHeight,
+                width: windowContentSize.width,
+                height: videoContentHeight
+            )
+        } else {
+            // Video is taller than window - letterboxing on sides
+            // Video fills height, calculate width
+            let videoContentWidth = windowContentSize.height * sourceAspectRatio
+            let letterboxWidth = (windowContentSize.width - videoContentWidth) / 2.0
+            videoContentRect = CGRect(
+                x: letterboxWidth,
+                y: 0,
+                width: videoContentWidth,
+                height: windowContentSize.height
+            )
+        }
+        
+        // Convert points to pixels (account for Retina display)
+        let scale = window.backingScaleFactor
+        let pixelRect = CGRect(
+            x: videoContentRect.origin.x * scale,
+            y: videoContentRect.origin.y * scale,
+            width: videoContentRect.size.width * scale,
+            height: videoContentRect.size.height * scale
+        )
+        
+        // Ensure pixel rect is within image bounds
+        let imageWidth = CGFloat(image.width)
+        let imageHeight = CGFloat(image.height)
+        let clampedRect = CGRect(
+            x: max(0, min(pixelRect.origin.x, imageWidth)),
+            y: max(0, min(pixelRect.origin.y, imageHeight)),
+            width: min(pixelRect.width, imageWidth - max(0, pixelRect.origin.x)),
+            height: min(pixelRect.height, imageHeight - max(0, pixelRect.origin.y))
+        )
+        
+        // Only crop if there's significant letterboxing (more than 1 pixel)
+        guard clampedRect.width > 1 && clampedRect.height > 1,
+              clampedRect.width < imageWidth - 1 || clampedRect.height < imageHeight - 1 else {
+            // No significant letterboxing, return original
+            return image
+        }
+        
+        // Crop the image to video content
+        guard let croppedImage = image.cropping(to: clampedRect) else {
+            NSLog("Failed to crop image to video content")
+            return image
+        }
+        
+        NSLog("Cropped image from %dx%d to %dx%d (removed letterboxing)", 
+              image.width, image.height, croppedImage.width, croppedImage.height)
+        return croppedImage
     }
     
     // MARK: - Clipboard Operations
+    /// Copies the current window image to the clipboard.
+    /// 
+    /// - Returns: `true` if the copy operation was initiated successfully (operation is asynchronous).
+    ///            `false` if the operation cannot be started (window unavailable, full screen, etc.).
+    ///            Note: The actual copy happens asynchronously. Errors are reported via the delegate.
     func copyImageToClipboard() -> Bool {
-        guard let window = window else {
+        guard window != nil else {
             let error = NSError(domain: "CPCaptureFileManager", code: -1, userInfo: [NSLocalizedDescriptionKey: "Window is not available"])
             delegate?.captureFileManager(self, didEncounterError: error, message: "Window is not available")
-            return false
-        }
-        
-        if window.styleMask.contains(.fullScreen) {
-            let error = NSError(domain: "CPCaptureFileManager", code: -2, userInfo: [NSLocalizedDescriptionKey: "Copy is not supported as window is full screen"])
-            delegate?.captureFileManager(self, didEncounterError: error, message: "Copy is not supported as window is full screen")
             return false
         }
         
@@ -352,23 +528,32 @@ class CPCaptureFileManager {
         }
         
         if #available(OSX 10.12, *) {
-            guard let cgImage = captureWindowImage() else {
-                let error = NSError(domain: "CPCaptureFileManager", code: -8, userInfo: [NSLocalizedDescriptionKey: "Failed to capture window image"])
-                delegate?.captureFileManager(self, didEncounterError: error, message: "Failed to capture window image")
-                return false
+            captureWindowImage { [weak self] cgImage in
+                guard let self = self else { return }
+                guard let cgImage = cgImage else {
+                    let error = NSError(domain: "CPCaptureFileManager", code: -8, userInfo: [NSLocalizedDescriptionKey: "Failed to capture window image"])
+                    DispatchQueue.main.async {
+                        self.delegate?.captureFileManager(self, didEncounterError: error, message: "Failed to capture window image")
+                    }
+                    return
+                }
+                
+                // Convert CGImage to NSImage for clipboard (on main thread for UI operations)
+                DispatchQueue.main.async {
+                    let bitmapRep = NSBitmapImageRep(cgImage: cgImage)
+                    let image = NSImage(size: bitmapRep.size)
+                    image.addRepresentation(bitmapRep)
+                    
+                    // Copy to clipboard
+                    let pasteboard = NSPasteboard.general
+                    pasteboard.clearContents()
+                    pasteboard.writeObjects([image])
+                    
+                    NSLog("Image copied to clipboard")
+                }
             }
-            
-            // Convert CGImage to NSImage for clipboard
-            let bitmapRep = NSBitmapImageRep(cgImage: cgImage)
-            let image = NSImage(size: bitmapRep.size)
-            image.addRepresentation(bitmapRep)
-            
-            // Copy to clipboard
-            let pasteboard = NSPasteboard.general
-            pasteboard.clearContents()
-            pasteboard.writeObjects([image])
-            
-            NSLog("Image copied to clipboard")
+            // Return true to indicate operation was initiated successfully
+            // Actual completion/errors are handled asynchronously via delegate
             return true
         } else {
             let error = NSError(domain: "CPCaptureFileManager", code: -5, userInfo: [NSLocalizedDescriptionKey: "Unfortunately, copying images is only supported in Mac OSX 10.12 (Sierra) and higher."])
@@ -389,6 +574,15 @@ class CPCaptureFileManager {
         // Open the folder in Finder
         NSWorkspace.shared.open(captureDir)
         NSLog("Opened capture folder in Finder: %@", captureDir.path)
+        
+        // Stop accessing security-scoped resource after opening (NSWorkspace.open handles its own access)
+        // Note: We keep access briefly to ensure the open operation succeeds, then release
+        DispatchQueue.main.asyncAfter(deadline: .now() + 0.5) { [weak self] in
+            if let self = self, let securityScopedURL = self.currentSecurityScopedURL, securityScopedURL == captureDir {
+                securityScopedURL.stopAccessingSecurityScopedResource()
+                self.currentSecurityScopedURL = nil
+            }
+        }
     }
 }
 

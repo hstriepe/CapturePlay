@@ -92,7 +92,9 @@ class CPHelpViewerController: NSWindowController {
                 return
             }
             
-            webView.loadHTMLString(htmlString, baseURL: nil)
+            // Use the file's directory as baseURL so relative assets (images, CSS) can be loaded
+            let baseURL = url.deletingLastPathComponent()
+            webView.loadHTMLString(htmlString, baseURL: baseURL)
         } catch {
             showError("Could not read the help manual: \(error.localizedDescription)")
         }

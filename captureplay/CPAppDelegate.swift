@@ -241,6 +241,7 @@ class CPAppDelegate: NSObject, NSApplicationDelegate, NSMenuDelegate, CPUsbWatch
     }
 
     @IBAction func captureImage(_ sender: NSMenuItem) {
+        NSLog("CPAppDelegate: captureImage menu action triggered")
         fileManager.captureImage()
     }
 
@@ -249,6 +250,8 @@ class CPAppDelegate: NSObject, NSApplicationDelegate, NSMenuDelegate, CPUsbWatch
             errorMessage(message: "Unable to access the capture directory.\n\nPlease check your settings.")
             return
         }
+        // Note: If recording fails to start, security-scoped resource cleanup
+        // will be handled in didEncounterError for recording-related errors
         captureManager.toggleRecording(captureDirectory: captureDir)
     }
     
@@ -272,12 +275,19 @@ class CPAppDelegate: NSObject, NSApplicationDelegate, NSMenuDelegate, CPUsbWatch
         }
 
         // set the checkbox on the currently selected device
-        for menuItem: NSMenuItem in selectSourceMenu.submenu!.items {
+        guard let submenu = selectSourceMenu.submenu else {
+            NSLog("ERROR: selectSourceMenu.submenu is nil")
+            return
+        }
+        for menuItem: NSMenuItem in submenu.items {
             menuItem.state = NSControl.StateValue.off
         }
         sender.state = NSControl.StateValue.on
 
-        let deviceIndex = sender.representedObject as! Int
+        guard let deviceIndex = sender.representedObject as? Int else {
+            NSLog("ERROR: sender.representedObject is not an Int")
+            return
+        }
         captureManager.startCaptureWithVideoDevice(deviceIndex: deviceIndex)
     }
 
@@ -667,11 +677,18 @@ extension CPAppDelegate {
         let currentDeviceIndex: Int
         if captureSession != nil, let currentInput = input {
             let currentDevice = currentInput.device
-            currentDeviceIndex = devices.firstIndex(of: currentDevice) ?? manager.getPreferredDefaultDeviceIndex(from: devices)
+            // If we have an existing session, prefer the current device, but fall back to saved device if not found
+            currentDeviceIndex = devices.firstIndex(of: currentDevice) ?? manager.getPreferredDefaultDeviceIndex(from: devices, savedDeviceName: CPSettingsManager.shared.savedDeviceName)
             NSLog("Using existing device index: %d", currentDeviceIndex)
         } else {
-            currentDeviceIndex = manager.getPreferredDefaultDeviceIndex(from: devices)
-            NSLog("Using preferred default device index: %d", currentDeviceIndex)
+            // On launch, try to restore the saved device selection
+            // Check both savedDeviceName (from UserDefaults) and deviceName (current value)
+            let settings = CPSettingsManager.shared
+            let savedDeviceName = settings.savedDeviceName.isEmpty || settings.savedDeviceName == "-" 
+                ? settings.deviceName 
+                : settings.savedDeviceName
+            currentDeviceIndex = manager.getPreferredDefaultDeviceIndex(from: devices, savedDeviceName: savedDeviceName)
+            NSLog("Using preferred default device index: %d (saved device: '%@')", currentDeviceIndex, savedDeviceName)
         }
         buildDeviceMenu(devices: devices, currentDeviceIndex: currentDeviceIndex)
         
@@ -750,6 +767,8 @@ extension CPAppDelegate {
     
     func captureManager(_ manager: CPCaptureManager, didFinishRecordingTo url: URL, error: Error?) {
         updateCaptureVideoMenuItemState()
+        // Stop accessing security-scoped resource after video recording completes
+        fileManager.stopAccessingSecurityScopedResource()
         if error == nil {
             let filename = url.lastPathComponent
             notificationManager.sendNotification(title: "Video Recording", body: "Recording saved: \(filename)", sound: true)
@@ -757,6 +776,14 @@ extension CPAppDelegate {
     }
     
     func captureManager(_ manager: CPCaptureManager, didEncounterError error: Error, message: String) {
+        // Check if this is a recording-related error (codes -2, -3, -4, -8)
+        // If recording failed to start, clean up security-scoped resource
+        let nsError = error as NSError
+        let recordingErrorCodes: [Int] = [-2, -3, -4, -8] // Recording-related error codes
+        if recordingErrorCodes.contains(nsError.code) && !manager.isRecording {
+            // Recording failed before it could start, clean up security-scoped resource
+            fileManager.stopAccessingSecurityScopedResource()
+        }
         errorMessage(message: message)
     }
     

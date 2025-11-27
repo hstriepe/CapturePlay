@@ -51,7 +51,18 @@ class CPCaptureManager: NSObject {
     let defaultDeviceIndex: Int = 0
     
     // MARK: - Default Device Selection
-    func getPreferredDefaultDeviceIndex(from devices: [AVCaptureDevice]) -> Int {
+    func getPreferredDefaultDeviceIndex(from devices: [AVCaptureDevice], savedDeviceName: String? = nil) -> Int {
+        // First, try to find the saved device name if provided
+        if let savedName = savedDeviceName, !savedName.isEmpty && savedName != "-" {
+            for (index, device) in devices.enumerated() {
+                if device.localizedName == savedName {
+                    NSLog("Found saved device '%@' at index %d", savedName, index)
+                    return index
+                }
+            }
+            NSLog("Saved device '%@' not found in available devices", savedName)
+        }
+        
         // Never select Continuity Camera as default - prefer physical capture devices
         for (index, device) in devices.enumerated() {
             if #available(macOS 13.0, *) {
@@ -336,6 +347,7 @@ class CPCaptureManager: NSObject {
         guard let movieOutput = movieFileOutput else {
             NSLog("ERROR: movieFileOutput is nil - cannot start recording")
             let error = NSError(domain: "CPCaptureManager", code: -2, userInfo: [NSLocalizedDescriptionKey: "Video recording is not available. Please ensure a video device is selected."])
+            // Notify delegate of error (will trigger security-scoped resource cleanup)
             delegate?.captureManager(self, didEncounterError: error, message: error.localizedDescription)
             return
         }
@@ -343,6 +355,7 @@ class CPCaptureManager: NSObject {
         guard let session = captureSession, session.isRunning else {
             NSLog("ERROR: Capture session is not running - cannot start recording")
             let error = NSError(domain: "CPCaptureManager", code: -3, userInfo: [NSLocalizedDescriptionKey: "Capture session is not running."])
+            // Notify delegate of error (will trigger security-scoped resource cleanup)
             delegate?.captureManager(self, didEncounterError: error, message: error.localizedDescription)
             return
         }
@@ -353,6 +366,7 @@ class CPCaptureManager: NSObject {
                 code: -8,
                 userInfo: [NSLocalizedDescriptionKey: "Unable to add the selected audio source to the recording session."]
             )
+            // Notify delegate of error (will trigger security-scoped resource cleanup)
             delegate?.captureManager(self, didEncounterError: error, message: error.localizedDescription)
             return
         }

@@ -304,226 +304,130 @@ span.cm-strikethrough { text-decoration: line-through; }
 }
 
 </style>
-<link rel='stylesheet' href='https://fonts.googleapis.com/css?family=Merriweather:900,900italic,300,300italic&amp;subset=latin-ext' type='text/css' />
-<link rel='stylesheet' href='https://fonts.googleapis.com/css?family=Lato:900,300&amp;subset=latin-ext' type='text/css' />
-<style type='text/css'  id="style-theme_css">@include-when-export url(https://fonts.googleapis.com/css?family=Merriweather:900,900italic,300,300italic&subset=latin-ext);
-@include-when-export url(https://fonts.googleapis.com/css?family=Lato:900,300&subset=latin-ext);
+<link rel='stylesheet' href='https://fonts.googleapis.com/css?family=Didact+Gothic&amp;display=swap&amp;subset=cyrillic,cyrillic-ext,greek,greek-ext,latin-ext' type='text/css' />
+<style type='text/css'  id="style-theme_css">@include-when-export url(https://fonts.googleapis.com/css?family=Didact+Gothic&display=swap&subset=cyrillic,cyrillic-ext,greek,greek-ext,latin-ext);
 
+/* cyrillic-ext */
+/* cyrillic */
 :root {
+	--window-border: none;
+	--typora-center-window-title: true;
+	--active-file-bg-color: #f3f3f3;
+	--bg-color: #fcfcfc;
 	--control-text-color: #777;
 }
 
-/**
- * forked from pixyll.com
- * MIT license
- */
+.mac-seamless-mode #typora-sidebar {
+	top: 20px;
+	padding-top: 0;
+	height: auto;
+}
+
+html,
+body {
+	background: #fcfcfc;
+	background: var(--bg-color);
+	font-family: 'TeXGyreAdventor', "Century Gothic", "Didact Gothic", "Yu Gothic", 'Segoe UI Emoji', 'SF Pro', sans-serif;
+	font-weight: 300;
+	-webkit-font-smoothing: antialiased;
+}
 
 h1,
-.h1,
-.f1 {
-	font-size: 2rem;
-	line-height: 2.5rem;
-}
 h2,
-.h2,
-.f2 {
-	font-size: 1.5rem;
-	line-height: 2rem;
-}
 h3,
-.h3,
-.f3 {
-	font-size: 1.25rem;
-	line-height: 1.5rem;
-}
-p,
-.p,
-.f4,
 h4,
 h5,
-h6,
-dl,
-ol,
-ul,
-pre[cid],
-div[cid],
-#typora-source {
-	font-size: 1.125rem;
-	line-height: 1.5rem;
+h6 {
+	color: #111;
+	font-family: 'TeXGyreAdventor', "Century Gothic", "Didact Gothic", "Yu Gothic", sans-serif;
 }
 
-h4 {
-	font-size: 1.13rem;
-}
-/*
- Pixyll
- A simple, beautiful theme for Jekyll that emphasizes content rather than aesthetic fluff.
- Best served with BASSCSS (http://jxnblk.github.io/basscss)
- Crafted with <3 by John Otander (@4lpine) - ©2015 John Otander MIT License http://opensource.org/licenses/MIT
-
-*/
-
-body {
-	font-family: "Merriweather", "PT Serif", Georgia, "Times New Roman", "STSong", 'Segoe UI Emoji','SF Pro', Serif;
-	line-height: 1.5rem;
-	font-weight: 400;
+html {
+	font-size:16px;
 }
 
 #write {
 	max-width: 914px;
-	color: #333;
+	text-align: justify;
 }
 
 @media only screen and (min-width: 1400px) {
 	#write {
-		max-width: 1100px;
+		max-width: 1024px;
 	}
 }
 
-@media only screen and (min-width: 1700px) {
-	#write {
-		max-width: 1200px;
-	}
+#write>h1:first-child {
+	margin-top: 2.75rem;
 }
-
-img {
-	width: auto;
-	max-width: 100%;
+#write>h2:first-child {
+	margin-top: 1.75rem;
 }
-body {
-	font-size: 1.5rem;
-	box-sizing: border-box;
-	-moz-box-sizing: border-box;
-	-webkit-box-sizing: border-box;
+#write>h3:first-child {
+	margin-top: 1rem;
 }
-
-.ty-table-edit {
-	background: #ededed;
+#write>h4:first-child {
+	margin-top: 0.5rem;
 }
-
-table {
-	width: 100%;
+h1 {
+	font-weight: normal;
+	line-height: 4rem;
+	margin: 0 0 1.75rem;
+	padding: 20px 30px;
+	text-align: center;
+	text-transform: uppercase;
+	margin-top: 4rem;
+}
+h2 {
+	font-weight: normal;
+	line-height: 3rem;
+	margin: 0 0 1.9375rem;
+	padding: 0 30px;
+	text-align: center;
+	text-transform: uppercase;
+	margin-top: 3rem
+}
+h3 {
+	font-weight: normal;
+}
+h4 {
+	font-weight: normal;
+}
+h5 {
 	font-size: 1.125rem;
+	font-weight: normal;
 }
-table > thead > tr > th,
-table > thead > tr > td,
-table > tbody > tr > th,
-table > tbody > tr > td,
-table > tfoot > tr > th,
-table > tfoot > tr > td {
-	padding: 12px;
-	line-height: 1.2;
-	vertical-align: top;
-	border-top: 1px solid #333;
-}
-table > thead > tr > th {
-	vertical-align: bottom;
-	border-bottom: 2px solid #333;
-}
-table > caption + thead > tr:first-child > th,
-table > caption + thead > tr:first-child > td,
-table > colgroup + thead > tr:first-child > th,
-table > colgroup + thead > tr:first-child > td,
-table > thead:first-child > tr:first-child > th,
-table > thead:first-child > tr:first-child > td {
-	border-top: 0;
-}
-table > tbody + tbody {
-	border-top: 2px solid #333;
+h6 {
+	font-size: 1rem;
+	font-weight: bold;
 }
 p {
-	font-weight: 300;
-	line-height: 1.5;
-}
-abbr {
-	border-bottom: 1px black dotted;
-	cursor: help;
-}
-pre,
-code {
-	font-family: Menlo, Monaco, "Courier New", monospace;
-}
-
-code,
-.md-fences  {
-	color: #7a7a7a;
-}
-
-.md-fences {
-	padding: 1.125em;
-	margin-bottom: 0.88em;
+	color: #111;
 	font-size: 1rem;
-	border: 1px solid #7a7a7a;
-	padding-bottom: 0.5rem;
-	padding-top: 0.5rem;
+	line-height: 1.75rem;
+	margin: 0 0 1.25rem;
 }
-
-blockquote {
-	padding: 1.33em;
-	font-style: italic;
-	border-left: 5px solid #7a7a7a;
-	color: #555;
+#write>h3.md-focus:before {
+	left: -1.875rem;
+	top: 0.5rem;
+	padding: 2px;
 }
-blockquote em {
-	color: #000;
+#write>h4.md-focus:before {
+	left: -1.875rem;
+	top: 0.3125rem;
+	padding: 2px;
 }
-blockquote footer {
-	font-size: .85rem;
-	font-style: normal;
-	background-color: #fff;
-	color: #7a7a7a;
-	border-color: transparent;
+#write>h5.md-focus:before {
+	left: -1.875rem;
+	top: 0.25rem;
+	padding: 2px;
 }
-h1,
-.h1,
-h2,
-.h2,
-h3,
-.h3,
-h4,
-.h4,
-h5,
-.h5,
-h6,
-.h6 {
-	font-family: "Lato", 'Helvetica Neue', Helvetica, sans-serif;
-	font-weight: bold;
-	line-height: 1.2;
-	margin: 1em 0 0.5em;
+#write>h6.md-focus:before {
+	left: -1.875rem;
+	top: .125rem;
+	padding: 2px;
 }
-@media screen and (min-width: 48em) {
-	.h1,
-	h1 {
-		font-size: 3.250rem;
-	}
-	.h2,
-	h2 {
-		font-size: 2.298rem;
-	}
-	.h3,
-	h3 {
-		font-size: 1.625rem;
-	}
-	.h4,
-	h4 {
-		font-size: 1.3rem;
-	}
-	#write>h4.md-focus:before,
-	#write>h5.md-focus:before,
-	#write>h6.md-focus:before{
-		top: 1px;
-	}
-	.p,
-	p,
-	li {
-		font-size: 1.25rem;
-		line-height: 1.8;
-	}
-	table {
-		font-size: 1.25rem;
-	}
-}
-@media (max-width: 48em) {
+@media screen and (max-width: 48em) {
 	blockquote {
 		margin-left: 1rem;
 		margin-right: 0;
@@ -543,238 +447,227 @@ h6,
 	}
 	.h4,
 	h4 {
-		font-size: 1.3rem;
+		font-size: 1.250rem;
+	}
+	.h5,
+	h5 {
+		font-size: 1.150rem;
+	}
+	.h6,
+	h6 {
+		font-size: 1rem;
 	}
 }
-@media screen and (min-width: 64em) {
-	.h1,
-	h1 {
-		font-size: 4.498rem;
-	}
-	.h2,
-	h2 {
-		font-size: 2.29rem;
-	}
-	.h3,
-	h3 {
-		font-size: 1.9rem;
-	}
-	.h4,
-	h4 {
-		font-size: 1.591rem;
-	}
-	#write>h4.md-focus:before{
-		top:4px;
-	}
+a,
+.md-def-url {
+	color: #990000;
+	text-decoration: none;
 }
-a {
-	color: #463F5C;
+a:hover {
 	text-decoration: underline;
 }
-
-#write {
-	padding-top: 2rem;
+table {
+	margin-bottom: 20px
 }
-
-#write pre.md-meta-block {
-	min-height: 35px;
-	padding: 0.5em 1em;
-	white-space: pre;
-	border: 0px;
-
-	border-left: 30px #f8f8f8 solid;
-	border-right: 30px #f8f8f8 solid;
-	width: 100vw;
-	max-width: calc(100% + 60px);
-
-	margin-left: -30px;
-	margin-bottom: 2em;
-	margin-top: -2010px;
-	padding-top: 2000px;
-	padding-bottom: 10px;
-	line-height: 1.5em;
-	color: #7a7a7a;
-	background-color: #fafafa;
-	font-family: 'Lato', 'Helvetica Neue', Helvetica, sans-serif;
-	font-weight: 300;
-	clear: both;
-	padding-left: 0;
-	font-size:1.125rem;
+table th,
+table td {
+	padding: 8px;
+	line-height: 1.25rem;
+	vertical-align: top;
+	border-top: 1px solid #ddd
 }
-.md-image>.md-meta {
-	color: #463F5C
+table th {
+	font-weight: bold
 }
-.footnotes {
-	font-size:1.1rem;
+table thead th {
+	vertical-align: bottom
 }
-.md-tag {
-	font-family: 'Lato', 'Helvetica Neue', Helvetica, sans-serif;
+table caption+thead tr:first-child th,
+table caption+thead tr:first-child td,
+table colgroup+thead tr:first-child th,
+table colgroup+thead tr:first-child td,
+table thead:first-child tr:first-child th,
+table thead:first-child tr:first-child td {
+	border-top: 0
 }
-.code-tooltip {
-	background: white;
+table tbody+tbody {
+	border-top: 2px solid #ddd
 }
-.code-tooltip-content {
-	font-size: 1.1rem;
+code, .md-fences {
+	padding: .5em;
+	/*background: #f0f0f0;*/
+	border: 1px solid #ccc;
+	padding: .1em;
+	font-size: 0.9em;
+	margin-left: 0.2em;
+	margin-right: 0.2em;
 }
-
+.md-fences {
+	margin: 0 0 20px;
+	font-size: 1em;
+	padding: 0.3em 1em;
+  	padding-top: 0.4em;
+}
 .task-list{
 	padding-left: 0;
 }
 
-.md-task-list-item {
-	padding-left:34px;
+.task-list-item {
+	padding-left:2.125rem;
 }
 
-.md-task-list-item > input{
-	width: 1.25rem;
-	height: 1.25rem;
-	display: block;
-	-webkit-appearance: initial;
-	top: -0.2rem;
-	margin-left: -1.6em;
-	margin-top: calc(1rem - 7px);
-	border: none;
+input {
+	border-style: ridge;
 }
 
-.md-task-list-item > input:focus{
-	outline: none;
+.task-list-item input {
+	top: 3px;
+}
+
+.md-task-list-item input {
+	margin-left: -1.5em;
+}
+
+.task-list-item input:before {
+	content: "";
+	display: inline-block;
+	width: 1rem;
+	height: 1rem;
+	vertical-align: middle;
+	text-align: center;
+	border: 1px solid gray;
+	background-color: #fdfdfd;
+	margin-left: 0;
+	-webkit-appearance: none;
+	margin-top: -1rem;
+}
+
+.typora-node .task-list-item input:before {
+	top: 0.3ex;
+	position: absolute;
+}
+
+.task-list-item input:checked:before,
+.task-list-item input[checked]:before{
+	content: '\25FC';
+	/*◘*/
+	font-size: 0.8125rem;
+	line-height: 0.9375rem;
+}
+
+/* Chrome 29+ */
+.task-list-item input:before {
+	margin-top: -0.2rem;
+}
+
+.task-list-item input:checked:before,
+.task-list-item input[checked]:before {
+	margin-top: -0.2rem;
+}
+
+.html-for-mac .task-list-item input:checked:before,
+.html-for-mac .task-list-item input[checked]:before {
+	margin-top: -0.8rem;
+}
+
+blockquote {
+	margin: 0 0 1.11111rem;
+	padding: 0.5rem 1.11111rem 0 1.05556rem;
+	border-left: 1px solid gray;
+}
+blockquote,
+blockquote p {
+	line-height: 1.6;
+	color: #6f6f6f;
+}
+#write pre.md-meta-block {
+	min-height: 30px;
+	background: #f8f8f8;
+	padding: 1.5em;
+	font-weight: 300;
+	font-size: 1em;
+	padding-bottom: 1.5em;
+	padding-top: 3em;
+    margin-top: -1.5em;
+	color: #999;
+	
+	width: 100vw;
+	max-width: calc(100% + 60px);
+	margin-left: -30px;
+	border-left: 30px #f8f8f8 solid;
+	border-right: 30px #f8f8f8 solid;
+}
+.MathJax_Display {
+	font-size: 0.9em;
+	margin-top: 0.5em;
+	margin-bottom: 0;
+}
+p.mathjax-block,
+.mathjax-block {
+	padding-bottom: 0;
+}
+.mathjax-block>.code-tooltip {
+	bottom: 5px;
 	box-shadow: none;
 }
-
-.md-task-list-item > input:before{
-	border: 1px solid #555;
-	border-radius: 1.5rem;
-	width: 1.5rem;
-	height: 1.5rem;
-	background: #fff;
-	content: ' ';
-	transition: background-color 200ms ease-in-out;
-	display: block;
+.md-image>.md-meta {
+	padding-left: 0.5em;
+	padding-right: 0.5em;
+}
+.md-image>img {
+	margin-top: 2px;
+}
+.md-image>.md-meta:first-of-type:before {
+	padding-left: 4px;
 }
 
-.md-task-list-item > input:checked:before,
-.md-task-list-item > input[checked]:before{
-	background: #333;
-	border-width: 2px;
-	display:inline-block;
-	transition: background-color 200ms ease-in-out;
+#typora-source {
+	color: #555;
 }
 
-.md-task-list-item > input:checked:after,
-.md-task-list-item > input[checked]:after {
-	opacity: 1;
+/** ui for windows **/
+#md-searchpanel {
+    border-bottom: 1px solid #ccc;
 }
 
-.md-task-list-item > input:after {
-	opacity: 1;
-	-webkit-transition: opacity 0.05s ease-in-out;
-	-moz-transition: opacity 0.05s ease-in-out;
-	transition: opacity 0.05s ease-in-out;
-	-webkit-transform: rotate(-45deg);
-	-moz-transform: rotate(-45deg);
-	transform: rotate(-45deg);
-	position: absolute;
-	top: 0.4375rem;
-	left: 0.28125rem;
-	width: 0.9375rem;
-	height: 0.5rem;
-	border: 3px solid #fff;
-	border-top: 0;
-	border-right: 0;
-	content: ' ';
-	opacity: 0;
+#md-searchpanel .btn {
+    border: 1px solid #ccc;
 }
 
-.md-tag {
-	color:inherit;
+#md-notification:before {
+	top: 14px;
 }
 
-.md-toc:focus .md-toc-content{
-	margin-top: 19px;
+#md-notification-container {
+	background: #eee;
+}
+
+.megamenu-menu-panel .btn {
+	border: 1px solid #ccc;
 }
 
 #typora-sidebar {
-	font-size:1rem !important;
+	box-shadow: none;
 }
 
-.html-for-mac #typora-sidebar {
-	background-color:white;
+.file-list-item ,
+.show-folder-name .file-list-item {
+	padding-top: 20px;
+	padding-bottom: 20px;
+	line-height: 20px;
 }
 
-.outline-content li, .outline-content ul {
-	font-size:1rem !important;
+.file-list-item-summary {
+	height: 40px;
+	line-height: 20px;
 }
 
-.outline-title {
-	line-height: inherit;
-	margin-top: 10px;
-}
-
-.outline-expander {
-	width: 18px;
-}
-
-.outline-expander:before {
- 	content: "+";
-	font-family: inherit;
-	color: rgb(108, 108, 108); 
-  font-size: 1.5rem;
- 	top: -0.1rem;
-}
-
-.outline-expander:hover:before {
-	content: "+";
-}
-
-.outline-item-open>.outline-item>.outline-expander:before{
-	content: "-";
-}
-
-/** source code mode */
-#typora-source {
-	font-family: Courier, monospace;
-    color: #6A6A6A;
-}
-
-.os-windows #typora-source {
-	font-family: inherit;
-}
-
-.cm-s-typora-default .cm-header, 
-.cm-s-typora-default .cm-property,
-.CodeMirror.cm-s-typora-default div.CodeMirror-cursor {
-	color: #428bca;
-}
-
-.cm-s-typora-default .cm-atom, .cm-s-typora-default .cm-number {
-	color: #777777;
-}
-
-.md-diagram-panel {
-	margin-top: 24px;
-	margin-left: -1.2em;
-}
-
-.md-mathjax-midline {
-	background: #fafafa;
-}
-
-.enable-diagrams pre.md-fences[lang="sequence"] .code-tooltip,
-.enable-diagrams pre.md-fences[lang="flow"] .code-tooltip,
-.enable-diagrams pre.md-fences[lang="mermaid"] .code-tooltip {
-    bottom: -3.4em;
+.ty-table-edit {
+	background: #ededed;
 }
 
 .dropdown-menu .divider {
 	border-color: #e5e5e5;
-}
-
-li {
-	margin: 0.5rem 0;
-}
-
-li > *:last-child {
-	margin-bottom: 0;
 }</style>
 <style type='text/css'  id="style-lp">ol, ul {padding-left: 40px}</style>
 <style type='text/css'  id="style-mac-print"> @media print { @page {margin: 0 0 0 0;} body.typora-export {padding-left: 0; padding-right: 0;} #write {padding:0;}}</style>
@@ -782,6 +675,7 @@ li > *:last-child {
 <title>MANUAL</title>
 </head>
 <body class='typora-export'><div class='typora-export-content'>
-<div id='write'  class=''><h1 id='captureplay-user-manual'><span>CapturePlay User Manual</span></h1><p><strong><span>Version 3.5</span></strong></p><p><span>CapturePlay is a macOS application designed to display video and audio from USB capture devices (such as the USB Camlink 4K) connected to gaming consoles, such as the PlayStation 5 or Nintendo Switch, in a dock. It also connects to Continuity Cameras on iPhone. The application provides real-time video display, audio routing, image capture, and video recording capabilities.</span></p><hr /><h2 id='table-of-contents'><span>Table of Contents</span></h2><ol start='' ><li><p><a href='#introduction'><span>Introduction</span></a></p></li><li><p><a href='#system-requirements'><span>System Requirements</span></a></p></li><li><p><a href='#getting-started'><span>Getting Started</span></a></p></li><li><p><a href='#menu-structure'><span>Menu Structure</span></a></p></li><li><p><a href='#video-features'><span>Video Features</span></a></p></li><li><p><a href='#audio-features'><span>Audio Features</span></a></p></li><li><p><a href='#capture-features'><span>Capture Features</span></a></p></li><li><p><a href='#settings-and-preferences'><span>Settings and Preferences</span></a></p></li><li><p><a href='#keyboard-shortcuts'><span>Keyboard Shortcuts</span></a></p></li><li><p><a href='#notifications'><span>Notifications</span></a></p></li><li><p><a href='#troubleshooting'><span>Troubleshooting</span></a></p></li></ol><hr /><h2 id='introduction'><span>Introduction</span></h2><p><span>CapturePlay enables you to:</span></p><ul><li><p><strong><span>Display video</span></strong><span> from USB capture devices in real-time, including MacBook cameras</span></p></li><li><p><strong><span>Route audio</span></strong><span> from capture devices to any output device</span></p></li><li><p><strong><span>Capture images</span></strong><span> during gameplay or video viewing</span></p></li><li><p><strong><span>Record video</span></strong><span> with audio in QuickTime-compatible MOV format</span></p></li><li><p><strong><span>Transform video</span></strong><span> with mirroring, rotation, and aspect ratio controls</span></p></li><li><p><strong><span>Customize the window</span></strong><span> with borderless mode and full-screen support</span></p></li><li><p><strong><span>Prevent display sleep</span></strong><span> during full-screen viewing or recording</span></p></li></ul><hr /><h2 id='system-requirements'><span>System Requirements</span></h2><ul><li><p><strong><span>macOS</span></strong><span>: 14.6 (Sequoia) or later to support Continuity Camera.</span></p></li><li><p><strong><span>Hardware</span></strong><span>: </span></p><ul><li><p><span>USB capture device (e.g., Elgato Camlink 4K, AVMedia, 4k HDMI Capture card, or generic USB capture cards)</span></p></li><li><p><span>MacBook or Studio Display Camera</span></p></li><li><p><span>iPhone Continuity Camera (requires macOS 14.6 Sequoia, or later, and iOS 16.0 or later)</span></p></li></ul></li><li><p><strong><span>Permissions</span></strong><span>: </span></p><ul><li><p><span>Camera access (for video capture devices)</span></p></li><li><p><span>Microphone access (for audio capture)</span></p></li></ul></li></ul><hr /><h2 id='getting-started'><span>Getting Started</span></h2><h3 id='first-launch'><span>First Launch</span></h3><ol start='' ><li><p><strong><span>Launch CapturePlay</span></strong><span> from your Applications folder or Dock.</span></p></li><li><p><strong><span>Grant permissions</span></strong><span> when macOS prompts for:</span></p><ul><li><p><span>Camera access (required for video display)</span></p></li><li><p><span>Microphone access (required for audio capture)</span></p></li></ul></li><li><p><strong><span>Connect your USB capture device</span></strong><span> before or after launching the app.</span></p></li></ol><h3 id='device-detection'><span>Device Detection</span></h3><ul><li><p><span>CapturePlay automatically detects connected USB video capture devices on startup.</span></p></li><li><p><strong><span>Continuity Camera</span></strong><span>: iPhone Continuity Camera is supported (macOS 13.0+ required).</span></p></li><li><p><span>If no devices are found, the app will display an error and close.</span></p></li><li><p><span>USB devices are monitored: connecting or disconnecting a device will automatically update the device list.</span></p></li></ul><h3 id='initial-setup'><span>Initial Setup</span></h3><ol start='' ><li><p><strong><span>Select your video source</span></strong><span>: Go to </span><strong><span>Video &gt; Select Source</span></strong><span> and choose your capture device.</span></p></li><li><p><strong><span>Configure audio</span></strong><span> (optional):</span></p><ul><li><p><span>Choose an audio input: </span><strong><span>Audio &gt; Select Source</span></strong></p></li><li><p><span>Choose an audio output: </span><strong><span>Audio &gt; Select Output</span></strong></p></li></ul></li><li><p><strong><span>Set capture directory</span></strong><span>: Go to </span><strong><span>CapturePlay &gt; Settings</span></strong><span> and set where captured images and videos should be saved.</span></p></li></ol><hr /><h2 id='menu-structure'><span>Menu Structure</span></h2><h3 id='captureplay-menu-application-menu'><span>CapturePlay Menu (Application Menu)</span></h3><ul><li><p><strong><span>About CapturePlay</span></strong><span>: Displays version information and copyright</span></p></li><li><p><strong><span>Settings…</span></strong><span> (⌘,): Opens the CapturePlay Settings dialog</span></p></li><li><p><strong><span>Hide CapturePlay</span></strong><span> (⌘H): Hides the application window</span></p></li><li><p><strong><span>Hide Others</span></strong><span> (⌥⌘H): Hides all other applications</span></p></li><li><p><strong><span>Show All</span></strong><span>: Shows all hidden applications</span></p></li><li><p><strong><span>Quit CapturePlay</span></strong><span> (⌘Q): Exits the application</span></p></li></ul><p><strong><span>Note</span></strong><span>: Window position, size, and most other settings are automatically saved when you close the application.</span></p><h3 id='file-menu'><span>File Menu</span></h3><ul><li><p><strong><span>Open Capture Folder</span></strong><span> (⌘O): Opens the folder where captured images and videos are saved in Finder</span></p></li><li><p><strong><span>Save Image…</span></strong><span> (⌘⇧S): Saves the current video frame to a location of your choice</span></p></li><li><p><strong><span>Capture Image</span></strong><span> (⌘S): Captures an image and saves it to the capture directory with an automatic filename</span></p></li><li><p><strong><span>Capture Video</span></strong><span> (⌘V): Starts or stops video recording</span></p></li></ul><h3 id='edit-menu'><span>Edit Menu</span></h3><ul><li><p><strong><span>Copy</span></strong><span> (⌘C): Copies the current window capture to the clipboard</span></p></li><li><p><span>The rest of the menu is inactive</span></p></li></ul><h3 id='video-menu'><span>Video Menu</span></h3><ul><li><p><strong><span>Select Source</span></strong><span>: Choose which video capture device to use (submenu lists all available devices)</span></p></li><li><p><strong><span>Image</span></strong><span>: Image transformation options - use the Option key to show the Menu item unless it is set to always show in Settings.</span></p><ul><li><p><strong><span>Mirror</span></strong><span>:</span></p><ul><li><p><strong><span>Mirror Horizontally</span></strong><span> (⌘M): Flips the video horizontally (left-right)</span></p></li><li><p><strong><span>Mirror Vertically</span></strong><span> (⌘⇧H): Flips the video vertically (top-bottom)</span></p></li></ul></li><li><p><strong><span>Rotate</span></strong><span>:</span></p><ul><li><p><strong><span>Rotate Left</span></strong><span> (⌘L): Rotates video 90° counter-clockwise</span></p></li><li><p><strong><span>Rotate Right</span></strong><span> (⌘R): Rotates video 90° clockwise</span></p></li></ul></li></ul></li><li><p><strong><span>Borderless Mode</span></strong><span> (⌘B): Toggles window border on/off</span></p></li><li><p><strong><span>Fix Aspect Ratio</span></strong><span> (⌘A): Locks/unlocks the window aspect ratio to match video</span></p></li><li><p><strong><span>Fit to Actual Size</span></strong><span> (⌃⌘A): Resizes window to match the video&#39;s native resolution</span></p></li><li><p><strong><span>Color Correction…</span></strong><span>: Opens the Color Correction dialog for adjusting brightness, contrast, and hue</span></p></li><li><p><strong><span>Enter Full Screen</span></strong><span> (⌃⌘F): Enters full-screen mode</span></p></li><li><p><strong><span>Display Sleep Prevention</span></strong><span> (⌘D): Toggles display sleep prevention on/off</span></p></li></ul><h3 id='audio-menu'><span>Audio Menu</span></h3><ul><li><p><strong><span>Select Source</span></strong><span>: Choose audio input device (submenu lists all available audio capture devices)</span></p></li><li><p><strong><span>Select Output</span></strong><span>: Choose audio output device (submenu lists all available audio output devices)</span></p></li><li><p><strong><span>Mute</span></strong><span> (⌘M): Toggles audio muting on/off</span></p></li><li><p><strong><span>Volume</span></strong><span>: Adjust audio volume using the slider (submenu item)</span></p></li></ul><h3 id='window-menu'><span>Window Menu</span></h3><ul><li><p><strong><span>Minimize</span></strong><span>: Minimizes the window to the Dock</span></p></li><li><p><strong><span>Zoom</span></strong><span>: Maximizes the window</span></p></li><li><p><strong><span>Bring All to Front</span></strong><span>: Brings all CapturePlay windows to the front</span></p></li></ul><h3 id='help-menu'><span>Help Menu</span></h3><ul><li><p><strong><span>CapturePlay Help</span></strong><span> (⌘?): Opens the help system (if available)</span></p></li></ul><hr /><h2 id='video-features'><span>Video Features</span></h2><h3 id='selecting-a-video-source'><span>Selecting a Video Source</span></h3><ol start='' ><li><p><span>Connect your USB capture device or enable iPhone Continuity Camera.</span></p></li><li><p><span>Go to </span><strong><span>Video &gt; Select Source</span></strong><span>.</span></p></li><li><p><span>Choose your device from the list.</span></p></li><li><p><span>The video feed will start automatically.</span></p></li></ol><p><strong><span>Note</span></strong><span>: CapturePlay monitors USB connections. If you connect or disconnect a device, the device list will update automatically.</span></p><h4 id='using-iphone-continuity-camera'><span>Using iPhone Continuity Camera</span></h4><p><span>CapturePlay supports iPhone Continuity Camera, which lets you use your iPhone as a video input device over Wi-Fi or USB.</span></p><p><strong><span>Requirements</span></strong><span>:</span></p><ul><li><p><strong><span>macOS</span></strong><span>: 14.6 (Sequoia) or later</span></p></li><li><p><strong><span>iOS</span></strong><span>: 16.0 or later on iPhone</span></p></li><li><p><strong><span>Same Apple ID</span></strong><span>: Both devices must be signed in to the same Apple ID with two-factor authentication enabled</span></p></li><li><p><strong><span>Handoff enabled</span></strong><span>: On iPhone: Settings &gt; General &gt; AirPlay &amp; Handoff &gt; Enable &quot;Handoff&quot; and &quot;Continuity Camera&quot;</span></p></li><li><p><strong><span>Network</span></strong><span>: Both devices must be on the same Wi-Fi network, with Wi-Fi and Bluetooth enabled on both</span></p></li><li><p><strong><span>Positioning</span></strong><span>: iPhone should be locked, stable, and positioned with the rear cameras facing you in landscape orientation</span></p></li></ul><p><strong><span>Setup</span></strong><span>:</span></p><ol start='' ><li><p><span>Ensure both devices meet the requirements above.</span></p></li><li><p><span>Position your iPhone as described.</span></p></li><li><p><span>Your iPhone will appear in </span><strong><span>Video &gt; Select Source</span></strong><span> as &quot;iPhone&quot; or &quot;Continuity Camera&quot;.</span></p></li><li><p><span>Select it from the device list.</span></p></li><li><p><span>The video feed will start automatically.</span></p></li></ol><p><strong><span>Troubleshooting Continuity Camera</span></strong><span>:</span></p><ul><li><p><span>Ensure Handoff is enabled on both devices</span></p></li><li><p><span>Check that both devices are on the same Wi-Fi network</span></p></li><li><p><span>Disable VPNs on both devices (VPNs can interfere with Continuity Camera)</span></p></li><li><p><span>Disable AirPlay Receiver on your Mac: System Settings &gt; General &gt; AirDrop &amp; Handoff &gt; Turn off &quot;AirPlay Receiver&quot;</span></p></li><li><p><span>Restart both devices if connection issues persist</span></p></li></ul><h3 id='image-transformations'><span>Image Transformations</span></h3><p><span>Image transformation options (Mirror and Rotate) are accessed through </span><strong><span>Video &gt; Image</span></strong><span>.</span></p><h3 id='mirroring'><span>Mirroring</span></h3><p><span>Mirroring flips the video display:</span></p><ul><li><p><strong><span>Mirror Horizontally</span></strong><span> (⌘M): Flips left and right (useful for webcam-style &quot;mirror mode&quot;)</span></p></li><li><p><strong><span>Mirror Vertically</span></strong><span> (⌘⇧H): Flips top and bottom (useful for upside-down cameras)</span></p></li></ul><p><span>Both mirroring options can be combined. The mirroring state is saved in preferences.</span></p><p><strong><span>Note</span></strong><span>: If you prefer to keep the Image menu hidden until needed, you can hold Option (⌥) when opening Video &gt; Image. At the same time, the &quot;Always show the Image submenu under Video&quot; setting is off.</span></p><h3 id='rotation'><span>Rotation</span></h3><p><span>Rotate the video to match your camera orientation:</span></p><ul><li><p><strong><span>Rotate Left</span></strong><span> (⌘L): 90° counter-clockwise</span></p></li><li><p><strong><span>Rotate Right</span></strong><span> (⌘R): 90° clockwise</span></p></li></ul><p><span>Rotation position is saved in preferences and applied automatically on startup.</span></p><p><strong><span>Note</span></strong><span>: If you prefer to keep the Image menu hidden until needed, you can hold Option (⌥) when opening Video &gt; Image while the &quot;Always show the Image submenu under Video&quot; setting is off.</span></p><h3 id='color-correction'><span>Color Correction</span></h3><p><strong><span>Color Correction…</span></strong><span> (Video menu) opens a non-modal dialog for adjusting video color:</span></p><ul><li><p><strong><span>Brightness</span></strong><span>: Adjust from -1.0 (darker) to 1.0 (brighter)</span></p></li><li><p><strong><span>Contrast</span></strong><span>: Adjust from 0.0 (low) to 2.0 (high), default is 1.0</span></p></li><li><p><strong><span>Hue</span></strong><span>: Adjust from -180° to +180°</span></p></li><li><p><strong><span>Reset</span></strong><span>: Restores all values to defaults (Brightness: 0.0, Contrast: 1.0, Hue: 0.0°)</span></p></li><li><p><strong><span>Close</span></strong><span>: Closes the dialog (settings are saved automatically)</span></p></li></ul><p><strong><span>Device-Specific Settings</span></strong><span>: Color correction settings are saved per video device by name. Each device (USB capture card, Continuity Camera, etc.) maintains its own brightness, contrast, and hue values. When you switch devices, the saved color correction settings for that device are automatically loaded and applied.</span></p><p><span>The dialog can remain open while using the application and can be moved independently.</span></p><h3 id='borderless-mode'><span>Borderless Mode</span></h3><p><strong><span>Borderless Mode</span></strong><span> (⌘B) removes the window title bar and borders:</span></p><ul><li><p><strong><span>Enabled</span></strong><span>: Window has no border, is always on top, and is movable by dragging anywhere</span></p></li><li><p><strong><span>Disabled</span></strong><span>: Standard macOS window with title bar</span></p></li></ul><p><strong><span>Note</span></strong><span>: Borderless mode is automatically disabled when entering full-screen mode.</span></p><h3 id='aspect-ratio-control'><span>Aspect Ratio Control</span></h3><ul><li><p><strong><span>Fix Aspect Ratio</span></strong><span> (⌘A): When enabled, the window maintains the video&#39;s aspect ratio when resizing</span></p></li><li><p><strong><span>Fit to Actual Size</span></strong><span> (⌃⌘A): Resizes the window to match the video&#39;s native resolution</span></p></li></ul><h3 id='full-screen-mode'><span>Full Screen Mode</span></h3><p><strong><span>Enter Full Screen</span></strong><span> (⌃⌘F) or click the green traffic light button:</span></p><ul><li><p><span>Video fills the entire screen</span></p></li><li><p><span>The cursor is automatically hidden</span></p></li><li><p><span>Display sleep prevention is automatically enabled (if configured in preferences)</span></p></li><li><p><span>Press Escape to exit</span></p></li></ul><p><strong><span>Note</span></strong><span>: Some features (like &quot;Save Image&quot;) are not available in full-screen mode.</span></p><h3 id='display-sleep-prevention'><span>Display Sleep Prevention</span></h3><p><strong><span>Display Sleep</span></strong><span> Prevention (⌘D) prevents your Mac&#39;s display from sleeping:</span></p><ul><li><p><span>Useful during typical game play and long recording sessions</span></p></li><li><p><span>Can be enabled/disabled manually via menu</span></p></li><li><p><span>Automatically enabled in full-screen mode (if configured in preferences)</span></p></li></ul><h3 id='translucent-title-bar'><span>Translucent Title Bar</span></h3><p><span>CapturePlay features a QuickTime Player-style translucent title bar for a clean viewing experience:</span></p><ul><li><p><strong><span>Recording Controls Integration</span></strong><span>: Video capture controls follow the same visibility behavior, appearing on hover and hiding when the mouse moves away (except during recording, when they remain always visible)</span></p></li></ul><hr /><h2 id='audio-features'><span>Audio Features</span></h2><h3 id='selecting-audio-input'><span>Selecting Audio Input</span></h3><p><span>The audio input comes from your capture device:</span></p><ol start='' ><li><p><span>Go to </span><strong><span>Audio &gt; Select Source</span></strong><span>.</span></p></li><li><p><span>Choose your audio capture device from the list.</span></p></li><li><p><span>Audio will route to the selected output device.</span></p></li></ol><p><strong><span>Note</span></strong><span>: If no audio input is selected, videos will be recorded without audio.</span></p><h3 id='selecting-audio-output'><span>Selecting Audio Output</span></h3><p><span>Choose where audio is played:</span></p><ol start='' ><li><p><span>Go to </span><strong><span>Audio &gt; Select Output</span></strong><span>.</span></p></li><li><p><span>Choose your output device (speakers, headphones, etc.).</span></p></li></ol><p><strong><span>Note</span></strong><span>: Audio settings are saved in preferences.</span></p><h3 id='mute'><span>Mute</span></h3><p><strong><span>Mute</span></strong><span> (⌘M in Audio menu) temporarily disables audio output without changing volume settings.</span></p><p><strong><span>Note</span></strong><span>: The mute keyboard shortcut (⌘M) is shared with &quot;Mirror Horizontally&quot; in the Video menu. Use the menu item if there&#39;s a conflict.</span></p><h3 id='volume-control'><span>Volume Control</span></h3><p><span>Adjust volume using the slider in </span><strong><span>Audio &gt; Volume</span></strong><span>:</span></p><ul><li><p><span>Drag the slider to adjust output volume</span></p></li><li><p><span>Changes apply immediately</span></p></li><li><p><span>Volume setting is saved in preferences</span></p></li></ul><hr /><h2 id='capture-features'><span>Capture Features</span></h2><h3 id='image-capture'><span>Image Capture</span></h3><p><span>Three methods for capturing images:</span></p><h4 id='method-1-copy-to-clipboard-⌘c'><span>Method 1: Copy to Clipboard (⌘C)</span></h4><ul><li><p><span>Copies the current window capture to the clipboard</span></p></li><li><p><span>Available via </span><strong><span>Edit &gt; Copy</span></strong></p></li><li><p><span>Useful for quickly pasting into other applications</span></p></li><li><p><span>Image is copied in PNG format</span></p></li><li><p><span>Works the same as saving, but places the image directly in the clipboard</span></p></li></ul><h4 id='method-2-quick-capture-⌘s'><span>Method 2: Quick Capture (⌘S)</span></h4><ul><li><p><span>Captures current frame instantly</span></p></li><li><p><span>Saves to capture directory with automatic filename</span></p></li><li><p><span>Filename format: </span><code>CapturePlay Image YYYY-MM-DD at HH.mm.ss.png</code></p></li><li><p><span>Shows notification when saved</span></p></li></ul><h4 id='method-3-save-image-⌘⇧s'><span>Method 3: Save Image (⌘⇧S)</span></h4><ul><li><p><span>Opens a save dialog to choose location</span></p></li><li><p><span>Allows you to name the file</span></p></li><li><p><span>Useful when you want to save to a specific location</span></p></li></ul><p><strong><span>Image Format</span></strong><span>: PNG (highest quality)</span></p><p><strong><span>Note</span></strong><span>: Image capture temporarily removes the window border (if present) to capture a clean image, then restores it. Copy to clipboard uses the same capture method.</span></p><h3 id='video-recording'><span>Video Recording</span></h3><p><strong><span>Capture Video</span></strong><span> (⌘V) toggles video recording:</span></p><ul><li><p><strong><span>Start Recording</span></strong><span>: Creates a new video file in the capture directory</span></p></li><li><p><strong><span>Stop Recording</span></strong><span>: Finalizes the video file</span></p></li><li><p><strong><span>File Format</span></strong><span>: QuickTime MOV (compatible with macOS, Windows, and most video players)</span></p></li><li><p><strong><span>Audio</span></strong><span>: Included if an audio input is selected</span></p></li><li><p><strong><span>Filename Format</span></strong><span>: </span><code>CapturePlay Video YYYY-MM-DD at HH.mm.ss.mov</code></p></li><li><p><strong><span>Notifications</span></strong><span>: Shows notifications when recording starts and stops</span></p></li><li><p><strong><span>Cooldown Period</span></strong><span>: After stopping recording, there is a 1-second delay before you can start recording again to prevent errors</span></p></li></ul><p><strong><span>Video Recording Details</span></strong><span>:</span></p><ul><li><p><span>Video resolution matches the source device&#39;s native resolution</span></p></li><li><p><span>Frame rate matches the device&#39;s configured frame rate (typically 60fps or 59.94fps)</span></p></li><li><p><span>Audio is encoded as AAC at 256 Kbps (QuickTime-compatible)</span></p></li><li><p><span>Videos are saved with timestamps to avoid filename conflicts</span></p></li></ul><p><strong><span>Recording Status</span></strong><span>:</span></p><ul><li><p><span>The &quot;Capture Video&quot; menu item shows a checkmark (✓) when recording is active</span></p></li><li><p><span>A notification appears when recording starts and stops</span></p></li><li><p><span>Recording can be stopped by pressing ⌘V again</span></p></li><li><p><span>An on-screen recording control button appears when recording starts (if enabled in Settings)</span></p><ul><li><p><strong><span>Red Circle</span></strong><span>: Idle state (click to start recording)</span></p></li><li><p><strong><span>Red Square</span></strong><span>: Recording state (slowly blinks, click to stop recording)</span></p></li><li><p><span>The control is positioned in the bottom-right corner of the video window</span></p></li><li><p><span>The control is excluded from screen recordings and saved videos</span></p></li><li><p><strong><span>Visibility</span></strong><span>: Controls follow the translucent title bar behavior - they appear when you hover over the window and disappear when the mouse moves away, except while recording when they remain always visible</span></p></li><li><p><span>These controls can be disabled in Settings.</span></p></li></ul></li></ul><p><strong><span>Note</span></strong><span>: Ensure you have sufficient disk space. Video files can be large, especially at high resolutions and frame rates.</span></p><h3 id='opening-capture-folder'><span>Opening Capture Folder</span></h3><p><strong><span>Open Capture Folder</span></strong><span> (⌘O) opens the capture directory in Finder, where all captured images and videos are saved.</span></p><hr /><h2 id='settings-and-preferences'><span>Settings and Preferences</span></h2><h3 id='captureplay-settings-dialog'><span>CapturePlay Settings Dialog</span></h3><p><span>Open </span><strong><span>CapturePlay &gt; Settings…</span></strong><span> (⌘,)</span></p><h4 id='capture-image-directory'><span>Capture Image Directory</span></h4><ul><li><p><strong><span>Default Location</span></strong><span>: </span><code>~/Pictures/CapturePlay</code></p></li><li><p><strong><span>Browse…</span></strong><span>: Click to select a different folder</span></p></li><li><p><strong><span>Path Field</span></strong><span>: Displays current directory path (supports tilde notation, e.g., </span><code>~/Documents</code><span>)</span></p></li></ul><p><strong><span>Note</span></strong><span>: If you select a folder outside your home directory, CapturePlay will request permission to access it. macOS will prompt you to grant access.</span></p><h4 id='display-sleep-in-full-screen'><span>Display Sleep in Full Screen</span></h4><ul><li><p><strong><span>Toggle</span></strong><span>: &quot;Automatically prevent display sleep during full screen&quot;</span></p></li><li><p><span>When enabled, display sleep prevention is automatically activated when entering full-screen mode</span></p></li><li><p><span>When disabled, you must manually toggle display sleep prevention</span></p></li></ul><h4 id='image-menu-visibility'><span>Image Menu Visibility</span></h4><ul><li><p><strong><span>Toggle</span></strong><span>: &quot;Always show the Image submenu under Video&quot;</span></p></li><li><p><span>When enabled, the </span><strong><span>Video &gt; Image</span></strong><span> menu is always visible.</span></p></li><li><p><span>When disabled, the Image menu can still be revealed by holding Option (⌥) while opening the Video menu.</span></p></li></ul><h4 id='performance-mode'><span>Performance Mode</span></h4><ul><li><p><strong><span>Selector</span></strong><span>: &quot;Performance Mode&quot; popup menu</span></p></li><li><p><span>Controls video quality and frame rate optimizations for different system capabilities</span></p></li><li><p><strong><span>Options</span></strong><span>:</span></p><ul><li><p><strong><span>Auto</span></strong><span> (default): Automatically detects your system&#39;s performance and applies appropriate optimizations</span></p><ul><li><p><span>Slower systems (≤4 CPU cores or &lt;8GB RAM): Uses Medium optimizations</span></p></li><li><p><span>Faster systems (&gt;4 cores and ≥8GB RAM): Uses High quality settings</span></p></li></ul></li><li><p><strong><span>High</span></strong><span>: Maximum quality, no performance optimizations</span></p><ul><li><p><span>Uses highest available resolution and frame rate</span></p></li><li><p><span>Best for modern Macs with powerful CPUs/GPUs</span></p></li></ul></li><li><p><strong><span>Medium</span></strong><span>: Balanced quality and performance</span></p><ul><li><p><span>Limits resolution to 720p (1280×720) maximum</span></p></li><li><p><span>Frame rate limited to 30fps for smoother playback</span></p></li><li><p><span>Best for mid-range systems or when you want smoother playback</span></p></li></ul></li><li><p><strong><span>Low</span></strong><span>: Maximum performance, reduced quality</span></p><ul><li><p><span>Limits resolution to 480p (640×480) maximum</span></p></li><li><p><span>Frame rate limited to 24fps for consistent playback</span></p></li><li><p><span>Best for older/slower systems or when prioritizing smooth playback over quality</span></p></li><li><p><span>Note: Some games may show poor framerates despite these optimizations on slower systems and capture devices.</span></p></li></ul></li></ul></li></ul><p><strong><span>What Gets Optimized</span></strong><span>:</span></p><ul><li><p><span>Video resolution (lower resolutions reduce processing load)</span></p></li><li><p><span>Frame rate (limits to 24–30fps for consistent timing)</span></p></li><li><p><span>Session preset (controls capture quality level)</span></p></li><li><p><span>Frame smoothing (uses VSync and frame timing for smoother playback)</span></p></li></ul><p><strong><span>Recommendations</span></strong><span>:</span></p><ul><li><p><strong><span>Leave on Auto</span></strong><span> unless you have specific needs — it automatically adapts to your system</span></p></li><li><p><span>Use </span><strong><span>High</span></strong><span> if you have a powerful Mac and want maximum quality</span></p></li><li><p><span>Use </span><strong><span>Medium</span></strong><span> if you experience stuttering or frame drops</span></p></li><li><p><span>Use </span><strong><span>Low</span></strong><span> if you have an older Mac or need the smoothest possible playback</span></p></li></ul><h4 id='video-capture-controls'><span>Video Capture Controls</span></h4><ul><li><p><strong><span>Toggle</span></strong><span>: &quot;Show video capture controls&quot;</span></p></li><li><p><span>When enabled, an on-screen recording control button appears when recording starts</span></p></li><li><p><span>When disabled, the on-screen control button is hidden</span></p></li><li><p><span>The button appears in the bottom-right corner of the video window</span></p></li><li><p><strong><span>Behavior</span></strong><span>: The control follows the translucent title bar visibility - it appears on mouse hover and hides when the mouse moves away, except during recording, when it remains always visible</span></p></li><li><p><span>Click the button to start or stop recording</span></p></li></ul><h4 id='saving-settings'><span>Saving Settings</span></h4><ul><li><p><span>Click </span><strong><span>OK</span></strong><span> to save changes</span></p></li><li><p><span>Click </span><strong><span>Cancel</span></strong><span> to discard changes</span></p></li><li><p><span>Preferences are saved immediately when you click OK</span></p></li></ul><h3 id='automatic-settings-retention'><span>Automatic Settings Retention</span></h3><p><span>CapturePlay automatically saves and restores your settings:</span></p><ul><li><p><strong><span>Window position and size</span></strong><span>: Automatically saved when you close the application</span></p></li><li><p><strong><span>Video settings</span></strong><span>: Rotation, mirroring, borderless mode, and aspect ratio preferences</span></p></li><li><p><strong><span>Audio settings</span></strong><span>: Input/output device selections and volume</span></p></li><li><p><strong><span>Color correction settings</span></strong><span>: Brightness, contrast, and hue values (saved per device by name)</span></p></li><li><p><strong><span>Settings</span></strong><span>: Capture directory, display sleep preferences, Image menu visibility, video capture controls visibility, and performance mode</span></p></li></ul><p><span>All settings are automatically loaded when you launch CapturePlay.</span></p><h3 id='automatic-settings-management'><span>Automatic Settings Management</span></h3><p><span>All settings are automatically saved when you close the application and automatically loaded when you launch CapturePlay. There is no manual &quot;Save Settings&quot; or &quot;Clear Settings&quot; option — settings are managed automatically.</span></p><hr /><h2 id='keyboard-shortcuts'><span>Keyboard Shortcuts</span></h2><h3 id='global-shortcuts'><span>Global Shortcuts</span></h3><figure class='table-figure'><table><thead><tr><th><span>Shortcut</span></th><th><span>Action</span></th><th><span>Menu Location</span></th></tr></thead><tbody><tr><td><span>⌘,</span></td><td><span>Settings</span></td><td><span>CapturePlay &gt; Settings…</span></td></tr><tr><td><span>⌘H</span></td><td><span>Hide App</span></td><td><span>CapturePlay &gt; Hide CapturePlay</span></td></tr><tr><td><span>⌥⌘H</span></td><td><span>Hide Others</span></td><td><span>CapturePlay &gt; Hide Others</span></td></tr><tr><td><span>⌘Q</span></td><td><span>Quit</span></td><td><span>CapturePlay &gt; Quit CapturePlay</span></td></tr><tr><td><span>⌘O</span></td><td><span>Open Capture Folder</span></td><td><span>File &gt; Open Capture Folder</span></td></tr><tr><td><span>⌘C</span></td><td><span>Copy Window</span></td><td><span>Edit &gt; Copy</span></td></tr><tr><td><span>⌘⇧S</span></td><td><span>Save Image</span></td><td><span>File &gt; Save Image…</span></td></tr><tr><td><span>⌘S</span></td><td><span>Capture Image</span></td><td><span>File &gt; Capture Image</span></td></tr><tr><td><span>⌘V</span></td><td><span>Capture Video</span></td><td><span>File &gt; Capture Video</span></td></tr><tr><td><span>⌘M</span></td><td><span>Mirror Horizontally</span></td><td><span>Video &gt; Image &gt; Mirror &gt; Mirror Horizontally</span></td></tr><tr><td><span>⌘⇧H</span></td><td><span>Mirror Vertically</span></td><td><span>Video &gt; Image &gt; Mirror &gt; Mirror Vertically</span></td></tr><tr><td><span>⌘L</span></td><td><span>Rotate Left</span></td><td><span>Video &gt; Image &gt; Rotate &gt; Rotate Left</span></td></tr><tr><td><span>⌘R</span></td><td><span>Rotate Right</span></td><td><span>Video &gt; Image &gt; Rotate &gt; Rotate Right</span></td></tr><tr><td><span>⌘B</span></td><td><span>Borderless Mode</span></td><td><span>Video &gt; Borderless Mode</span></td></tr><tr><td><span>⌘A</span></td><td><span>Fix Aspect Ratio</span></td><td><span>Video &gt; Fix Aspect Ratio</span></td></tr><tr><td><span>⌃⌘A</span></td><td><span>Fit to Actual Size</span></td><td><span>Video &gt; Fit to Actual Size</span></td></tr><tr><td><span>⌃⌘F/FnF</span></td><td><span>Enter Full Screen</span></td><td><span>Video &gt; Enter Full Screen</span></td></tr><tr><td><span>⌘D</span></td><td><span>Display Sleep Prevention</span></td><td><span>Video &gt; Display Sleep</span></td></tr></tbody></table></figure><h3 id='menu-specific-shortcuts'><span>Menu-Specific Shortcuts</span></h3><ul><li><p><strong><span>Audio &gt; Mute</span></strong><span> (⌘M): Shares shortcut with &quot;Mirror Horizontally&quot; — use the menu item directly if there&#39;s a conflict</span></p></li></ul><hr /><h2 id='notifications'><span>Notifications</span></h2><p><span>CapturePlay can send notifications for key events:</span></p><ul><li><p><strong><span>Image Captured</span></strong><span>: When an image is saved to the capture directory</span></p></li><li><p><strong><span>Video Recording Started</span></strong><span>: When video recording begins</span></p></li><li><p><strong><span>Video Recording Stopped</span></strong><span>: When video recording ends and the file is saved</span></p></li><li><p><strong><span>Display Sleep Prevention</span></strong><span>: When display sleep prevention is enabled or disabled</span></p></li></ul><h3 id='notification-permissions'><span>Notification Permissions</span></h3><p><span>On first launch, macOS will ask for notification permissions. Grant permission to receive notifications about captures and recordings.</span></p><p><strong><span>To enable/disable notifications later</span></strong><span>:</span></p><ol start='' ><li><p><span>Open </span><strong><span>System Preferences &gt; Notifications &amp; Focus</span></strong></p></li><li><p><span>Find &quot;CapturePlay&quot; in the list</span></p></li><li><p><span>Adjust notification settings as desired</span></p></li></ol><hr /><h2 id='troubleshooting'><span>Troubleshooting</span></h2><h3 id='no-video-display'><span>No Video Display</span></h3><p><strong><span>Problem</span></strong><span>: Video window is black or shows no image.</span></p><p><strong><span>Solutions</span></strong><span>:</span></p><ol start='' ><li><p><strong><span>Check device connection</span></strong><span>: Ensure your USB capture device is connected. Use System Information &gt; USB to see whether the device is showing up</span></p></li><li><p><strong><span>Select correct source</span></strong><span>: Go to </span><strong><span>Video &gt; Select Source</span></strong><span> and verify the correct device is selected</span></p></li><li><p><strong><span>Check device permissions</span></strong><span>: Ensure CapturePlay has camera access (System Preferences &gt; Security &amp; Privacy &gt; Privacy &gt; Camera)</span></p></li><li><p><strong><span>Try a different USB port</span></strong><span>: Some USB ports may not provide sufficient power</span></p></li><li><p><strong><span>Restart CapturePlay</span></strong><span>: Quit and relaunch the application</span></p></li><li><p><strong><span>Check device compatibility</span></strong><span>: Ensure your capture device is recognized by macOS (check System Information &gt; USB)</span></p></li></ol><h3 id='no-audio'><span>No Audio</span></h3><p><strong><span>Problem</span></strong><span>: No audio is heard during playback or recording.</span></p><p><strong><span>Solutions</span></strong><span>:</span></p><ol start='' ><li><p><strong><span>Select audio input</span></strong><span>: Go to </span><strong><span>Audio &gt; Select Source</span></strong><span> and choose an audio device</span></p></li><li><p><strong><span>Select audio output</span></strong><span>: Go to </span><strong><span>Audio &gt; Select Output</span></strong><span> and choose speakers or headphones</span></p></li><li><p><strong><span>Check mute status</span></strong><span>: Ensure audio is not muted (Audio &gt; Mute should be unchecked)</span></p></li><li><p><strong><span>Check volume</span></strong><span>: Adjust volume in </span><strong><span>Audio &gt; Volume</span></strong></p></li><li><p><strong><span>Check microphone permissions</span></strong><span>: Ensure CapturePlay has microphone access (System Preferences &gt; Security &amp; Privacy &gt; Privacy &gt; Microphone)</span></p></li><li><p><strong><span>Verify audio source</span></strong><span>: Some capture devices have separate audio inputs — ensure audio is connected to the correct input</span></p></li></ol><h3 id='audio-stops-working-after-changing-video-source'><span>Audio Stops Working After Changing Video Source</span></h3><p><strong><span>Problem</span></strong><span>: Audio works initially, but stops after switching video devices.</span></p><p><strong><span>Solution</span></strong><span>: This is a known behavior when switching devices. The audio manager should automatically reconnect. If it doesn&#39;t:</span></p><ol start='' ><li><p><span>Go to </span><strong><span>Audio &gt; Select Source</span></strong><span> and re-select your audio input</span></p></li><li><p><span>Restart CapturePlay if the issue persists</span></p></li></ol><h3 id='image-capture-not-working'><span>Image Capture Not Working</span></h3><p><strong><span>Problem</span></strong><span>: Image capture fails or shows an error.</span></p><p><strong><span>Solutions</span></strong><span>:</span></p><ol start='' ><li><p><span>Check capture directory**: Ensure the capture directory exists and is writable (Preferences &gt; Browse…)</span></p></li><li><p><strong><span>Check disk space</span></strong><span>: Ensure you have sufficient free disk space</span></p></li><li><p><strong><span>Check permissions</span></strong><span>: If using a custom directory, grant CapturePlay permission to access it. Use the Browse button to select your desired directory, and macOS will prompt for permissions if they are required</span></p></li></ol><h3 id='video-recording-not-working'><span>Video Recording Not Working</span></h3><p><strong><span>Problem</span></strong><span>: Video recording doesn&#39;t start or fails.</span></p><p><strong><span>Solutions</span></strong><span>:</span></p><ol start='' ><li><p><strong><span>Check capture directory</span></strong><span>: Ensure the capture directory exists and is writable</span></p></li><li><p><strong><span>Check disk space</span></strong><span>: Video files can be large — ensure sufficient free space</span></p></li><li><p><strong><span>Check permissions</span></strong><span>: Ensure CapturePlay can write to the capture directory</span></p></li><li><p><strong><span>Verify device supports recording</span></strong><span>: Some devices may have limitations</span></p></li><li><p><strong><span>Try stopping and restarting</span></strong><span>: Use ⌘V to stop, then start again (note: there is a 1-second cooldown after stopping)</span></p></li></ol><h3 id='window-wont-resize-or-position-correctly'><span>Window Won&#39;t Resize or Position Correctly</span></h3><p><strong><span>Problem</span></strong><span>: Window size or position is not as expected.</span></p><p><strong><span>Solutions</span></strong><span>:</span></p><ol start='' ><li><p><strong><span>Reset window</span></strong><span>: Quit and relaunch the app to reset window state, or manually resize/reposition the window</span></p></li><li><p><strong><span>Disable aspect ratio lock</span></strong><span>: Uncheck </span><strong><span>Video &gt; Fix Aspect Ratio</span></strong></p></li><li><p><strong><span>Fit to actual size</span></strong><span>: Use </span><strong><span>Video &gt; Fit to Actual Size</span></strong><span> (⌃⌘A) to match video resolution</span></p></li></ol><h3 id='display-sleep-still-occurs'><span>Display Sleep Still Occurs</span></h3><p><strong><span>Problem</span></strong><span>: Display sleeps despite enabling prevention.</span></p><p><strong><span>Solutions</span></strong><span>:</span></p><ol start='' ><li><p><strong><span>Check menu state</span></strong><span>: Ensure </span><strong><span>Video &gt; Display Sleep</span></strong><span> shows a checkmark (✓)</span></p></li><li><p><strong><span>Check System Preferences</span></strong><span>: macOS power settings may override app settings</span></p></li><li><p><strong><span>Try toggling</span></strong><span>: Disable and re-enable display sleep prevention</span></p></li><li><p><strong><span>Full-screen mode</span></strong><span>: Display sleep prevention works more reliably in full-screen mode</span></p></li></ol><h3 id='preferences-not-saving'><span>Preferences Not Saving</span></h3><p><strong><span>Problem</span></strong><span>: Settings don&#39;t persist between launches.</span></p><p><strong><span>Solutions</span></strong><span>:</span></p><ol start='' ><li><p><strong><span>Check permissions</span></strong><span>: Ensure CapturePlay can write to the preferences location (usually </span><code>~/Library/Preferences/</code><span>)</span></p></li><li><p><strong><span>Reset preferences</span></strong><span>: Quit the app, delete the preferences file at </span><code>~/Library/Preferences/org.windholm.captureplay.plist</code><span>, then relaunch and reconfigure</span></p></li><li><p><strong><span>Restart the application</span></strong><span>: Settings are automatically saved when you close the app — ensure you close it normally (not force quit)</span></p></li></ol><h3 id='device-not-detected'><span>Device Not Detected</span></h3><p><strong><span>Problem</span></strong><span>: USB capture device or Continuity Camera is not listed in &quot;Select Source&quot;.</span></p><p><strong><span>Solutions</span></strong><span>:</span></p><ol start='' ><li><p><span>Check whether the USB device exists in System Information. You can open that quickly by pressing the Option key while selecting the Apple Menu</span></p></li><li><p><strong><span>Check USB connection</span></strong><span>: Unplug and reconnect the device (for USB devices)</span></p></li><li><p><strong><span>Try different USB port</span></strong><span>: Use a USB 3.0 port if available</span></p></li><li><p><strong><span>Check System Information</span></strong><span>: Open System Information &gt; USB and verify the device appears</span></p></li><li><p><strong><span>Install drivers</span></strong><span>: Some devices require manufacturer drivers</span></p></li><li><p><strong><span>Restart CapturePlay</span></strong><span>: The app detects devices on launch</span></p></li><li><p><strong><span>Check device compatibility</span></strong><span>: Ensure the device is compatible with macOS</span></p></li></ol><p><strong><span>For Continuity Camera specifically</span></strong><span>:</span></p><ol start='' ><li><p><strong><span>Check macOS version</span></strong><span>: Continuity Camera requires macOS 13.0 (Ventura) or later</span></p></li><li><p><strong><span>Check iOS version</span></strong><span>: iPhone must be running iOS 16.0 or later</span></p></li><li><p><strong><span>Verify Apple ID</span></strong><span>: Both devices must be signed in to the same Apple ID with two-factor authentication</span></p></li><li><p><strong><span>Enable Handoff</span></strong><span>: On iPhone: Settings &gt; General &gt; AirPlay &amp; Handoff &gt; Enable &quot;Handoff&quot; and &quot;Continuity Camera&quot;</span></p></li><li><p><strong><span>Check network</span></strong><span>: Ensure both devices are on the same Wi-Fi network with Wi-Fi and Bluetooth enabled</span></p></li><li><p><strong><span>Disable VPNs</span></strong><span>: VPNs can interfere with Continuity Camera — disable VPNs on both devices</span></p></li><li><p><strong><span>Disable AirPlay Receiver</span></strong><span>: On Mac: System Settings &gt; General &gt; AirDrop &amp; Handoff &gt; Turn off &quot;AirPlay Receiver&quot;</span></p></li><li><p><strong><span>Position iPhone correctly</span></strong><span>: iPhone should be locked, stable, and positioned with the rear cameras facing you in landscape</span></p></li><li><p><strong><span>Restart both devices</span></strong><span>: Restart both iPhone and Mac if connection issues persist</span></p></li></ol><h3 id='app-crashes-or-freezes'><span>App Crashes or Freezes</span></h3><p><strong><span>Problem</span></strong><span>: CapturePlay crashes or becomes unresponsive.</span></p><p><strong><span>Solutions</span></strong><span>:</span></p><ol start='' ><li><p><strong><span>Check macOS version</span></strong><span>: Ensure you&#39;re running macOS 12.4 or later</span></p></li><li><p><strong><span>Check device compatibility</span></strong><span>: Some devices may cause issues</span></p></li><li><p><strong><span>Reset preferences</span></strong><span>: Quit the app, delete the preferences file at </span><code>~/Library/Preferences/org.windholm.captureplay.plist</code><span>, then relaunch</span></p></li><li><p><strong><span>Check Console</span></strong><span>: Open Console.app and check for error messages</span></p></li><li><p><strong><span>Reinstall</span></strong><span>: Delete the app and reinstall from a fresh build</span></p></li></ol><h3 id='performance-issues'><span>Performance Issues</span></h3><p><strong><span>Problem</span></strong><span>: Video is choppy or laggy.</span></p><p><strong><span>Solutions</span></strong><span>:</span></p><ol start='' ><li><p><strong><span>Adjust Performance Mode</span></strong><span>: Go to </span><strong><span>CapturePlay &gt; Settings</span></strong><span> and try a lower performance mode:</span></p><ul><li><p><span>If set to &quot;High&quot;, try &quot;Medium&quot; or &quot;Auto&quot;</span></p></li><li><p><span>If set to &quot;Medium&quot;, try &quot;Low&quot; for maximum smoothness</span></p></li><li><p><span>&quot;Auto&quot; mode will automatically detect slower systems and apply optimizations</span></p></li></ul></li><li><p><strong><span>Close other applications</span></strong><span>: Free up CPU and memory resources</span></p></li><li><p><strong><span>Check device resolution</span></strong><span>: High-resolution devices require more processing power</span></p></li><li><p><strong><span>Lower frame rate</span></strong><span>: Some devices allow frame rate adjustment (device-specific)</span></p></li><li><p><strong><span>Check USB bandwidth</span></strong><span>: Use USB 3.0 ports for high-resolution devices</span></p></li><li><p><strong><span>Disable other video apps</span></strong><span>: Close other apps using video capture devices</span></p></li><li><p><strong><span>Disable color correction</span></strong><span>: If you&#39;re using color correction (brightness, contrast, hue), try resetting to defaults to reduce processing overhead</span></p></li></ol><hr /><h2 id='technical-details'><span>Technical Details</span></h2><h3 id='video-format'><span>Video Format</span></h3><ul><li><p><strong><span>Container</span></strong><span>: MOV (QuickTime)</span></p></li><li><p><strong><span>Video Codec</span></strong><span>: H.264 (device-dependent)</span></p></li><li><p><strong><span>Audio Codec</span></strong><span>: AAC at 256 Kbps</span></p></li><li><p><strong><span>Frame Rate</span></strong><span>: Matches device configuration (typically 60fps or 59.94fps)</span></p></li><li><p><strong><span>Resolution</span></strong><span>: Native device resolution</span></p></li></ul><h3 id='image-format'><span>Image Format</span></h3><ul><li><p><strong><span>Format</span></strong><span>: PNG</span></p></li><li><p><strong><span>Color Space</span></strong><span>: RGB</span></p></li><li><p><strong><span>Resolution</span></strong><span>: Window resolution at time of capture</span></p></li></ul><h3 id='file-naming'><span>File Naming</span></h3><ul><li><p><strong><span>Images</span></strong><span>: </span><code>CapturePlay Image YYYY-MM-DD at HH.mm.ss.png</code></p></li><li><p><strong><span>Videos</span></strong><span>: </span><code>CapturePlay Video YYYY-MM-DD at HH.mm.ss.mov</code></p></li></ul><p><span>Both use 24-hour time format (HH.mm.ss).</span></p><h3 id='preferences-storage'><span>Preferences Storage</span></h3><p><span>Preferences are stored in macOS UserDefaults, typically at:</span></p><pre class="md-fences md-end-block ty-contain-cm modeLoaded" spellcheck="false" lang=""><div class="CodeMirror cm-s-inner cm-s-null-scroll CodeMirror-wrap" lang=""><div style="overflow: hidden; position: relative; width: 3px; height: 0px; top: 8.5px; left: 4px;"><textarea autocorrect="off" autocapitalize="off" spellcheck="false" tabindex="0" style="position: absolute; bottom: -1em; padding: 0px; width: 1000px; height: 1em; outline: currentcolor;"></textarea></div><div class="CodeMirror-scrollbar-filler" cm-not-content="true"></div><div class="CodeMirror-gutter-filler" cm-not-content="true"></div><div class="CodeMirror-scroll" tabindex="-1"><div class="CodeMirror-sizer" style="margin-left: 0px; margin-bottom: 0px; border-right-width: 0px; padding-right: 0px; padding-bottom: 0px;"><div style="position: relative; top: 0px;"><div class="CodeMirror-lines" role="presentation"><div role="presentation" style="position: relative; outline: currentcolor;"><div class="CodeMirror-measure"></div><div class="CodeMirror-measure"></div><div style="position: relative; z-index: 1;"></div><div class="CodeMirror-code" role="presentation"><div class="CodeMirror-activeline" style="position: relative;"><div class="CodeMirror-activeline-background CodeMirror-linebackground"></div><div class="CodeMirror-gutter-background CodeMirror-activeline-gutter" style="left: 0px; width: 0px;"></div><pre class=" CodeMirror-line " role="presentation"><span role="presentation" style="padding-right: 0.1px;">~/Library/Preferences/org.windholm.captureplay.plist</span></pre></div></div></div></div></div></div><div style="position: absolute; height: 0px; width: 1px; border-bottom-width: 0px; border-bottom-style: solid; border-bottom-color: transparent; top: 21px;"></div><div class="CodeMirror-gutters" style="display: none; height: 21px;"></div></div></div></pre><hr /><h2 id='credits'><span>Credits</span></h2><p><strong><span>CapturePlay</span></strong><span></span><br/><span>Version 3.5</span><br/><span>Copyright © 2025 Harald Striepe</span></p><p><strong><span>Original Quick Camera Code</span></strong><span></span><br/><span>Copyright © 2025 Simon Guest</span><br/><span>Licensed under Apache License 2.0</span><br/><a href='https://github.com/simonguest/quick-camera'><span>GitHub: quick-camera</span></a></p><p><strong><span>Acknowledgments</span></strong></p><p><span>CapturePlay includes code from Simon Guest&#39;s Quick Camera project, which provided the foundation for video capture and display functionality.</span></p><hr /><h2 id='license'><span>License</span></h2><p><span>This manual and the CapturePlay application are provided as-is. Please refer to the application&#39;s license for usage terms under Apache V2.0.</span></p><hr /><h2 id='support'><span>Support</span></h2><p><span>For issues, feature requests, or contributions, please refer to the project repository or contact the maintainer at </span><a href='mailto:hstriepe@mac.com' target='_blank' class='url'>hstriepe@mac.com</a></p></div></div>
+<div id='write'  class=''><h1 id='captureplay-user-manual'><span>CapturePlay User Manual</span></h1><p><strong><span>Version 3.5</span></strong></p><p><span>CapturePlay is a macOS application designed to display video and audio from USB capture devices (such as the USB Camlink 4K) connected to gaming consoles, such as the PlayStation 5 or Nintendo Switch, in a dock. It also connects to Continuity Cameras on iPhone. The application provides real-time video display, audio routing, image capture, and video recording capabilities.</span></p><hr /><h2 id='table-of-contents'><span>Table of Contents</span></h2><ol start='' ><li><p><a href='#introduction'><span>Introduction</span></a></p></li><li><p><a href='#system-requirements'><span>System Requirements</span></a></p></li><li><p><a href='#getting-started'><span>Getting Started</span></a></p></li><li><p><a href='#menu-structure'><span>Menu Structure</span></a></p></li><li><p><a href='#video-features'><span>Video Features</span></a></p></li><li><p><a href='#audio-features'><span>Audio Features</span></a></p></li><li><p><a href='#capture-features'><span>Capture Features</span></a></p></li><li><p><a href='#settings-and-preferences'><span>Settings and Preferences</span></a></p></li><li><p><a href='#keyboard-shortcuts'><span>Keyboard Shortcuts</span></a></p></li><li><p><a href='#notifications'><span>Notifications</span></a></p></li><li><p><a href='#troubleshooting'><span>Troubleshooting</span></a></p></li></ol><hr /><h2 id='introduction'><span>Introduction</span></h2><p><span>CapturePlay enables you to:</span></p><ul><li><p><strong><span>Display video</span></strong><span> from USB capture devices in real-time, including MacBook cameras</span></p></li><li><p><strong><span>Route audio</span></strong><span> from capture devices to any output device</span></p></li><li><p><strong><span>Capture images</span></strong><span> during gameplay or video viewing</span></p></li><li><p><strong><span>Record video</span></strong><span> with audio in QuickTime-compatible MOV format</span></p></li><li><p><strong><span>Transform video</span></strong><span> with mirroring, rotation, and aspect ratio controls</span></p></li><li><p><strong><span>Customize the window</span></strong><span> with borderless mode and full-screen support</span></p></li><li><p><strong><span>Prevent display sleep</span></strong><span> during full-screen viewing or recording</span></p></li></ul><hr /><h2 id='system-requirements'><span>System Requirements</span></h2><ul><li><p><strong><span>macOS</span></strong><span>: 14.6 (Sequoia) or later to support Continuity Camera.</span></p></li><li><p><strong><span>Hardware</span></strong><span>: </span></p><ul><li><p><span>USB capture device (e.g., Elgato Camlink 4K, AVMedia, 4k HDMI Capture card, or generic USB capture cards)</span></p></li><li><p><span>MacBook or Studio Display Camera</span></p></li><li><p><span>iPhone Continuity Camera (requires macOS 14.6 Sequoia, or later, and iOS 16.0 or later)</span></p></li></ul></li><li><p><strong><span>Permissions</span></strong><span>: </span></p><ul><li><p><span>Camera access (for video capture devices)</span></p></li><li><p><span>Microphone access (for audio capture)</span></p></li></ul></li></ul><hr /><h2 id='getting-started'><span>Getting Started</span></h2><h3 id='first-launch'><span>First Launch</span></h3><ol start='' ><li><p><strong><span>Launch CapturePlay</span></strong><span> from your Applications folder or Dock.</span></p></li><li><p><strong><span>Grant permissions</span></strong><span> when macOS prompts for:</span></p><ul><li><p><span>Camera access (required for video display)</span></p></li><li><p><span>Microphone access (required for audio capture)</span></p></li></ul></li><li><p><strong><span>Connect your USB capture device</span></strong><span> before or after launching the app.</span></p></li></ol><h3 id='device-detection'><span>Device Detection</span></h3><ul><li><p><span>CapturePlay automatically detects connected USB video capture devices on startup.</span></p></li><li><p><strong><span>Continuity Camera</span></strong><span>: iPhone Continuity Camera is supported (macOS 13.0+ required).</span></p></li><li><p><span>If no devices are found, the app will display an error and close.</span></p></li><li><p><span>USB devices are monitored: connecting or disconnecting a device will automatically update the device list.</span></p></li></ul><h3 id='initial-setup'><span>Initial Setup</span></h3><ol start='' ><li><p><strong><span>Select your video source</span></strong><span>: Go to </span><strong><span>Video &gt; Select Source</span></strong><span> and choose your capture device.</span></p></li><li><p><strong><span>Configure audio</span></strong><span> (optional):</span></p><ul><li><p><span>Choose an audio input: </span><strong><span>Audio &gt; Select Source</span></strong></p></li><li><p><span>Choose an audio output: </span><strong><span>Audio &gt; Select Output</span></strong></p></li></ul></li><li><p><strong><span>Set capture directory</span></strong><span>: Go to </span><strong><span>CapturePlay &gt; Settings</span></strong><span> and set where captured images and videos should be saved.</span></p></li></ol><hr /><h2 id='menu-structure'><span>Menu Structure</span></h2><h3 id='captureplay-menu-application-menu'><span>CapturePlay Menu (Application Menu)</span></h3><ul><li><p><strong><span>About CapturePlay</span></strong><span>: Displays version information and copyright</span></p></li><li><p><strong><span>Settings…</span></strong><span> (⌘,): Opens the CapturePlay Settings dialog</span></p></li><li><p><strong><span>Hide CapturePlay</span></strong><span> (⌘H): Hides the application window</span></p></li><li><p><strong><span>Hide Others</span></strong><span> (⌥⌘H): Hides all other applications</span></p></li><li><p><strong><span>Show All</span></strong><span>: Shows all hidden applications</span></p></li><li><p><strong><span>Quit CapturePlay</span></strong><span> (⌘Q): Exits the application</span></p></li></ul><p><strong><span>Note</span></strong><span>: Window position, size, and most other settings are automatically saved when you close the application.</span></p><h3 id='file-menu'><span>File Menu</span></h3><ul><li><p><strong><span>Open Capture Folder</span></strong><span> (⌘O): Opens the folder where captured images and videos are saved in Finder</span></p></li><li><p><strong><span>Save Image…</span></strong><span> (⌘⇧S): Saves the current video frame to a location of your choice</span></p></li><li><p><strong><span>Capture Image</span></strong><span> (⌘S): Captures an image and saves it to the capture directory with an automatic filename</span></p></li><li><p><strong><span>Capture Video</span></strong><span> (⌘V): Starts or stops video recording</span></p></li></ul><h3 id='edit-menu'><span>Edit Menu</span></h3><ul><li><p><strong><span>Copy</span></strong><span> (⌘C): Copies the current window capture to the clipboard</span></p></li><li><p><span>The rest of the menu is inactive</span></p></li></ul><h3 id='video-menu'><span>Video Menu</span></h3><ul><li><p><strong><span>Select Source</span></strong><span>: Choose which video capture device to use (submenu lists all available devices)</span></p></li><li><p><strong><span>Image</span></strong><span>: Image transformation options - use the Option key to show the Menu item unless it is set to always show in Settings.</span></p><ul><li><p><strong><span>Mirror</span></strong><span>:</span></p><ul><li><p><strong><span>Mirror Horizontally</span></strong><span> (⌘M): Flips the video horizontally (left-right)</span></p></li><li><p><strong><span>Mirror Vertically</span></strong><span> (⌘⇧H): Flips the video vertically (top-bottom)</span></p></li></ul></li><li><p><strong><span>Rotate</span></strong><span>:</span></p><ul><li><p><strong><span>Rotate Left</span></strong><span> (⌘L): Rotates video 90° counter-clockwise</span></p></li><li><p><strong><span>Rotate Right</span></strong><span> (⌘R): Rotates video 90° clockwise</span></p></li></ul></li></ul></li><li><p><strong><span>Borderless Mode</span></strong><span> (⌘B): Toggles window border on/off</span></p></li><li><p><strong><span>Fix Aspect Ratio</span></strong><span> (⌘A): Locks/unlocks the window aspect ratio to match the video</span></p></li><li><p><strong><span>Fit to Actual Size</span></strong><span> (⌃⌘A): Resizes the window to match the video&#39;s native resolution</span></p></li><li><p><strong><span>Color Correction…</span></strong><span>: Opens the Color Correction dialog for adjusting brightness, contrast, and hue</span></p></li><li><p><strong><span>Enter Full Screen</span></strong><span> (⌃⌘F): Enters full-screen mode</span></p></li><li><p><strong><span>Display Sleep Prevention</span></strong><span> (⌘D): Toggles display sleep prevention on/off</span></p></li></ul><h3 id='audio-menu'><span>Audio Menu</span></h3><ul><li><p><strong><span>Select Source</span></strong><span>: Choose audio input device (submenu lists all available audio capture devices)</span></p></li><li><p><strong><span>Select Output</span></strong><span>: Choose audio output device (submenu lists all available audio output devices)</span></p></li><li><p><strong><span>Mute</span></strong><span> (⌘M): Toggles audio muting on/off</span></p></li><li><p><strong><span>Volume</span></strong><span>: Adjust audio volume using the slider (submenu item)</span></p></li></ul><h3 id='window-menu'><span>Window Menu</span></h3><ul><li><p><strong><span>Minimize</span></strong><span>: Minimizes the window to the Dock</span></p></li><li><p><strong><span>Zoom</span></strong><span>: Maximizes the window</span></p></li><li><p><strong><span>Bring All to Front</span></strong><span>: Brings all CapturePlay windows to the front</span></p></li></ul><h3 id='help-menu'><span>Help Menu</span></h3><ul><li><p><strong><span>CapturePlay Help</span></strong><span> (⌘?): Opens the help system (if available)</span></p></li></ul><hr /><h2 id='video-features'><span>Video Features</span></h2><h3 id='selecting-a-video-source'><span>Selecting a Video Source</span></h3><ol start='' ><li><p><span>Connect your USB capture device or enable iPhone Continuity Camera.</span></p></li><li><p><span>Go to </span><strong><span>Video &gt; Select Source</span></strong><span>.</span></p></li><li><p><span>Choose your device from the list.</span></p></li><li><p><span>The video feed will start automatically.</span></p></li></ol><p><strong><span>Note</span></strong><span>: CapturePlay monitors USB connections. If you connect or disconnect a device, the device list will update automatically.</span></p><h4 id='using-iphone-continuity-camera'><span>Using iPhone Continuity Camera</span></h4><p><span>CapturePlay supports iPhone Continuity Camera, which lets you use your iPhone as a video input device over Wi-Fi or USB.</span></p><p><strong><span>Requirements</span></strong><span>:</span></p><ul><li><p><strong><span>macOS</span></strong><span>: 14.6 (Sequoia) or later</span></p></li><li><p><strong><span>iOS</span></strong><span>: 16.0 or later on iPhone</span></p></li><li><p><strong><span>Same Apple ID</span></strong><span>: Both devices must be signed in to the same Apple ID with two-factor authentication enabled</span></p></li><li><p><strong><span>Handoff enabled</span></strong><span>: On iPhone: Settings &gt; General &gt; AirPlay &amp; Handoff &gt; Enable &quot;Handoff&quot; and &quot;Continuity Camera&quot;</span></p></li><li><p><strong><span>Network</span></strong><span>: Both devices must be on the same Wi-Fi network, with Wi-Fi and Bluetooth enabled on both</span></p></li><li><p><strong><span>Positioning</span></strong><span>: iPhone should be locked, stable, and positioned with the rear cameras facing you in landscape orientation</span></p></li></ul><p><strong><span>Setup</span></strong><span>:</span></p><ol start='' ><li><p><span>Ensure both devices meet the requirements above.</span></p></li><li><p><span>Position your iPhone as described.</span></p></li><li><p><span>Your iPhone will appear in </span><strong><span>Video &gt; Select Source</span></strong><span> as &quot;iPhone&quot; or &quot;Continuity Camera&quot;.</span></p></li><li><p><span>Select it from the device list.</span></p></li><li><p><span>The video feed will start automatically.</span></p></li></ol><p><strong><span>Troubleshooting Continuity Camera</span></strong><span>:</span></p><ul><li><p><span>Ensure Handoff is enabled on both devices</span></p></li><li><p><span>Check that both devices are on the same Wi-Fi network</span></p></li><li><p><span>Disable VPNs on both devices (VPNs can interfere with Continuity Camera)</span></p></li><li><p><span>Disable AirPlay Receiver on your Mac: System Settings &gt; General &gt; AirDrop &amp; Handoff &gt; Turn off &quot;AirPlay Receiver&quot;</span></p></li><li><p><span>Restart both devices if connection issues persist</span></p></li></ul><h3 id='image-transformations'><span>Image Transformations</span></h3><p><span>Image transformation options (Mirror and Rotate) are accessed through </span><strong><span>Video &gt; Image</span></strong><span>.</span>
+<span>This menu item is hidden by default. It can be made visible by selecting the Video menu while holding down the Option key. There is a Settings option to make it permanently visible.</span></p><h3 id='mirroring'><span>Mirroring</span></h3><p><span>Mirroring flips the video display:</span></p><ul><li><p><strong><span>Mirror Horizontally</span></strong><span> (⌘M): Flips left and right (useful for webcam-style &quot;mirror mode&quot;)</span></p></li><li><p><strong><span>Mirror Vertically</span></strong><span> (⌘⇧H): Flips top and bottom (useful for upside-down cameras)</span></p></li></ul><p><span>Both mirroring options can be combined. The mirroring state is saved in preferences.</span></p><p><strong><span>Note</span></strong><span>: If you prefer to keep the Image menu hidden until needed, you can hold Option (⌥) when opening Video &gt; Image. At the same time, the &quot;Always show the Image submenu under Video&quot; setting is off.</span></p><h3 id='rotation'><span>Rotation</span></h3><p><span>Rotate the video to match your camera orientation:</span></p><ul><li><p><strong><span>Rotate Left</span></strong><span> (⌘L): 90° counter-clockwise</span></p></li><li><p><strong><span>Rotate Right</span></strong><span> (⌘R): 90° clockwise</span></p></li></ul><p><span>Rotation position is saved in preferences and applied automatically on startup.</span></p><p><strong><span>Note</span></strong><span>: If you prefer to keep the Image menu hidden until needed, you can hold Option (⌥) when opening Video &gt; Image while the &quot;Always show the Image submenu under Video&quot; setting is off.</span></p><h3 id='color-correction'><span>Color Correction</span></h3><p><strong><span>Color Correction…</span></strong><span> (Video menu) opens a non-modal dialog for adjusting video color:</span></p><ul><li><p><strong><span>Brightness</span></strong><span>: Adjust from -1.0 (darker) to 1.0 (brighter)</span></p></li><li><p><strong><span>Contrast</span></strong><span>: Adjust from 0.0 (low) to 2.0 (high), default is 1.0</span></p></li><li><p><strong><span>Hue</span></strong><span>: Adjust from -180° to +180°</span></p></li><li><p><strong><span>Reset</span></strong><span>: Restores all values to defaults (Brightness: 0.0, Contrast: 1.0, Hue: 0.0°)</span></p></li><li><p><strong><span>Close</span></strong><span>: Closes the dialog (settings are saved automatically)</span></p></li></ul><p><strong><span>Device-Specific Settings</span></strong><span>: Color correction settings are saved per video device by name. Each device (USB capture card, Continuity Camera, etc.) maintains its own brightness, contrast, and hue values. When you switch devices, the saved color correction settings for that device are automatically loaded and applied.</span></p><p><span>The dialog can remain open while using the application and can be moved independently.</span></p><h3 id='borderless-mode'><span>Borderless Mode</span></h3><p><strong><span>Borderless Mode</span></strong><span> (⌘B) removes the window title bar and borders:</span></p><ul><li><p><strong><span>Enabled</span></strong><span>: Window has no border, is always on top, and is movable by dragging anywhere</span></p></li><li><p><strong><span>Disabled</span></strong><span>: Standard macOS window with title bar</span></p></li></ul><p><strong><span>Note</span></strong><span>: Borderless mode is automatically disabled when entering full-screen mode.</span></p><h3 id='aspect-ratio-control'><span>Aspect Ratio Control</span></h3><ul><li><p><strong><span>Fix Aspect Ratio</span></strong><span> (⌘A): When enabled, the window maintains the video&#39;s aspect ratio when resizing</span></p></li><li><p><strong><span>Fit to Actual Size</span></strong><span> (⌃⌘A): Resizes the window to match the video&#39;s native resolution</span></p></li></ul><h3 id='full-screen-mode'><span>Full Screen Mode</span></h3><p><strong><span>Enter Full Screen</span></strong><span> (⌃⌘F) or click the green traffic light button:</span></p><ul><li><p><span>Video fills the entire screen</span></p></li><li><p><span>The cursor is automatically hidden</span></p></li><li><p><span>Display sleep prevention is automatically enabled (if configured in preferences)</span></p></li><li><p><span>Press Escape to exit</span></p></li></ul><p><strong><span>Note</span></strong><span>: Some features (like &quot;Save Image&quot;) are not available in full-screen mode.</span></p><h3 id='display-sleep-prevention'><span>Display Sleep Prevention</span></h3><p><strong><span>Display Sleep</span></strong><span> Prevention (⌘D) prevents your Mac&#39;s display from sleeping:</span></p><ul><li><p><span>Useful during typical game play and long recording sessions</span></p></li><li><p><span>Can be enabled/disabled manually via menu</span></p></li><li><p><span>Automatically enabled in full-screen mode (if configured in preferences)</span></p></li></ul><h3 id='translucent-title-bar'><span>Translucent Title Bar</span></h3><p><span>CapturePlay features a QuickTime Player-style translucent title bar for a clean viewing experience:</span></p><ul><li><p><strong><span>Recording Controls Integration</span></strong><span>: Video capture controls follow the same visibility behavior, appearing on hover and hiding when the mouse moves away (except during recording, when they remain always visible)</span></p></li></ul><hr /><h2 id='audio-features'><span>Audio Features</span></h2><h3 id='selecting-audio-input'><span>Selecting Audio Input</span></h3><p><span>The audio input comes from your capture device:</span></p><ol start='' ><li><p><span>Go to </span><strong><span>Audio &gt; Select Source</span></strong><span>.</span></p></li><li><p><span>Choose your audio capture device from the list.</span></p></li><li><p><span>Audio will route to the selected output device.</span></p></li></ol><p><strong><span>Note</span></strong><span>: If no audio input is selected, videos will be recorded without audio.</span></p><h3 id='selecting-audio-output'><span>Selecting Audio Output</span></h3><p><span>Choose where audio is played:</span></p><ol start='' ><li><p><span>Go to </span><strong><span>Audio &gt; Select Output</span></strong><span>.</span></p></li><li><p><span>Choose your output device (speakers, headphones, etc.).</span></p></li></ol><p><strong><span>Note</span></strong><span>: Audio settings are saved in preferences.</span></p><h3 id='mute'><span>Mute</span></h3><p><strong><span>Mute</span></strong><span> (⌘M in Audio menu) temporarily disables audio output without changing volume settings.</span></p><p><strong><span>Note</span></strong><span>: The mute keyboard shortcut (⌘M) is shared with &quot;Mirror Horizontally&quot; in the Video menu. Use the menu item if there&#39;s a conflict.</span></p><h3 id='volume-control'><span>Volume Control</span></h3><p><span>Adjust volume using the slider in </span><strong><span>Audio &gt; Volume</span></strong><span>:</span></p><ul><li><p><span>Drag the slider to adjust output volume</span></p></li><li><p><span>Changes apply immediately</span></p></li><li><p><span>Volume setting is saved in preferences</span></p></li></ul><hr /><h2 id='capture-features'><span>Capture Features</span></h2><h3 id='image-capture'><span>Image Capture</span></h3><p><span>Three methods for capturing images:</span></p><h4 id='method-1-copy-to-clipboard-⌘c'><span>Method 1: Copy to Clipboard (⌘C)</span></h4><ul><li><p><span>Copies the current window capture to the clipboard</span></p></li><li><p><span>Available via </span><strong><span>Edit &gt; Copy</span></strong></p></li><li><p><span>Useful for quickly pasting into other applications</span></p></li><li><p><span>Image is copied in PNG format</span></p></li><li><p><span>Works the same as saving, but places the image directly in the clipboard</span></p></li></ul><h4 id='method-2-quick-capture-⌘s'><span>Method 2: Quick Capture (⌘S)</span></h4><ul><li><p><span>Captures current frame instantly</span></p></li><li><p><span>Saves to capture directory with automatic filename</span></p></li><li><p><span>Filename format: </span><code>CapturePlay Image YYYY-MM-DD at HH.mm.ss.png</code></p></li><li><p><span>Shows notification when saved</span></p></li></ul><h4 id='method-3-save-image-⌘⇧s'><span>Method 3: Save Image (⌘⇧S)</span></h4><ul><li><p><span>Opens a save dialog to choose location</span></p></li><li><p><span>Allows you to name the file</span></p></li><li><p><span>Useful when you want to save to a specific location</span></p></li></ul><p><strong><span>Image Format</span></strong><span>: PNG (highest quality)</span></p><p><strong><span>Note</span></strong><span>: Image capture temporarily removes the window border (if present) to capture a clean image, then restores it. Copy to clipboard uses the same capture method.</span></p><h3 id='video-recording'><span>Video Recording</span></h3><p><strong><span>Capture Video</span></strong><span> (⌘V) toggles video recording:</span></p><ul><li><p><strong><span>Start Recording</span></strong><span>: Creates a new video file in the capture directory</span></p></li><li><p><strong><span>Stop Recording</span></strong><span>: Finalizes the video file</span></p></li><li><p><strong><span>File Format</span></strong><span>: QuickTime MOV (compatible with macOS, Windows, and most video players)</span></p></li><li><p><strong><span>Audio</span></strong><span>: Included if an audio input is selected</span></p></li><li><p><strong><span>Filename Format</span></strong><span>: </span><code>CapturePlay Video YYYY-MM-DD at HH.mm.ss.mov</code></p></li><li><p><strong><span>Notifications</span></strong><span>: Shows notifications when recording starts and stops</span></p></li><li><p><strong><span>Cooldown Period</span></strong><span>: After stopping recording, there is a 1-second delay before you can start recording again to prevent errors</span></p></li></ul><p><strong><span>Video Recording Details</span></strong><span>:</span></p><ul><li><p><span>Video resolution matches the source device&#39;s native resolution</span></p></li><li><p><span>Frame rate matches the device&#39;s configured frame rate (typically 60fps or 59.94fps)</span></p></li><li><p><span>Audio is encoded as AAC at 256 Kbps (QuickTime-compatible)</span></p></li><li><p><span>Videos are saved with timestamps to avoid filename conflicts</span></p></li></ul><p><strong><span>Recording Status</span></strong><span>:</span></p><ul><li><p><span>The &quot;Capture Video&quot; menu item shows a checkmark (✓) when recording is active</span></p></li><li><p><span>A notification appears when recording starts and stops</span></p></li><li><p><span>Recording can be stopped by pressing ⌘V again</span></p></li><li><p><span>An on-screen recording control button appears when recording starts (if enabled in Settings)</span></p><ul><li><p><strong><span>Red Circle</span></strong><span>: Idle state (click to start recording)</span></p></li><li><p><strong><span>Red Square</span></strong><span>: Recording state (slowly blinks, click to stop recording)</span></p></li><li><p><span>The control is positioned in the bottom-right corner of the video window</span></p></li><li><p><span>The control is excluded from screen recordings and saved videos</span></p></li><li><p><strong><span>Visibility</span></strong><span>: Controls follow the translucent title bar behavior - they appear when you hover over the window and disappear when the mouse moves away, except while recording, when they remain always visible</span></p></li><li><p><span>These controls can be disabled in Settings.</span></p></li></ul></li></ul><p><strong><span>Note</span></strong><span>: Ensure you have sufficient disk space. Video files can be large, especially at high resolutions and frame rates.</span></p><h3 id='opening-capture-folder'><span>Opening Capture Folder</span></h3><p><strong><span>Open Capture Folder</span></strong><span> (⌘O) opens the capture directory in Finder, where all captured images and videos are saved.</span></p><hr /><h2 id='settings-and-preferences'><span>Settings and Preferences</span></h2><h3 id='captureplay-settings-dialog'><span>CapturePlay Settings Dialog</span></h3><p><span>Open </span><strong><span>CapturePlay &gt; Settings…</span></strong><span> (⌘,)</span></p><h4 id='capture-image-directory'><span>Capture Image Directory</span></h4><ul><li><p><strong><span>Default Location</span></strong><span>: </span><code>~/Pictures/CapturePlay</code></p></li><li><p><strong><span>Browse…</span></strong><span>: Click to select a different folder</span></p></li><li><p><strong><span>Path Field</span></strong><span>: Displays current directory path (supports tilde notation, e.g., </span><code>~/Documents</code><span>)</span></p></li></ul><p><strong><span>Note</span></strong><span>: If you select a folder outside your home directory, CapturePlay will request permission to access it. macOS will prompt you to grant access.</span></p><h4 id='display-sleep-in-full-screen'><span>Display Sleep in Full Screen</span></h4><ul><li><p><strong><span>Toggle</span></strong><span>: &quot;Automatically prevent display sleep during full screen&quot;</span></p></li><li><p><span>When enabled, display sleep prevention is automatically activated when entering full-screen mode</span></p></li><li><p><span>When disabled, you must manually toggle display sleep prevention</span></p></li></ul><h4 id='capture-notification-sounds'><span>Capture Notification Sounds</span></h4><ul><li><p><strong><span>Toggle</span></strong><span>: &quot;Play sound for capture notification&quot;</span></p></li><li><p><span>When enabled, notifications for video recording start/stop will play a sound</span></p></li><li><p><span>When disabled (default), notifications will appear silently without sound</span></p></li></ul><h4 id='image-menu-visibility'><span>Image Menu Visibility</span></h4><ul><li><p><strong><span>Toggle</span></strong><span>: &quot;Always show the Image submenu under Video&quot;</span></p></li><li><p><span>When enabled, the </span><strong><span>Video &gt; Image</span></strong><span> menu is always visible.</span></p></li><li><p><span>When disabled, the Image menu can still be revealed by holding Option (⌥) while opening the Video menu.</span></p></li></ul><h4 id='performance-mode'><span>Performance Mode</span></h4><ul><li><p><strong><span>Selector</span></strong><span>: &quot;Performance Mode&quot; popup menu</span></p></li><li><p><span>Controls video quality and frame rate optimizations for different system capabilities</span></p></li><li><p><strong><span>Options</span></strong><span>:</span></p><ul><li><p><strong><span>Auto</span></strong><span> (default): Automatically detects your system&#39;s performance and applies appropriate optimizations</span></p><ul><li><p><span>Slower systems (≤4 CPU cores or &lt;8GB RAM): Uses Medium optimizations</span></p></li><li><p><span>Faster systems (&gt;4 cores and ≥8GB RAM): Uses High quality settings</span></p></li></ul></li><li><p><strong><span>High</span></strong><span>: Maximum quality, no performance optimizations</span></p><ul><li><p><span>Uses highest available resolution and frame rate</span></p></li><li><p><span>Best for modern Macs with powerful CPUs/GPUs</span></p></li></ul></li><li><p><strong><span>Medium</span></strong><span>: Balanced quality and performance</span></p><ul><li><p><span>Limits resolution to 720p (1280×720) maximum</span></p></li><li><p><span>Frame rate limited to 30fps for smoother playback</span></p></li><li><p><span>Best for mid-range systems or when you want smoother playback</span></p></li></ul></li><li><p><strong><span>Low</span></strong><span>: Maximum performance, reduced quality</span></p><ul><li><p><span>Limits resolution to 480p (640×480) maximum</span></p></li><li><p><span>Frame rate limited to 24fps for consistent playback</span></p></li><li><p><span>Best for older/slower systems or when prioritizing smooth playback over quality</span></p></li><li><p><span>Note: Some games may show poor framerates despite these optimizations on slower systems and capture devices.</span></p></li></ul></li></ul></li></ul><p><strong><span>What Gets Optimized</span></strong><span>:</span></p><ul><li><p><span>Video resolution (lower resolutions reduce processing load)</span></p></li><li><p><span>Frame rate (limits to 24–30fps for consistent timing)</span></p></li><li><p><span>Session preset (controls capture quality level)</span></p></li><li><p><span>Frame smoothing (uses VSync and frame timing for smoother playback)</span></p></li></ul><p><strong><span>Recommendations</span></strong><span>:</span></p><ul><li><p><strong><span>Leave on Auto</span></strong><span> unless you have specific needs — it automatically adapts to your system</span></p></li><li><p><span>Use </span><strong><span>High</span></strong><span> if you have a powerful Mac and want maximum quality</span></p></li><li><p><span>Use </span><strong><span>Medium</span></strong><span> if you experience stuttering or frame drops</span></p></li><li><p><span>Use </span><strong><span>Low</span></strong><span> if you have an older Mac or need the smoothest possible playback</span></p></li></ul><h4 id='video-capture-controls'><span>Video Capture Controls</span></h4><ul><li><p><strong><span>Toggle</span></strong><span>: &quot;Show video capture controls&quot;</span></p></li><li><p><span>When enabled, an on-screen recording control button appears when recording starts</span></p></li><li><p><span>When disabled, the on-screen control button is hidden</span></p></li><li><p><span>The button appears in the bottom-right corner of the video window</span></p></li><li><p><strong><span>Behavior</span></strong><span>: </span></p><ul><li><p><span>The control follows the translucent title bar visibility - it appears on mouse hover and hides when the mouse moves away, except during recording, when it remains always visible</span></p></li><li><p><span>After recording stops, the control remains visible for 30 seconds before automatically hiding</span></p></li><li><p><span>The control only appears after it has been used at least once (on first recording)</span></p></li></ul></li><li><p><span>Click the button to start or stop recording</span></p></li></ul><h4 id='saving-settings'><span>Saving Settings</span></h4><ul><li><p><span>Click </span><strong><span>OK</span></strong><span> to save changes</span></p></li><li><p><span>Click </span><strong><span>Cancel</span></strong><span> to discard changes</span></p></li><li><p><span>Preferences are saved immediately when you click OK</span></p></li></ul><h3 id='automatic-settings-retention'><span>Automatic Settings Retention</span></h3><p><span>CapturePlay automatically saves and restores your settings:</span></p><ul><li><p><strong><span>Window position and size</span></strong><span>: Automatically saved when you close the application</span></p></li><li><p><strong><span>Video settings</span></strong><span>: Rotation, mirroring, borderless mode, and aspect ratio preferences</span></p></li><li><p><strong><span>Audio settings</span></strong><span>: Input/output device selections and volume</span></p></li><li><p><strong><span>Color correction settings</span></strong><span>: Brightness, contrast, and hue values (saved per device by name)</span></p></li><li><p><strong><span>Settings</span></strong><span>: Capture directory, display sleep preferences, notification sounds, Image menu visibility, video capture controls visibility, and performance mode</span></p></li></ul><p><span>All settings are automatically loaded when you launch CapturePlay.</span></p><h3 id='automatic-settings-management'><span>Automatic Settings Management</span></h3><p><span>All settings are automatically saved when you close the application and automatically loaded when you launch CapturePlay. There is no manual &quot;Save Settings&quot; or &quot;Clear Settings&quot; option — settings are managed automatically.</span></p><hr /><h2 id='keyboard-shortcuts'><span>Keyboard Shortcuts</span></h2><h3 id='global-shortcuts'><span>Global Shortcuts</span></h3><figure class='table-figure'><table><thead><tr><th><span>Shortcut</span></th><th><span>Action</span></th><th><span>Menu Location</span></th></tr></thead><tbody><tr><td><span>⌘,</span></td><td><span>Settings</span></td><td><span>CapturePlay &gt; Settings…</span></td></tr><tr><td><span>⌘H</span></td><td><span>Hide App</span></td><td><span>CapturePlay &gt; Hide CapturePlay</span></td></tr><tr><td><span>⌥⌘H</span></td><td><span>Hide Others</span></td><td><span>CapturePlay &gt; Hide Others</span></td></tr><tr><td><span>⌘Q</span></td><td><span>Quit</span></td><td><span>CapturePlay &gt; Quit CapturePlay</span></td></tr><tr><td><span>⌘O</span></td><td><span>Open Capture Folder</span></td><td><span>File &gt; Open Capture Folder</span></td></tr><tr><td><span>⌘C</span></td><td><span>Copy Window</span></td><td><span>Edit &gt; Copy</span></td></tr><tr><td><span>⌘⇧S</span></td><td><span>Save Image</span></td><td><span>File &gt; Save Image…</span></td></tr><tr><td><span>⌘S</span></td><td><span>Capture Image</span></td><td><span>File &gt; Capture Image</span></td></tr><tr><td><span>⌘V</span></td><td><span>Capture Video</span></td><td><span>File &gt; Capture Video</span></td></tr><tr><td><span>⌘M</span></td><td><span>Mirror Horizontally</span></td><td><span>Video &gt; Image &gt; Mirror &gt; Mirror Horizontally</span></td></tr><tr><td><span>⌘⇧H</span></td><td><span>Mirror Vertically</span></td><td><span>Video &gt; Image &gt; Mirror &gt; Mirror Vertically</span></td></tr><tr><td><span>⌘L</span></td><td><span>Rotate Left</span></td><td><span>Video &gt; Image &gt; Rotate &gt; Rotate Left</span></td></tr><tr><td><span>⌘R</span></td><td><span>Rotate Right</span></td><td><span>Video &gt; Image &gt; Rotate &gt; Rotate Right</span></td></tr><tr><td><span>⌘B</span></td><td><span>Borderless Mode</span></td><td><span>Video &gt; Borderless Mode</span></td></tr><tr><td><span>⌘A</span></td><td><span>Fix Aspect Ratio</span></td><td><span>Video &gt; Fix Aspect Ratio</span></td></tr><tr><td><span>⌃⌘A</span></td><td><span>Fit to Actual Size</span></td><td><span>Video &gt; Fit to Actual Size</span></td></tr><tr><td><span>⌃⌘F/FnF</span></td><td><span>Enter Full Screen</span></td><td><span>Video &gt; Enter Full Screen</span></td></tr><tr><td><span>⌘D</span></td><td><span>Display Sleep Prevention</span></td><td><span>Video &gt; Display Sleep</span></td></tr></tbody></table></figure><h3 id='menu-specific-shortcuts'><span>Menu-Specific Shortcuts</span></h3><ul><li><p><strong><span>Audio &gt; Mute</span></strong><span> (⌘M): Shares shortcut with &quot;Mirror Horizontally&quot; — use the menu item directly if there&#39;s a conflict</span></p></li></ul><hr /><h2 id='notifications'><span>Notifications</span></h2><p><span>CapturePlay can send notifications for key events:</span></p><ul><li><p><strong><span>Image Captured</span></strong><span>: When an image is saved to the capture directory</span></p></li><li><p><strong><span>Video Recording Started</span></strong><span>: When video recording begins</span></p></li><li><p><strong><span>Video Recording Stopped</span></strong><span>: When video recording ends and the file is saved</span></p></li><li><p><strong><span>Display Sleep Prevention</span></strong><span>: When display sleep prevention is enabled or disabled</span></p></li></ul><h3 id='notification-permissions'><span>Notification Permissions</span></h3><p><span>On first launch, macOS will ask for notification permissions. Grant permission to receive notifications about captures and recordings.</span></p><p><strong><span>To enable/disable notifications later</span></strong><span>:</span></p><ol start='' ><li><p><span>Open </span><strong><span>System Preferences &gt; Notifications &amp; Focus</span></strong></p></li><li><p><span>Find &quot;CapturePlay&quot; in the list</span></p></li><li><p><span>Adjust notification settings as desired</span></p></li></ol><hr /><h2 id='troubleshooting'><span>Troubleshooting</span></h2><h3 id='no-video-display'><span>No Video Display</span></h3><p><strong><span>Problem</span></strong><span>: Video window is black or shows no image.</span></p><p><strong><span>Solutions</span></strong><span>:</span></p><ol start='' ><li><p><strong><span>Check device connection</span></strong><span>: Ensure your USB capture device is connected. Use System Information &gt; USB to see whether the device is showing up</span></p></li><li><p><strong><span>Select correct source</span></strong><span>: Go to </span><strong><span>Video &gt; Select Source</span></strong><span> and verify the correct device is selected</span></p></li><li><p><strong><span>Check device permissions</span></strong><span>: Ensure CapturePlay has camera access (System Preferences &gt; Security &amp; Privacy &gt; Privacy &gt; Camera)</span></p></li><li><p><strong><span>Try a different USB port</span></strong><span>: Some USB ports may not provide sufficient power</span></p></li><li><p><strong><span>Restart CapturePlay</span></strong><span>: Quit and relaunch the application</span></p></li><li><p><strong><span>Check device compatibility</span></strong><span>: Ensure your capture device is recognized by macOS (check System Information &gt; USB)</span></p></li></ol><h3 id='no-audio'><span>No Audio</span></h3><p><strong><span>Problem</span></strong><span>: No audio is heard during playback or recording.</span></p><p><strong><span>Solutions</span></strong><span>:</span></p><ol start='' ><li><p><strong><span>Select audio input</span></strong><span>: Go to </span><strong><span>Audio &gt; Select Source</span></strong><span> and choose an audio device</span></p></li><li><p><strong><span>Select audio output</span></strong><span>: Go to </span><strong><span>Audio &gt; Select Output</span></strong><span> and choose speakers or headphones</span></p></li><li><p><strong><span>Check mute status</span></strong><span>: Ensure audio is not muted (Audio &gt; Mute should be unchecked)</span></p></li><li><p><strong><span>Check volume</span></strong><span>: Adjust volume in </span><strong><span>Audio &gt; Volume</span></strong></p></li><li><p><strong><span>Check microphone permissions</span></strong><span>: Ensure CapturePlay has microphone access (System Preferences &gt; Security &amp; Privacy &gt; Privacy &gt; Microphone)</span></p></li><li><p><strong><span>Verify audio source</span></strong><span>: Some capture devices have separate audio inputs — ensure audio is connected to the correct input</span></p></li></ol><h3 id='audio-stops-working-after-changing-video-source'><span>Audio Stops Working After Changing Video Source</span></h3><p><strong><span>Problem</span></strong><span>: Audio works initially, but stops after switching video devices.</span></p><p><strong><span>Solution</span></strong><span>: This is a known behavior when switching devices. The audio manager should automatically reconnect. If it doesn&#39;t:</span></p><ol start='' ><li><p><span>Go to </span><strong><span>Audio &gt; Select Source</span></strong><span> and re-select your audio input</span></p></li><li><p><span>Restart CapturePlay if the issue persists</span></p></li></ol><h3 id='image-capture-not-working'><span>Image Capture Not Working</span></h3><p><strong><span>Problem</span></strong><span>: Image capture fails or shows an error.</span></p><p><strong><span>Solutions</span></strong><span>:</span></p><ol start='' ><li><p><span>Check capture directory**: Ensure the capture directory exists and is writable (Preferences &gt; Browse…)</span></p></li><li><p><strong><span>Check disk space</span></strong><span>: Ensure you have sufficient free disk space</span></p></li><li><p><strong><span>Check permissions</span></strong><span>: If using a custom directory, grant CapturePlay permission to access it. Use the Browse button to select your desired directory, and macOS will prompt for permissions if they are required</span></p></li></ol><h3 id='video-recording-not-working'><span>Video Recording Not Working</span></h3><p><strong><span>Problem</span></strong><span>: Video recording doesn&#39;t start or fails.</span></p><p><strong><span>Solutions</span></strong><span>:</span></p><ol start='' ><li><p><strong><span>Check capture directory</span></strong><span>: Ensure the capture directory exists and is writable</span></p></li><li><p><strong><span>Check disk space</span></strong><span>: Video files can be large — ensure sufficient free space</span></p></li><li><p><strong><span>Check permissions</span></strong><span>: Ensure CapturePlay can write to the capture directory</span></p></li><li><p><strong><span>Verify device supports recording</span></strong><span>: Some devices may have limitations</span></p></li><li><p><strong><span>Try stopping and restarting</span></strong><span>: Use ⌘V to stop, then start again (note: there is a 1-second cooldown after stopping)</span></p></li></ol><h3 id='window-wont-resize-or-position-correctly'><span>Window Won&#39;t Resize or Position Correctly</span></h3><p><strong><span>Problem</span></strong><span>: Window size or position is not as expected.</span></p><p><strong><span>Solutions</span></strong><span>:</span></p><ol start='' ><li><p><strong><span>Reset window</span></strong><span>: Quit and relaunch the app to reset window state, or manually resize/reposition the window</span></p></li><li><p><strong><span>Disable aspect ratio lock</span></strong><span>: Uncheck </span><strong><span>Video &gt; Fix Aspect Ratio</span></strong></p></li><li><p><strong><span>Fit to actual size</span></strong><span>: Use </span><strong><span>Video &gt; Fit to Actual Size</span></strong><span> (⌃⌘A) to match video resolution</span></p></li></ol><h3 id='display-sleep-still-occurs'><span>Display Sleep Still Occurs</span></h3><p><strong><span>Problem</span></strong><span>: Display sleeps despite enabling prevention.</span></p><p><strong><span>Solutions</span></strong><span>:</span></p><ol start='' ><li><p><strong><span>Check menu state</span></strong><span>: Ensure </span><strong><span>Video &gt; Display Sleep</span></strong><span> shows a checkmark (✓)</span></p></li><li><p><strong><span>Check System Preferences</span></strong><span>: macOS power settings may override app settings</span></p></li><li><p><strong><span>Try toggling</span></strong><span>: Disable and re-enable display sleep prevention</span></p></li><li><p><strong><span>Full-screen mode</span></strong><span>: Display sleep prevention works more reliably in full-screen mode</span></p></li></ol><h3 id='preferences-not-saving'><span>Preferences Not Saving</span></h3><p><strong><span>Problem</span></strong><span>: Settings don&#39;t persist between launches.</span></p><p><strong><span>Solutions</span></strong><span>:</span></p><ol start='' ><li><p><strong><span>Check permissions</span></strong><span>: Ensure CapturePlay can write to the preferences location (usually </span><code>~/Library/Preferences/</code><span>)</span></p></li><li><p><strong><span>Reset preferences</span></strong><span>: Quit the app, delete the preferences file at </span><code>~/Library/Preferences/org.windholm.captureplay.plist</code><span>, then relaunch and reconfigure</span></p></li><li><p><strong><span>Restart the application</span></strong><span>: Settings are automatically saved when you close the app — ensure you close it normally (not force quit)</span></p></li></ol><h3 id='device-not-detected'><span>Device Not Detected</span></h3><p><strong><span>Problem</span></strong><span>: USB capture device or Continuity Camera is not listed in &quot;Select Source&quot;.</span></p><p><strong><span>Solutions</span></strong><span>:</span></p><ol start='' ><li><p><span>Check whether the USB device exists in System Information. You can open that quickly by pressing the Option key while selecting the Apple Menu</span></p></li><li><p><strong><span>Check USB connection</span></strong><span>: Unplug and reconnect the device (for USB devices)</span></p></li><li><p><strong><span>Try different USB port</span></strong><span>: Use a USB 3.0 port if available</span></p></li><li><p><strong><span>Check System Information</span></strong><span>: Open System Information &gt; USB and verify the device appears</span></p></li><li><p><strong><span>Install drivers</span></strong><span>: Some devices require manufacturer drivers</span></p></li><li><p><strong><span>Restart CapturePlay</span></strong><span>: The app detects devices on launch</span></p></li><li><p><strong><span>Check device compatibility</span></strong><span>: Ensure the device is compatible with macOS</span></p></li></ol><p><strong><span>For Continuity Camera specifically</span></strong><span>:</span></p><ol start='' ><li><p><strong><span>Check macOS version</span></strong><span>: Continuity Camera requires macOS 13.0 (Ventura) or later</span></p></li><li><p><strong><span>Check iOS version</span></strong><span>: iPhone must be running iOS 16.0 or later</span></p></li><li><p><strong><span>Verify Apple ID</span></strong><span>: Both devices must be signed in to the same Apple ID with two-factor authentication</span></p></li><li><p><strong><span>Enable Handoff</span></strong><span>: On iPhone: Settings &gt; General &gt; AirPlay &amp; Handoff &gt; Enable &quot;Handoff&quot; and &quot;Continuity Camera&quot;</span></p></li><li><p><strong><span>Check network</span></strong><span>: Ensure both devices are on the same Wi-Fi network with Wi-Fi and Bluetooth enabled</span></p></li><li><p><strong><span>Disable VPNs</span></strong><span>: VPNs can interfere with Continuity Camera — disable VPNs on both devices</span></p></li><li><p><strong><span>Disable AirPlay Receiver</span></strong><span>: On Mac: System Settings &gt; General &gt; AirDrop &amp; Handoff &gt; Turn off &quot;AirPlay Receiver&quot;</span></p></li><li><p><strong><span>Position iPhone correctly</span></strong><span>: iPhone should be locked, stable, and positioned with the rear cameras facing you in landscape</span></p></li><li><p><strong><span>Restart both devices</span></strong><span>: Restart both iPhone and Mac if connection issues persist</span></p></li></ol><h3 id='app-crashes-or-freezes'><span>App Crashes or Freezes</span></h3><p><strong><span>Problem</span></strong><span>: CapturePlay crashes or becomes unresponsive.</span></p><p><strong><span>Solutions</span></strong><span>:</span></p><ol start='' ><li><p><strong><span>Check macOS version</span></strong><span>: Ensure you&#39;re running macOS 12.4 or later</span></p></li><li><p><strong><span>Check device compatibility</span></strong><span>: Some devices may cause issues</span></p></li><li><p><strong><span>Reset preferences</span></strong><span>: Quit the app, delete the preferences file at </span><code>~/Library/Preferences/org.windholm.captureplay.plist</code><span>, then relaunch</span></p></li><li><p><strong><span>Check Console</span></strong><span>: Open Console.app and check for error messages</span></p></li><li><p><strong><span>Reinstall</span></strong><span>: Delete the app and reinstall from a fresh build</span></p></li></ol><h3 id='performance-issues'><span>Performance Issues</span></h3><p><strong><span>Problem</span></strong><span>: Video is choppy or laggy.</span></p><p><strong><span>Solutions</span></strong><span>:</span></p><ol start='' ><li><p><strong><span>Adjust Performance Mode</span></strong><span>: Go to </span><strong><span>CapturePlay &gt; Settings</span></strong><span> and try a lower performance mode:</span></p><ul><li><p><span>If set to &quot;High&quot;, try &quot;Medium&quot; or &quot;Auto&quot;</span></p></li><li><p><span>If set to &quot;Medium&quot;, try &quot;Low&quot; for maximum smoothness</span></p></li><li><p><span>&quot;Auto&quot; mode will automatically detect slower systems and apply optimizations</span></p></li></ul></li><li><p><strong><span>Close other applications</span></strong><span>: Free up CPU and memory resources</span></p></li><li><p><strong><span>Check device resolution</span></strong><span>: High-resolution devices require more processing power</span></p></li><li><p><strong><span>Lower frame rate</span></strong><span>: Some devices allow frame rate adjustment (device-specific)</span></p></li><li><p><strong><span>Check USB bandwidth</span></strong><span>: Use USB 3.0 ports for high-resolution devices</span></p></li><li><p><strong><span>Disable other video apps</span></strong><span>: Close other apps using video capture devices</span></p></li><li><p><strong><span>Disable color correction</span></strong><span>: If you&#39;re using color correction (brightness, contrast, hue), try resetting to defaults to reduce processing overhead</span></p></li></ol><hr /><h2 id='technical-details'><span>Technical Details</span></h2><h3 id='video-format'><span>Video Format</span></h3><ul><li><p><strong><span>Container</span></strong><span>: MOV (QuickTime)</span></p></li><li><p><strong><span>Video Codec</span></strong><span>: H.264 (device-dependent)</span></p></li><li><p><strong><span>Audio Codec</span></strong><span>: AAC at 256 Kbps</span></p></li><li><p><strong><span>Frame Rate</span></strong><span>: Matches device configuration (typically 60fps or 59.94fps)</span></p></li><li><p><strong><span>Resolution</span></strong><span>: Native device resolution</span></p></li></ul><h3 id='image-format'><span>Image Format</span></h3><ul><li><p><strong><span>Format</span></strong><span>: PNG</span></p></li><li><p><strong><span>Color Space</span></strong><span>: RGB</span></p></li><li><p><strong><span>Resolution</span></strong><span>: Window resolution at time of capture</span></p></li></ul><h3 id='file-naming'><span>File Naming</span></h3><ul><li><p><strong><span>Images</span></strong><span>: </span><code>CapturePlay Image YYYY-MM-DD at HH.mm.ss.png</code></p></li><li><p><strong><span>Videos</span></strong><span>: </span><code>CapturePlay Video YYYY-MM-DD at HH.mm.ss.mov</code></p></li></ul><p><span>Both use 24-hour time format (HH.mm.ss).</span></p><h3 id='preferences-storage'><span>Preferences Storage</span></h3><p><span>Preferences are stored in macOS UserDefaults, typically at:</span></p><pre class="md-fences md-end-block ty-contain-cm modeLoaded" spellcheck="false" lang=""><div class="CodeMirror cm-s-inner cm-s-null-scroll CodeMirror-wrap" lang=""><div style="overflow: hidden; position: relative; width: 3px; height: 0px; top: 9px; left: 4px;"><textarea autocorrect="off" autocapitalize="off" spellcheck="false" tabindex="0" style="position: absolute; bottom: -1em; padding: 0px; width: 1000px; height: 1em; outline: currentcolor;"></textarea></div><div class="CodeMirror-scrollbar-filler" cm-not-content="true"></div><div class="CodeMirror-gutter-filler" cm-not-content="true"></div><div class="CodeMirror-scroll" tabindex="-1"><div class="CodeMirror-sizer" style="margin-left: 0px; margin-bottom: 0px; border-right-width: 0px; padding-right: 0px; padding-bottom: 0px;"><div style="position: relative; top: 0px;"><div class="CodeMirror-lines" role="presentation"><div role="presentation" style="position: relative; outline: currentcolor;"><div class="CodeMirror-measure"><pre><span>xxxxxxxxxx</span></pre></div><div class="CodeMirror-measure"></div><div style="position: relative; z-index: 1;"></div><div class="CodeMirror-code" role="presentation"><div class="CodeMirror-activeline" style="position: relative;"><div class="CodeMirror-activeline-background CodeMirror-linebackground"></div><div class="CodeMirror-gutter-background CodeMirror-activeline-gutter" style="left: 0px; width: 0px;"></div><pre class=" CodeMirror-line " role="presentation"><span role="presentation" style="padding-right: 0.1px;">~/Library/Preferences/org.windholm.captureplay.plist</span></pre></div></div></div></div></div></div><div style="position: absolute; height: 0px; width: 1px; border-bottom-width: 0px; border-bottom-style: solid; border-bottom-color: transparent; top: 22px;"></div><div class="CodeMirror-gutters" style="display: none; height: 22px;"></div></div></div></pre><hr /><h2 id='credits'><span>Credits</span></h2><p><strong><span>CapturePlay</span></strong><span></span><br/><span>Version 3.5</span><br/><span>Copyright © 2025 Harald Striepe</span></p><p><strong><span>Original Quick Camera Code</span></strong><span></span><br/><span>Copyright © 2025 Simon Guest</span><br/><span>Licensed under Apache License 2.0</span><br/><a href='https://github.com/simonguest/quick-camera'><span>GitHub: quick-camera</span></a></p><p><strong><span>Acknowledgments</span></strong></p><p><span>CapturePlay includes code from Simon Guest&#39;s Quick Camera project, which provided the foundation for video capture and display functionality.</span></p><hr /><h2 id='license'><span>License</span></h2><p><span>This manual and the CapturePlay application are provided as-is. Please refer to the application&#39;s license for usage terms under Apache V2.0.</span></p><hr /><h2 id='support'><span>Support</span></h2><p><span>For issues, feature requests, or contributions, please refer to the project repository or contact the maintainer at </span><a href='mailto:hstriepe@mac.com' target='_blank' class='url'>hstriepe@mac.com</a></p></div></div>
 </body>
 </html>

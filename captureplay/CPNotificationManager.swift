@@ -28,6 +28,7 @@ class CPNotificationManager: NSObject {
         center.delegate = self
         center.requestAuthorization(options: [.alert, .sound, .badge]) { [weak self] granted, error in
             DispatchQueue.main.async {
+                guard let self = self else { return }
                 if let error = error {
                     NSLog("Failed to request notification permissions: %@", error.localizedDescription)
                 } else if granted {
@@ -35,7 +36,7 @@ class CPNotificationManager: NSObject {
                 } else {
                     NSLog("Notification permissions denied")
                 }
-                self?.delegate?.notificationManager(self!, didRequestPermissions: granted, error: error)
+                self.delegate?.notificationManager(self, didRequestPermissions: granted, error: error)
             }
         }
     }
@@ -68,12 +69,13 @@ class CPNotificationManager: NSObject {
                 )
                 
                 center.add(request) { error in
+                    guard let self = self else { return }
                     if let error = error {
                         NSLog("Failed to send notification: %@", error.localizedDescription)
                     } else {
                         NSLog("Notification sent successfully: %@ - %@", title, body)
                     }
-                    self?.delegate?.notificationManager(self!, didSendNotification: title, body: body, error: error)
+                    self.delegate?.notificationManager(self, didSendNotification: title, body: body, error: error)
                 }
             }
         }

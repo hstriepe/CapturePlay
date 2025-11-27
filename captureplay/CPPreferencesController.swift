@@ -164,7 +164,9 @@ class CPPreferencesController {
                     NSLog("Performance mode set to: %@", mode)
                 }
                 CPSettingsManager.shared.saveSettings()
-                weakSelf?.delegate?.preferencesController(weakSelf!, didSavePreferences: ())
+                if let strongSelf = weakSelf {
+                    strongSelf.delegate?.preferencesController(strongSelf, didSavePreferences: ())
+                }
             }
         }
     }
