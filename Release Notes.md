@@ -1,5 +1,13 @@
 # Release Notes
 
+#### Version 3.6.0 (196 - internal) - 112-01-25
+
+1. Bluetooth audio.
+2. Track system audio.
+3. Removed Picture folder Entitlement
+4. Code review & cleanup.
+5. XCTests - works from command line.
+
 #### Version 3.5.6 (187 - internal) - 11-27-25
 
 1. New icon.

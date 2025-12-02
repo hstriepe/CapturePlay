@@ -103,8 +103,9 @@ class CPPreferencesController {
         let directoryTextField = NSTextField(frame: NSRect(x: 20, y: 30, width: 380, height: 22))
         var directoryPath = CPSettingsManager.shared.captureImageDirectory
         if directoryPath.isEmpty {
-            let homePath = NSHomeDirectory()
-            directoryPath = (homePath as NSString).appendingPathComponent("Pictures/CapturePlay")
+            // Use actual user home directory, not sandboxed one
+            let homePath = FileManager.default.homeDirectoryForCurrentUser.path
+            directoryPath = (homePath as NSString).appendingPathComponent("Documents/CapturePlay")
         }
         directoryTextField.stringValue = directoryPath
         view.addSubview(directoryTextField)
@@ -188,8 +189,9 @@ class CPPreferencesController {
         let settings = CPSettingsManager.shared
         var initialPath = settings.captureImageDirectory
         if initialPath.isEmpty {
-            let homePath = NSHomeDirectory()
-            initialPath = (homePath as NSString).appendingPathComponent("Pictures/CapturePlay")
+            // Use actual user home directory, not sandboxed one
+            let homePath = FileManager.default.homeDirectoryForCurrentUser.path
+            initialPath = (homePath as NSString).appendingPathComponent("Documents/CapturePlay")
         }
         panel.directoryURL = URL(fileURLWithPath: initialPath)
         
@@ -220,13 +222,14 @@ class CPPreferencesController {
     // MARK: - Helper Methods
     private func expandTildePath(_ path: String) -> String {
         if path.hasPrefix("~") {
-            let homePath = NSHomeDirectory()
+            // Use actual user home directory, not sandboxed one
+            let homePath = FileManager.default.homeDirectoryForCurrentUser.path
             if path == "~" {
                 return homePath
             } else if path.hasPrefix("~/") {
                 return (homePath as NSString).appendingPathComponent(String(path.dropFirst(2)))
             } else {
-                // Handle ~username format (less common)
+                // Handle ~username format (less common) - use NSString which expands to actual home
                 return (path as NSString).expandingTildeInPath
             }
         }

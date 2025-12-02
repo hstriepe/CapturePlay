@@ -43,6 +43,14 @@ class CPAppDelegate: NSObject, NSApplicationDelegate, NSMenuDelegate, CPUsbWatch
     @IBOutlet weak var captureVideoMenuItem: NSMenuItem!
     @IBOutlet weak var imageMenu: NSMenuItem!
 
+    // MARK: - Test Environment Detection
+    private var isRunningInTests: Bool {
+        // Check multiple ways to detect test environment
+        return ProcessInfo.processInfo.environment["XCTestConfigurationFilePath"] != nil ||
+               ProcessInfo.processInfo.arguments.contains("-XCTest") ||
+               NSClassFromString("XCTestCase") != nil
+    }
+    
     // MARK: - Settings Properties (delegated to window manager)
     var isMirrored: Bool {
         get { windowManager?.isMirrored ?? CPSettingsManager.shared.isMirrored }
@@ -293,6 +301,22 @@ class CPAppDelegate: NSObject, NSApplicationDelegate, NSMenuDelegate, CPUsbWatch
 
     // MARK: - Application Lifecycle
     func applicationDidFinishLaunching(_ aNotification: Notification) {
+        // Skip full initialization if running in test environment
+        // This prevents crashes when tests load the app bundle
+        if isRunningInTests {
+            // Running in test environment - skip hardware initialization
+            NSLog("Running in test environment - skipping app initialization")
+            // Don't return immediately - keep process alive briefly to allow test runner connection
+            // The test runner will terminate the process when tests complete
+            return
+        }
+        
+        // Guard: Ensure required outlets are available (they won't be in test environment)
+        guard window != nil, playerView != nil else {
+            NSLog("Required outlets not available - skipping app initialization")
+            return
+        }
+        
         // Initialize window manager
         windowManager = CPWindowManager()
         windowManager.delegate = self
@@ -600,61 +624,6 @@ class CPAppDelegate: NSObject, NSApplicationDelegate, NSMenuDelegate, CPUsbWatch
         }
     }
     
-    @IBAction func showUserManual(_ sender: Any?) {
-        // Open MANUAL.pdf from Resources
-        var pdfURL: URL?
-        
-        // First try: MANUAL.pdf in bundle Resources
-        if let manualURL = Bundle.main.url(forResource: "MANUAL", withExtension: "pdf") {
-            pdfURL = manualURL
-        }
-        // Second try: Check Resources directory directly (including localized directories)
-        else if let resourcesPath = Bundle.main.resourcePath {
-            // Try localized directory first (en.lproj)
-            var pdfPath = (resourcesPath as NSString).appendingPathComponent("en.lproj/MANUAL.pdf")
-            if FileManager.default.fileExists(atPath: pdfPath) {
-                pdfURL = URL(fileURLWithPath: pdfPath)
-            } else {
-                // Fallback to non-localized Resources directory
-                pdfPath = (resourcesPath as NSString).appendingPathComponent("MANUAL.pdf")
-                if FileManager.default.fileExists(atPath: pdfPath) {
-                    pdfURL = URL(fileURLWithPath: pdfPath)
-                }
-            }
-        }
-        // Third try: Source directory (for development)
-        else {
-            let bundlePath = Bundle.main.bundlePath as NSString
-            var path = bundlePath.deletingLastPathComponent // Contents
-            path = (path as NSString).deletingLastPathComponent // .app
-            path = (path as NSString).deletingLastPathComponent // Source directory
-            var pdfPath = (path as NSString).appendingPathComponent("captureplay/Resources/en.lproj/MANUAL.pdf")
-            
-            if !FileManager.default.fileExists(atPath: pdfPath) {
-                pdfPath = (path as NSString).appendingPathComponent("captureplay/Resources/MANUAL.pdf")
-            }
-            
-            if !FileManager.default.fileExists(atPath: pdfPath) {
-                pdfPath = (path as NSString).appendingPathComponent("captureplay/MANUAL.pdf")
-            }
-            
-            if FileManager.default.fileExists(atPath: pdfPath) {
-                pdfURL = URL(fileURLWithPath: pdfPath)
-            }
-        }
-        
-        if let url = pdfURL {
-            NSWorkspace.shared.open(url)
-        } else {
-            let alert = NSAlert()
-            alert.messageText = "Manual Not Found"
-            alert.informativeText = "The MANUAL.pdf file could not be found in the application bundle Resources folder."
-            alert.alertStyle = .warning
-            alert.addButton(withTitle: "OK")
-            alert.runModal()
-        }
-    }
-    
 
     func applicationWillTerminate(_ notification: Notification) {
         displaySleepManager?.cleanup()
@@ -867,6 +836,8 @@ extension CPAppDelegate {
     
     func audioManager(_ manager: CPAudioManager, needsMenuUpdateForOutput devices: [AudioOutputDeviceInfo], selectedUID: String?) {
         let menu = NSMenu()
+        let settings = CPSettingsManager.shared
+        
         if devices.isEmpty {
             let item = NSMenuItem(
                 title: "No Audio Outputs Available",
@@ -878,6 +849,22 @@ extension CPAppDelegate {
             selectAudioOutputMenu.isEnabled = false
         } else {
             selectAudioOutputMenu.isEnabled = true
+            
+            // Add "Follow System Output" option at the top
+            let followSystemItem = NSMenuItem(
+                title: "Follow System Output",
+                action: #selector(audioOutputMenuChanged),
+                keyEquivalent: ""
+            )
+            followSystemItem.target = self
+            followSystemItem.representedObject = "SYSTEM_DEFAULT"
+            followSystemItem.state = settings.followSystemOutput ? .on : .off
+            menu.addItem(followSystemItem)
+            
+            // Add separator
+            menu.addItem(NSMenuItem.separator())
+            
+            // Add all devices
             for device in devices {
                 let item = NSMenuItem(
                     title: device.name,
@@ -886,7 +873,9 @@ extension CPAppDelegate {
                 )
                 item.target = self
                 item.representedObject = device.uid
-                item.state = (device.uid == selectedUID) ? .on : .off
+                // Show as selected if it matches selectedUID, or if following system and this is the system default
+                let isSelected = (device.uid == selectedUID) || (settings.followSystemOutput && device.uid == selectedUID)
+                item.state = isSelected ? .on : .off
                 menu.addItem(item)
             }
         }

@@ -22,9 +22,23 @@
 		F435397B2D1B1B8C002188A9 /* CPColorCorrectionController.swift in Sources */ = {isa = PBXBuildFile; fileRef = F435397C2D1B1B8D002188A9 /* CPColorCorrectionController.swift */; };
 		F4CBD39716B8CE5F003A4794 /* Cocoa.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = F4CBD39616B8CE5F003A4794 /* Cocoa.framework */; };
 		F4CBD3AD16B8CE5F003A4794 /* MainMenu.xib in Resources */ = {isa = PBXBuildFile; fileRef = F4CBD3AB16B8CE5F003A4794 /* MainMenu.xib */; };
+		F5C5C8E72EDE0BBD00AA6F80 /* XCTest.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = F5C5C8E62EDE0BBD00AA6F80 /* XCTest.framework */; };
+		F5C5C8E82EDE0BCA00AA6F80 /* AVFoundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 87673A621E35C97A002ECF15 /* AVFoundation.framework */; };
+		F5C5C8E92EDE0BD600AA6F80 /* AppKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = F4CBD39916B8CE5F003A4794 /* AppKit.framework */; };
+		F5C5C8EA2EDE0BDF00AA6F80 /* Foundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = F4CBD39B16B8CE5F003A4794 /* Foundation.framework */; };
 		F5F6AC9F2ECD77FF0019412B /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = F5F6AC9E2ECD77FF0019412B /* Assets.xcassets */; };
 		F952D6E324E15A6200EA786D /* CPUsbWatcher.swift in Sources */ = {isa = PBXBuildFile; fileRef = F952D6E224E15A6200EA786D /* CPUsbWatcher.swift */; };
 /* End PBXBuildFile section */
+
+/* Begin PBXContainerItemProxy section */
+		F5C5C8D42EDE0ACB00AA6F80 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = F4CBD38B16B8CE5F003A4794 /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = F4CBD39216B8CE5F003A4794;
+			remoteInfo = CapturePlay;
+		};
+/* End PBXContainerItemProxy section */
 
 /* Begin PBXFileReference section */
 		87673A621E35C97A002ECF15 /* AVFoundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = AVFoundation.framework; path = System/Library/Frameworks/AVFoundation.framework; sourceTree = SDKROOT; };
@@ -50,6 +64,8 @@
 		F4CBD39B16B8CE5F003A4794 /* Foundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Foundation.framework; path = System/Library/Frameworks/Foundation.framework; sourceTree = SDKROOT; };
 		F508C9F62EC67FD300B65399 /* README.md */ = {isa = PBXFileReference; lastKnownFileType = net.daringfireball.markdown; path = README.md; sourceTree = "<group>"; };
 		F594165B2EC9209E0053EC09 /* MANUAL.md */ = {isa = PBXFileReference; lastKnownFileType = net.daringfireball.markdown; path = MANUAL.md; sourceTree = "<group>"; };
+		F5C5C8D02EDE0ACB00AA6F80 /* CapturePlayTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = CapturePlayTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
+		F5C5C8E62EDE0BBD00AA6F80 /* XCTest.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = XCTest.framework; path = Platforms/MacOSX.platform/Developer/Library/Frameworks/XCTest.framework; sourceTree = DEVELOPER_DIR; };
 		F5EAF9A92ED230C0001724E5 /* Release Notes.md */ = {isa = PBXFileReference; lastKnownFileType = net.daringfireball.markdown; path = "Release Notes.md"; sourceTree = "<group>"; };
 		F5F6AC9E2ECD77FF0019412B /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; name = Assets.xcassets; path = captureplay/Assets.xcassets; sourceTree = "<group>"; };
 		F952D6E224E15A6200EA786D /* CPUsbWatcher.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CPUsbWatcher.swift; sourceTree = "<group>"; };
@@ -59,6 +75,11 @@
 		F594164C2EC918E60053EC09 /* Resources */ = {
 			isa = PBXFileSystemSynchronizedRootGroup;
 			path = Resources;
+			sourceTree = "<group>";
+		};
+		F5C5C8D12EDE0ACB00AA6F80 /* CapturePlayTests */ = {
+			isa = PBXFileSystemSynchronizedRootGroup;
+			path = CapturePlayTests;
 			sourceTree = "<group>";
 		};
 /* End PBXFileSystemSynchronizedRootGroup section */
@@ -74,6 +95,17 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
+		F5C5C8CD2EDE0ACB00AA6F80 /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				F5C5C8EA2EDE0BDF00AA6F80 /* Foundation.framework in Frameworks */,
+				F5C5C8E92EDE0BD600AA6F80 /* AppKit.framework in Frameworks */,
+				F5C5C8E82EDE0BCA00AA6F80 /* AVFoundation.framework in Frameworks */,
+				F5C5C8E72EDE0BBD00AA6F80 /* XCTest.framework in Frameworks */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
@@ -82,6 +114,7 @@
 			children = (
 				F5F6AC9E2ECD77FF0019412B /* Assets.xcassets */,
 				F4CBD39C16B8CE5F003A4794 /* captureplay */,
+				F5C5C8D12EDE0ACB00AA6F80 /* CapturePlayTests */,
 				F4CBD39516B8CE5F003A4794 /* Frameworks */,
 				F5EAF9A92ED230C0001724E5 /* Release Notes.md */,
 				F508C9F62EC67FD300B65399 /* README.md */,
@@ -95,6 +128,7 @@
 			isa = PBXGroup;
 			children = (
 				F4CBD39316B8CE5F003A4794 /* CapturePlay.app */,
+				F5C5C8D02EDE0ACB00AA6F80 /* CapturePlayTests.xctest */,
 			);
 			name = Products;
 			sourceTree = "<group>";
@@ -102,6 +136,7 @@
 		F4CBD39516B8CE5F003A4794 /* Frameworks */ = {
 			isa = PBXGroup;
 			children = (
+				F5C5C8E62EDE0BBD00AA6F80 /* XCTest.framework */,
 				87673A621E35C97A002ECF15 /* AVFoundation.framework */,
 				87FF95011E355CDB0017DADB /* AVKit.framework */,
 				F4CBD39616B8CE5F003A4794 /* Cocoa.framework */,
@@ -167,6 +202,29 @@
 			productReference = F4CBD39316B8CE5F003A4794 /* CapturePlay.app */;
 			productType = "com.apple.product-type.application";
 		};
+		F5C5C8CF2EDE0ACB00AA6F80 /* CapturePlayTests */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = F5C5C8D82EDE0ACB00AA6F80 /* Build configuration list for PBXNativeTarget "CapturePlayTests" */;
+			buildPhases = (
+				F5C5C8CC2EDE0ACB00AA6F80 /* Sources */,
+				F5C5C8CD2EDE0ACB00AA6F80 /* Frameworks */,
+				F5C5C8CE2EDE0ACB00AA6F80 /* Resources */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+				F5C5C8D52EDE0ACB00AA6F80 /* PBXTargetDependency */,
+			);
+			fileSystemSynchronizedGroups = (
+				F5C5C8D12EDE0ACB00AA6F80 /* CapturePlayTests */,
+			);
+			name = CapturePlayTests;
+			packageProductDependencies = (
+			);
+			productName = CapturePlayTests;
+			productReference = F5C5C8D02EDE0ACB00AA6F80 /* CapturePlayTests.xctest */;
+			productType = "com.apple.product-type.bundle.unit-test";
+		};
 /* End PBXNativeTarget section */
 
 /* Begin PBXProject section */
@@ -175,11 +233,16 @@
 			attributes = {
 				BuildIndependentTargetsInParallel = YES;
 				CLASSPREFIX = WP;
+				LastSwiftUpdateCheck = 2610;
 				LastUpgradeCheck = 2610;
 				ORGANIZATIONNAME = "Windholm Partners";
 				TargetAttributes = {
 					F4CBD39216B8CE5F003A4794 = {
 						LastSwiftMigration = "";
+					};
+					F5C5C8CF2EDE0ACB00AA6F80 = {
+						CreatedOnToolsVersion = 26.1.1;
+						TestTargetID = F4CBD39216B8CE5F003A4794;
 					};
 				};
 			};
@@ -197,6 +260,7 @@
 			projectRoot = "";
 			targets = (
 				F4CBD39216B8CE5F003A4794 /* CapturePlay */,
+				F5C5C8CF2EDE0ACB00AA6F80 /* CapturePlayTests */,
 			);
 		};
 /* End PBXProject section */
@@ -208,6 +272,13 @@
 			files = (
 				F4CBD3AD16B8CE5F003A4794 /* MainMenu.xib in Resources */,
 				F5F6AC9F2ECD77FF0019412B /* Assets.xcassets in Resources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		F5C5C8CE2EDE0ACB00AA6F80 /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -233,7 +304,22 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
+		F5C5C8CC2EDE0ACB00AA6F80 /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
 /* End PBXSourcesBuildPhase section */
+
+/* Begin PBXTargetDependency section */
+		F5C5C8D52EDE0ACB00AA6F80 /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = F4CBD39216B8CE5F003A4794 /* CapturePlay */;
+			targetProxy = F5C5C8D42EDE0ACB00AA6F80 /* PBXContainerItemProxy */;
+		};
+/* End PBXTargetDependency section */
 
 /* Begin PBXVariantGroup section */
 		F4CBD3AB16B8CE5F003A4794 /* MainMenu.xib */ = {
@@ -366,7 +452,7 @@
 				CODE_SIGN_IDENTITY = "Mac Developer";
 				"CODE_SIGN_IDENTITY[sdk=macosx*]" = "Apple Development";
 				COMBINE_HIDPI_IMAGES = YES;
-				CURRENT_PROJECT_VERSION = 186;
+				CURRENT_PROJECT_VERSION = 196;
 				DEAD_CODE_STRIPPING = YES;
 				ENABLE_APP_SANDBOX = YES;
 				ENABLE_FILE_ACCESS_DOWNLOADS_FOLDER = readwrite;
@@ -395,7 +481,7 @@
 					"@executable_path/../Frameworks",
 				);
 				MACOSX_DEPLOYMENT_TARGET = 14.6;
-				MARKETING_VERSION = 3.5.3;
+				MARKETING_VERSION = 3.6.0;
 				PRODUCT_BUNDLE_IDENTIFIER = org.windholm.captureplay;
 				PRODUCT_NAME = "${TARGET_NAME}";
 				PROVISIONING_PROFILE = "";
@@ -426,10 +512,9 @@
 				CODE_SIGN_IDENTITY = "Mac Developer";
 				"CODE_SIGN_IDENTITY[sdk=macosx*]" = "Apple Development";
 				COMBINE_HIDPI_IMAGES = YES;
-				CURRENT_PROJECT_VERSION = 186;
+				CURRENT_PROJECT_VERSION = 196;
 				DEAD_CODE_STRIPPING = YES;
 				ENABLE_APP_SANDBOX = YES;
-				ENABLE_FILE_ACCESS_PICTURE_FOLDER = readwrite;
 				ENABLE_HARDENED_RUNTIME = YES;
 				ENABLE_INCOMING_NETWORK_CONNECTIONS = NO;
 				ENABLE_OUTGOING_NETWORK_CONNECTIONS = YES;
@@ -452,7 +537,7 @@
 					"@executable_path/../Frameworks",
 				);
 				MACOSX_DEPLOYMENT_TARGET = 14.6;
-				MARKETING_VERSION = 3.5.3;
+				MARKETING_VERSION = 3.6.0;
 				PRODUCT_BUNDLE_IDENTIFIER = org.windholm.captureplay;
 				PRODUCT_NAME = "${TARGET_NAME}";
 				PROVISIONING_PROFILE = "";
@@ -469,6 +554,85 @@
 				SWIFT_VERSION = 5.0;
 				VERSIONING_SYSTEM = "";
 				WRAPPER_EXTENSION = app;
+			};
+			name = Release;
+		};
+		F5C5C8D62EDE0ACB00AA6F80 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ASSETCATALOG_COMPILER_GENERATE_SWIFT_ASSET_SYMBOL_EXTENSIONS = YES;
+				BUNDLE_LOADER = "$(TEST_HOST)";
+				CLANG_ANALYZER_NONNULL = YES;
+				CLANG_ANALYZER_NUMBER_OBJECT_CONVERSION = YES_AGGRESSIVE;
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++20";
+				CLANG_ENABLE_MODULES = YES;
+				CLANG_ENABLE_OBJC_WEAK = YES;
+				CLANG_WARN_DIRECT_OBJC_ISA_USAGE = YES_ERROR;
+				CLANG_WARN_DOCUMENTATION_COMMENTS = YES;
+				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
+				CLANG_WARN_UNGUARDED_AVAILABILITY = YES_AGGRESSIVE;
+				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = 1;
+				DEBUG_INFORMATION_FORMAT = dwarf;
+				DEVELOPMENT_TEAM = D6WY385Q4D;
+				GCC_C_LANGUAGE_STANDARD = gnu17;
+				GCC_WARN_ABOUT_RETURN_TYPE = YES_ERROR;
+				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
+				GENERATE_INFOPLIST_FILE = YES;
+				LOCALIZATION_PREFERS_STRING_CATALOGS = YES;
+				MACOSX_DEPLOYMENT_TARGET = 14.6;
+				MARKETING_VERSION = 1.0;
+				MTL_ENABLE_DEBUG_INFO = INCLUDE_SOURCE;
+				MTL_FAST_MATH = YES;
+				PRODUCT_BUNDLE_IDENTIFIER = org.windholm.CapturePlayTests;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				STRING_CATALOG_GENERATE_SYMBOLS = NO;
+				SWIFT_ACTIVE_COMPILATION_CONDITIONS = "DEBUG $(inherited)";
+				SWIFT_APPROACHABLE_CONCURRENCY = YES;
+				SWIFT_EMIT_LOC_STRINGS = NO;
+				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
+				SWIFT_UPCOMING_FEATURE_MEMBER_IMPORT_VISIBILITY = YES;
+				SWIFT_VERSION = 5.0;
+				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/CapturePlay.app/$(BUNDLE_EXECUTABLE_FOLDER_PATH)/CapturePlay";
+			};
+			name = Debug;
+		};
+		F5C5C8D72EDE0ACB00AA6F80 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ASSETCATALOG_COMPILER_GENERATE_SWIFT_ASSET_SYMBOL_EXTENSIONS = YES;
+				BUNDLE_LOADER = "$(TEST_HOST)";
+				CLANG_ANALYZER_NONNULL = YES;
+				CLANG_ANALYZER_NUMBER_OBJECT_CONVERSION = YES_AGGRESSIVE;
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++20";
+				CLANG_ENABLE_MODULES = YES;
+				CLANG_ENABLE_OBJC_WEAK = YES;
+				CLANG_WARN_DIRECT_OBJC_ISA_USAGE = YES_ERROR;
+				CLANG_WARN_DOCUMENTATION_COMMENTS = YES;
+				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
+				CLANG_WARN_UNGUARDED_AVAILABILITY = YES_AGGRESSIVE;
+				CODE_SIGN_STYLE = Automatic;
+				COPY_PHASE_STRIP = NO;
+				CURRENT_PROJECT_VERSION = 1;
+				DEVELOPMENT_TEAM = D6WY385Q4D;
+				ENABLE_NS_ASSERTIONS = NO;
+				GCC_C_LANGUAGE_STANDARD = gnu17;
+				GCC_WARN_ABOUT_RETURN_TYPE = YES_ERROR;
+				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
+				GENERATE_INFOPLIST_FILE = YES;
+				LOCALIZATION_PREFERS_STRING_CATALOGS = YES;
+				MACOSX_DEPLOYMENT_TARGET = 14.6;
+				MARKETING_VERSION = 1.0;
+				MTL_ENABLE_DEBUG_INFO = NO;
+				MTL_FAST_MATH = YES;
+				PRODUCT_BUNDLE_IDENTIFIER = org.windholm.CapturePlayTests;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				STRING_CATALOG_GENERATE_SYMBOLS = NO;
+				SWIFT_APPROACHABLE_CONCURRENCY = YES;
+				SWIFT_EMIT_LOC_STRINGS = NO;
+				SWIFT_UPCOMING_FEATURE_MEMBER_IMPORT_VISIBILITY = YES;
+				SWIFT_VERSION = 5.0;
+				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/CapturePlay.app/$(BUNDLE_EXECUTABLE_FOLDER_PATH)/CapturePlay";
 			};
 			name = Release;
 		};
@@ -489,6 +653,15 @@
 			buildConfigurations = (
 				F4CBD3B116B8CE5F003A4794 /* Debug */,
 				F4CBD3B216B8CE5F003A4794 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		F5C5C8D82EDE0ACB00AA6F80 /* Build configuration list for PBXNativeTarget "CapturePlayTests" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				F5C5C8D62EDE0ACB00AA6F80 /* Debug */,
+				F5C5C8D72EDE0ACB00AA6F80 /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;

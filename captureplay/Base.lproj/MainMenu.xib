@@ -433,12 +433,6 @@
                                     <action selector="showHelp:" target="494" id="493"/>
                                 </connections>
                             </menuItem>
-                            <menuItem isSeparatorItem="YES" id="Manual-Sep-1"/>
-                            <menuItem title="User Manual" id="Manual-Item-1">
-                                <connections>
-                                    <action selector="showUserManual:" target="494" id="Manual-Action-1"/>
-                                </connections>
-                            </menuItem>
                         </items>
                     </menu>
                 </menuItem>

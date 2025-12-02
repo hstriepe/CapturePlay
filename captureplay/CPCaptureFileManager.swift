@@ -127,14 +127,14 @@ class CPCaptureFileManager {
             }
         }
         
-        // Fall back to path-based access (for folders with entitlements like Pictures, Downloads)
+        // Fall back to path-based access
         var directoryPath: String = settings.captureImageDirectory
         
-        // If no directory is set, use default ~/Pictures/CapturePlay
-        // Note: Pictures folder has sandbox entitlement, so it works without user selection
+        // If no directory is set, use default ~/Documents/CapturePlay
+        // Use actual user home directory, not sandboxed one
         if directoryPath.isEmpty {
-            let homePath = NSHomeDirectory()
-            directoryPath = (homePath as NSString).appendingPathComponent("Pictures/CapturePlay")
+            let homePath = FileManager.default.homeDirectoryForCurrentUser.path
+            directoryPath = (homePath as NSString).appendingPathComponent("Documents/CapturePlay")
             NSLog("Using default capture directory: %@", directoryPath)
         } else {
             // Expand tilde if present
@@ -190,13 +190,14 @@ class CPCaptureFileManager {
     
     private func expandTildePath(_ path: String) -> String {
         if path.hasPrefix("~") {
-            let homePath = NSHomeDirectory()
+            // Use actual user home directory, not sandboxed one
+            let homePath = FileManager.default.homeDirectoryForCurrentUser.path
             if path == "~" {
                 return homePath
             } else if path.hasPrefix("~/") {
                 return (homePath as NSString).appendingPathComponent(String(path.dropFirst(2)))
             } else {
-                // Handle ~username format (less common)
+                // Handle ~username format (less common) - use NSString which expands to actual home
                 return (path as NSString).expandingTildeInPath
             }
         }
@@ -217,7 +218,7 @@ class CPCaptureFileManager {
         
         guard let captureDir = getCaptureDirectory() else {
             let settings = CPSettingsManager.shared
-            let dirPath = settings.captureImageDirectory.isEmpty ? "~/Pictures/CapturePlay" : settings.captureImageDirectory
+            let dirPath = settings.captureImageDirectory.isEmpty ? "~/Documents/CapturePlay" : settings.captureImageDirectory
             let message = "Unable to access or create the capture directory: \(dirPath)\n\nPlease check that:\n• The path is correct\n• You have write permissions\n• The directory can be created\n\nNote: For sandboxed apps, you may need to select the folder via the Browse button in Preferences to grant access."
             let error = NSError(domain: "CPCaptureFileManager", code: -3, userInfo: [NSLocalizedDescriptionKey: message])
             delegate?.captureFileManager(self, didEncounterError: error, message: message)

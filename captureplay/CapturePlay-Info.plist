@@ -31,7 +31,7 @@
 	<key>NSCameraUsageDescription</key>
 	<string>CapturePlay requires access to connected USB cameras in order to display the output on your screen.</string>
 	<key>NSHumanReadableCopyright</key>
-	<string>Copyright © 2025 Harald Striepe - Initial concept by Simon Guest under Apache License V2.0</string>
+	<string>Copyright © 2025 Harald Striepe</string>
 	<key>NSMainNibFile</key>
 	<string>MainMenu</string>
 	<key>NSMicrophoneUsageDescription</key>

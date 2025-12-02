@@ -15,6 +15,7 @@ class CPSettingsManager {
     private(set) var preventDisplaySleep: Bool = false
     private(set) var audioInputUID: String = ""
     private(set) var audioOutputUID: String = ""
+    private(set) var followSystemOutput: Bool = false
     private(set) var isAudioMuted: Bool = false
     private(set) var audioVolume: Float = 1.0
     private(set) var autoDisplaySleepInFullScreen: Bool = true
@@ -44,7 +45,15 @@ class CPSettingsManager {
     static let shared: CPSettingsManager = CPSettingsManager()
 
     private init() {
-        loadSettings()
+        // Only load settings if not in test environment
+        // Tests will manage UserDefaults themselves
+        let isRunningInTests = ProcessInfo.processInfo.environment["XCTestConfigurationFilePath"] != nil ||
+                               ProcessInfo.processInfo.arguments.contains("-XCTest") ||
+                               NSClassFromString("XCTestCase") != nil
+        
+        if !isRunningInTests {
+            loadSettings()
+        }
     }
 
     // MARK: - Property Setters
@@ -82,6 +91,10 @@ class CPSettingsManager {
 
     func setAudioOutputUID(_ value: String) {
         audioOutputUID = value
+    }
+    
+    func setFollowSystemOutput(_ value: Bool) {
+        followSystemOutput = value
     }
 
     func setAudioMuted(_ value: Bool) {
@@ -180,6 +193,8 @@ class CPSettingsManager {
             UserDefaults.standard.object(forKey: "audioInputUID") as? String ?? ""
         audioOutputUID =
             UserDefaults.standard.object(forKey: "audioOutputUID") as? String ?? ""
+        followSystemOutput =
+            UserDefaults.standard.object(forKey: "followSystemOutput") as? Bool ?? false
         isAudioMuted = false
         audioVolume = UserDefaults.standard.object(forKey: "audioVolume") as? Float ?? 1.0
         autoDisplaySleepInFullScreen =
@@ -234,6 +249,7 @@ class CPSettingsManager {
         UserDefaults.standard.set(preventDisplaySleep, forKey: "preventDisplaySleep")
         UserDefaults.standard.set(audioInputUID, forKey: "audioInputUID")
         UserDefaults.standard.set(audioOutputUID, forKey: "audioOutputUID")
+        UserDefaults.standard.set(followSystemOutput, forKey: "followSystemOutput")
         UserDefaults.standard.set(audioVolume, forKey: "audioVolume")
         UserDefaults.standard.set(autoDisplaySleepInFullScreen, forKey: "autoDisplaySleepInFullScreen")
         UserDefaults.standard.set(captureImageDirectory, forKey: "captureImageDirectory")

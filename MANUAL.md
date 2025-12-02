@@ -1,6 +1,6 @@
 # CapturePlay User Manual
 
-**Version 3.5**
+**Version 3.6**
 
 CapturePlay is a macOS application designed to display video and audio from USB capture devices (such as the USB Camlink 4K) connected to gaming consoles, such as the PlayStation 5 or Nintendo Switch, in a dock. It also connects to Continuity Cameras on iPhone. The application provides real-time video display, audio routing, image capture, and video recording capabilities.
 
@@ -41,7 +41,7 @@ CapturePlay enables you to:
 - **macOS**: 14.6 (Sequoia) or later to support Continuity Camera.
 - **Hardware**: 
   - USB capture device (e.g., Elgato Camlink 4K, AVMedia, 4k HDMI Capture card, or generic USB capture cards)
-  - MacBook or Studio Display Camera
+  - MacBook, Studio Display Camera, or USB Camera
   - iPhone Continuity Camera (requires macOS 14.6 Sequoia, or later, and iOS 16.0 or later)
 - **Permissions**: 
   - Camera access (for video capture devices)
@@ -134,7 +134,8 @@ CapturePlay enables you to:
 
 ### Help Menu
 
-- **CapturePlay Help** (⌘?): Opens the help system (if available)
+- **Help Box** - typing in a menu will show you the associated list and point to the menu item
+- **CapturePlay Help** (⌘?): Opens the help system
 
 ---
 
@@ -277,6 +278,9 @@ Choose where audio is played:
 
 1. Go to **Audio > Select Output**.
 2. Choose your output device (speakers, headphones, etc.).
+   1. You can track the Selected System Output
+   2. Bluetooth audio like AirPods has a 10msec to 20msec delay, which is typical for core audio. Compensating by delaying video does not work for games.
+
 
 **Note**: Audio settings are saved in preferences.
 
@@ -325,7 +329,7 @@ Three methods for capturing images:
 
 **Image Format**: PNG (highest quality)
 
-**Note**: Image capture temporarily removes the window border (if present) to capture a clean image, then restores it. Copy to clipboard uses the same capture method.
+**Note**: Image capture temporarily removes the window border (if present) to capture a clean image, then restores it. Copy to clipboard uses the same capture method. By default, captures are saved in the 
 
 ### Video Recording
 
@@ -359,11 +363,17 @@ Three methods for capturing images:
   - **Visibility**: Controls follow the translucent title bar behavior - they appear when you hover over the window and disappear when the mouse moves away, except while recording, when they remain always visible
   - These controls can be disabled in Settings.
 
-**Note**: Ensure you have sufficient disk space. Video files can be large, especially at high resolutions and frame rates.
+**Note**: Captures are stored in the current CapturePlay folder. Ensure you have sufficient disk space. Video files can be large, especially at high resolutions and frame rates.
 
 ### Opening Capture Folder
 
 **Open Capture Folder** (⌘O) opens the capture directory in Finder, where all captured images and videos are saved.
+
+Capture Folder Location:
+
+- By default, CapturePlay saves to Documents/CapturePlay in the CapturePlay Sandbox:
+   Library/Container/CapturePlay/Data/Documents/CapturePlay
+- You can use the browse option in Settings to choose any other folder
 
 ---
 
@@ -713,7 +723,7 @@ Licensed under Apache License 2.0
 
 **Acknowledgments**
 
-CapturePlay includes code from Simon Guest's Quick Camera project, which provided the foundation for video capture and display functionality.
+CapturePlay includes code from Simon Guest's Quick Camera project, which provided the inital foundation for video capture and display functionality.
 
 ---
 
