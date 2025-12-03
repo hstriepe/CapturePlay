@@ -126,17 +126,18 @@ class CPDisplaySleepManager {
             displaySleepStateBeforeFullScreen = isPreventingDisplaySleep
         }
         delegate?.displaySleepManager(self, needsMenuItemEnabled: false)
-        if CPSettingsManager.shared.autoDisplaySleepInFullScreen {
-            setDisplaySleepPrevention(
-                enabled: true,
-                persist: false,
-                notifyOnFailure: false
-            )
-        }
+        // Always enable display sleep prevention in fullscreen
+        // setDisplaySleepPrevention will send notification if state changes
+        setDisplaySleepPrevention(
+            enabled: true,
+            persist: false,
+            notifyOnFailure: false
+        )
     }
     
     func handleWillExitFullScreen() {
         let previous = displaySleepStateBeforeFullScreen ?? CPSettingsManager.shared.preventDisplaySleep
+        // Restore previous state (was always enabled in fullscreen, so this will disable if it was disabled before)
         setDisplaySleepPrevention(
             enabled: previous,
             persist: true,
@@ -147,7 +148,9 @@ class CPDisplaySleepManager {
     func handleDidExitFullScreen() {
         displaySleepStateBeforeFullScreen = nil
         delegate?.displaySleepManager(self, needsMenuItemEnabled: true)
-        applyDisplaySleepPreferenceFromSettings(force: true)
+        // Don't apply settings here - handleWillExitFullScreen already restored the correct state
+        // Just ensure menu item reflects current state
+        delegate?.displaySleepManager(self, needsMenuItemUpdate: isPreventingDisplaySleep)
     }
     
     // MARK: - Cleanup

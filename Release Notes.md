@@ -1,6 +1,11 @@
 # Release Notes
 
-#### Version 3.6.0 (196 - internal) - 112-01-25
+#### Version 3.6.1 (198 - internal) - 12-03-25
+
+1. Fixed Display Sleep Prevention state issues.
+2. Notification.
+
+#### Version 3.6.0 (196 - internal) - 12-01-25
 
 1. Bluetooth audio.
 2. Track system audio.
