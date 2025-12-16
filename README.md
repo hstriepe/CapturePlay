@@ -4,7 +4,7 @@ CapturePlay is an app designed for use with a capture device like the USB Camlin
 
 CapturePlay is now on the App Store
 
-[CapturePlay]: https://apps.apple.com/us/app/captureplay/id6755561036?mt=12
+https://apps.apple.com/us/app/captureplay/id6755561036?mt=12
 
 Key features:
 
@@ -42,7 +42,7 @@ CapturePlay was inspired by and includes code (QCUSBWatcher.swift) from the [Qui
 
 License: Apache V2.0
 
-![Announcement](https://github.com/hstriepe/CapturePlay/blob/main/Screenshots/CapturePlay-New.mp4)
+(https://github.com/hstriepe/CapturePlay/blob/main/Screenshots/CapturePlay-New.mp4)
 
 
 
