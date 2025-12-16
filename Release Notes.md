@@ -1,17 +1,31 @@
 # Release Notes
 
-#### Version 3.6.1 (198 - internal) - 12-03-25
+#### Note: Github might not be current with the App Store version
 
-1. Fixed Display Sleep Prevention state issues.
-2. Notification.
+#### Version 3.7.0 (213 - internal) - 12-15-25
 
-#### Version 3.6.0 (196 - internal) - 12-01-25
+1. Settings now follow Light/Dark appearance.
+
+#### Version 3.6.3 (212 - internal) - 12-12-25
+
+1. App Store version: prompt after waiting.
+2. Video capture compression options.
+3. MJPEG support, if needed. This does not help CamLink 4K to deliver 4K! But neither the El Gato app nor OBS supports more than 1920x108, either. It should work, but I have no way to test it for now.
+4. German localization.
+
+#### Version 3.6.2 (200 - internal) - 12-09-25
+
+1. App Store request: icon change.
+2. App Store request: remove container access.
+
+#### Version 3.6.0 (197 - internal) - 12-02-25
 
 1. Bluetooth audio.
 2. Track system audio.
 3. Removed Picture folder Entitlement
 4. Code review & cleanup.
-5. XCTests - works from command line.
+5. XCTests - work from command line.
+6. Help format change to simplerand smaller default macOS style.
 
 #### Version 3.5.6 (187 - internal) - 11-27-25
 
