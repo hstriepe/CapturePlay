@@ -42,9 +42,7 @@ CapturePlay was inspired by and includes code (QCUSBWatcher.swift) from the [Qui
 
 License: Apache V2.0
 
-(https://github.com/hstriepe/CapturePlay/blob/main/Screenshots/CapturePlay-New.mp4)
-
-
+![](https://github.com/hstriepe/CapturePlay/blob/main/Screenshots/CapturePlay-New.mp4)
 
 ### Screenshots
 
